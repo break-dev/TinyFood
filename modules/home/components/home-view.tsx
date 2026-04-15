@@ -1,48 +1,38 @@
-import React from 'react';
+import React from "react";
 import {
   View,
   Text,
   TouchableOpacity,
   ActivityIndicator,
-  FlatList,
-  RefreshControl,
   SafeAreaView,
-  StyleSheet
-} from 'react-native';
-import { useHome } from '../hooks/use-home';
-import { HomeItemData } from '../services/responses';
+  StyleSheet,
+} from "react-native";
+import { useHome } from "../hooks/use-home";
 
 export const HomeView = () => {
-  const { metrics, isLoading, refreshData, handleLogout } = useHome();
+  const { userName, userEmail, isLoading, handleLogout } = useHome();
 
-  const renderMetric = ({ item }: { item: HomeItemData }) => {
-    const isPositive = item.trend.startsWith('+');
+  if (isLoading) {
     return (
-      <View style={styles.card}>
-        <View style={styles.cardHeader}>
-          <Text style={styles.cardTitle}>{item.title}</Text>
-          <View style={[styles.trendBadge, isPositive ? styles.bgSuccess : styles.bgDanger]}>
-            <Text style={[styles.trendText, isPositive ? styles.textSuccess : styles.textDanger]}>
-              {item.trend}
-            </Text>
-          </View>
+      <SafeAreaView style={styles.container}>
+        <View style={styles.centerContainer}>
+          <ActivityIndicator size="large" color="#f97316" />
         </View>
-        <Text style={styles.cardValue}>{item.value}</Text>
-      </View>
+      </SafeAreaView>
     );
-  };
+  }
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Abstract Background Top */}
       <View style={styles.abstractTop} />
 
       <View style={styles.header}>
         <View>
-          <Text style={styles.welcomeText}>Panel Principal</Text>
-          <Text style={styles.userName}>Hola, Demo Admin</Text>
+          <Text style={styles.welcomeText}>¡Bienvenido!</Text>
+          <Text style={styles.userName}>{userName}</Text>
+          <Text style={styles.userEmail}>{userEmail}</Text>
         </View>
-        <TouchableOpacity 
+        <TouchableOpacity
           style={styles.logoutBtn}
           onPress={handleLogout}
           activeOpacity={0.7}
@@ -52,27 +42,14 @@ export const HomeView = () => {
       </View>
 
       <View style={styles.content}>
-        {isLoading && metrics.length === 0 ? (
-          <View style={styles.centerContainer}>
-            <ActivityIndicator size="large" color="#f97316" />
-            <Text style={styles.loadingText}>Cargando resumen...</Text>
-          </View>
-        ) : (
-          <FlatList
-            data={metrics}
-            keyExtractor={(item) => item.id}
-            renderItem={renderMetric}
-            contentContainerStyle={styles.listContainer}
-            showsVerticalScrollIndicator={false}
-            refreshControl={
-              <RefreshControl 
-                refreshing={isLoading} 
-                onRefresh={refreshData}
-                tintColor="#f97316"
-              />
-            }
-          />
-        )}
+        <View style={styles.card}>
+          <Text style={styles.cardEmoji}>🥦</Text>
+          <Text style={styles.cardTitle}>Tu despensa está lista</Text>
+          <Text style={styles.cardSubtitle}>
+            Próximamente podrás registrar alimentos con una foto y recibir
+            sugerencias de recetas personalizadas.
+          </Text>
+        </View>
       </View>
     </SafeAreaView>
   );
@@ -81,49 +58,54 @@ export const HomeView = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fafafa',
+    backgroundColor: "#fafafa",
   },
   abstractTop: {
-    position: 'absolute',
+    position: "absolute",
     top: 0,
     left: 0,
     right: 0,
-    height: 180,
-    backgroundColor: '#ffffff',
+    height: 200,
+    backgroundColor: "#ffffff",
     borderBottomLeftRadius: 30,
     borderBottomRightRadius: 30,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.03,
     shadowRadius: 10,
     elevation: 2,
   },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
     paddingHorizontal: 24,
-    paddingTop: 20,
-    paddingBottom: 24,
+    paddingTop: 24,
+    paddingBottom: 28,
   },
   welcomeText: {
-    fontSize: 28,
-    fontWeight: '800',
-    color: '#111827',
+    fontSize: 14,
+    fontWeight: "500",
+    color: "#9ca3af",
     marginBottom: 4,
   },
   userName: {
-    fontSize: 16,
-    color: '#6b7280',
-    fontWeight: '500',
+    fontSize: 26,
+    fontWeight: "800",
+    color: "#111827",
+    marginBottom: 2,
+  },
+  userEmail: {
+    fontSize: 13,
+    color: "#9ca3af",
   },
   logoutBtn: {
     width: 48,
     height: 48,
-    backgroundColor: '#f3f4f6',
+    backgroundColor: "#f3f4f6",
     borderRadius: 16,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   logoutText: {
     fontSize: 20,
@@ -131,67 +113,39 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     paddingHorizontal: 24,
+    paddingTop: 8,
   },
   centerContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  loadingText: {
-    marginTop: 16,
-    color: '#9ca3af',
-    fontWeight: '500',
-    fontSize: 15,
-  },
-  listContainer: {
-    paddingVertical: 16,
+    justifyContent: "center",
+    alignItems: "center",
   },
   card: {
-    backgroundColor: '#ffffff',
+    backgroundColor: "#ffffff",
     borderRadius: 24,
-    padding: 24,
-    marginBottom: 16,
-    shadowColor: '#111827',
+    padding: 28,
+    alignItems: "center",
+    shadowColor: "#111827",
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.05,
+    shadowOpacity: 0.06,
     shadowRadius: 12,
     elevation: 3,
   },
-  cardHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 12,
+  cardEmoji: {
+    fontSize: 48,
+    marginBottom: 16,
   },
   cardTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#4b5563',
+    fontSize: 20,
+    fontWeight: "700",
+    color: "#111827",
+    marginBottom: 10,
+    textAlign: "center",
   },
-  trendBadge: {
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 12,
+  cardSubtitle: {
+    fontSize: 14,
+    color: "#6b7280",
+    textAlign: "center",
+    lineHeight: 22,
   },
-  bgSuccess: {
-    backgroundColor: '#dcfce7',
-  },
-  bgDanger: {
-    backgroundColor: '#fee2e2',
-  },
-  trendText: {
-    fontSize: 13,
-    fontWeight: '700',
-  },
-  textSuccess: {
-    color: '#16a34a',
-  },
-  textDanger: {
-    color: '#ef4444',
-  },
-  cardValue: {
-    fontSize: 32,
-    fontWeight: '800',
-    color: '#111827',
-  }
 });

@@ -1,16 +1,18 @@
 {
   "expo": {
-    "name": "test",
-    "slug": "test",
+    "name": "TinyFood",
+    "slug": "tinyfood",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "test",
+    "scheme": "tinyfood",
     "userInterfaceStyle": "automatic",
     "ios": {
+      "bundleIdentifier": "com.tinyfood.app",
       "supportsTablet": true
     },
     "android": {
+      "package": "com.tinyfood.app",
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
         "foregroundImage": "./assets/images/android-icon-foreground.png",
@@ -37,7 +39,8 @@
             "backgroundColor": "#000000"
           }
         }
-      ]
+      ],
+      "expo-secure-store"
     ],
     "experiments": {
       "typedRoutes": true,

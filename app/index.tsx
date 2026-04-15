@@ -1,5 +1,5 @@
-import { LoginView } from "../modules/login/components/login-view";
+import { LoginScreen } from '../modules/auth/components/login.screen';
 
 export default function IndexScreen() {
-  return <LoginView />;
+  return <LoginScreen />;
 }

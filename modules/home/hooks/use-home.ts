@@ -1,52 +1,60 @@
-import { useState, useEffect } from 'react';
-import { Alert } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useState, useEffect } from "react";
+import { Alert } from "react-native";
+import { useRouter } from "expo-router";
 
-import { HomeService } from '../services/home.service';
-import { HomeItemData } from '../services/responses';
+import { supabase } from "../../core/service/supabase.client";
+import { AuthService } from "../../auth/services/auth.service";
 
 export function useHome() {
   const router = useRouter();
-  
-  const [metrics, setMetrics] = useState<HomeItemData[]>([]);
+
+  const [userName, setUserName] = useState("");
+  const [userEmail, setUserEmail] = useState("");
   const [isLoading, setIsLoading] = useState(true);
 
-  const loadData = async () => {
-    setIsLoading(true);
-    const response = await HomeService.fetchDashboard({ page: 1 }, () => {
-      setIsLoading(false);
-    });
+  const loadUser = async () => {
+    const { data } = await supabase.auth.getSession();
+    const user = data.session?.user;
 
-    if (response.success && response.data) {
-      setMetrics(response.data.metrics);
-    } else {
-      Alert.alert('Aviso', response.message);
+    if (!user) {
+      // Si no hay sesión activa, regresa al login
+      router.replace("/");
+      return;
     }
+
+    setUserEmail(user.email ?? "");
+    // Intenta usar el nombre del metadata (viene del registro o de Google)
+    const nombre =
+      user.user_metadata?.nombre ||
+      user.user_metadata?.full_name ||
+      user.email?.split("@")[0] ||
+      "Usuario";
+    setUserName(nombre);
+    setIsLoading(false);
   };
 
   const handleLogout = () => {
-    Alert.alert(
-      'Cerrar Sesión',
-      '¿Seguro que deseas salir?',
-      [
-        { text: 'Cancelar', style: 'cancel' },
-        { 
-          text: 'Sí, Salir', 
-          style: 'destructive',
-          onPress: () => router.replace('/')
-        }
-      ]
-    );
+    Alert.alert("Cerrar Sesión", "¿Seguro que deseas salir?", [
+      { text: "Cancelar", style: "cancel" },
+      {
+        text: "Sí, salir",
+        style: "destructive",
+        onPress: async () => {
+          await AuthService.logout();
+          router.replace("/");
+        },
+      },
+    ]);
   };
 
   useEffect(() => {
-    loadData();
+    loadUser();
   }, []);
 
   return {
-    metrics,
+    userName,
+    userEmail,
     isLoading,
-    refreshData: loadData,
-    handleLogout
+    handleLogout,
   };
 }
