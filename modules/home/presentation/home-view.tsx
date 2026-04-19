@@ -4,10 +4,11 @@ import {
   Text,
   TouchableOpacity,
   ActivityIndicator,
-  SafeAreaView,
   StyleSheet,
 } from "react-native";
-import { useHome } from "../hooks/use-home";
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useHome } from "../login/use-home";
+
 
 export const HomeView = () => {
   const { userName, userEmail, isLoading, handleLogout } = useHome();

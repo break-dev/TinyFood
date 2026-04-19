@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import {
   View,
   Text,
@@ -9,8 +9,8 @@ import {
   ActivityIndicator,
   ScrollView,
   StyleSheet,
-} from 'react-native';
-import { useRegister } from '../hooks/use-register';
+} from "react-native";
+import { useRegister } from "../logic/use-register";
 
 export const RegisterScreen = () => {
   const {
@@ -30,7 +30,7 @@ export const RegisterScreen = () => {
 
   return (
     <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={styles.container}
     >
       <ScrollView
@@ -160,56 +160,56 @@ export const RegisterScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#ffffff',
+    backgroundColor: "#ffffff",
   },
   content: {
     flexGrow: 1,
-    justifyContent: 'center',
+    justifyContent: "center",
     paddingHorizontal: 32,
     paddingVertical: 60,
   },
   abstractCircle: {
-    position: 'absolute',
+    position: "absolute",
     top: -80,
     left: -80,
     width: 250,
     height: 250,
     borderRadius: 125,
-    backgroundColor: 'rgba(251, 146, 60, 0.12)',
+    backgroundColor: "rgba(251, 146, 60, 0.12)",
   },
   header: {
-    alignItems: 'center',
+    alignItems: "center",
     marginBottom: 36,
   },
   logoBadge: {
     width: 72,
     height: 72,
-    backgroundColor: '#f97316',
+    backgroundColor: "#f97316",
     borderRadius: 22,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     marginBottom: 20,
-    shadowColor: '#f97316',
+    shadowColor: "#f97316",
     shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.3,
     shadowRadius: 10,
     elevation: 5,
   },
   logoText: {
-    color: '#ffffff',
+    color: "#ffffff",
     fontSize: 36,
-    fontWeight: '900',
+    fontWeight: "900",
   },
   title: {
     fontSize: 28,
-    fontWeight: '800',
-    color: '#1f2937',
+    fontWeight: "800",
+    color: "#1f2937",
     marginBottom: 6,
   },
   subtitle: {
     fontSize: 15,
-    color: '#6b7280',
-    fontWeight: '500',
+    color: "#6b7280",
+    fontWeight: "500",
   },
   form: {
     marginBottom: 16,
@@ -219,39 +219,39 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 14,
-    fontWeight: '600',
-    color: '#4b5563',
+    fontWeight: "600",
+    color: "#4b5563",
     marginBottom: 8,
     marginLeft: 4,
   },
   input: {
-    backgroundColor: '#f9fafb',
+    backgroundColor: "#f9fafb",
     borderWidth: 1,
-    borderColor: '#e5e7eb',
+    borderColor: "#e5e7eb",
     borderRadius: 16,
     paddingHorizontal: 20,
     paddingVertical: 16,
     fontSize: 16,
-    color: '#111827',
+    color: "#111827",
   },
   inputError: {
-    borderColor: '#ef4444',
-    backgroundColor: '#fef2f2',
+    borderColor: "#ef4444",
+    backgroundColor: "#fef2f2",
   },
   errorText: {
-    color: '#ef4444',
+    color: "#ef4444",
     fontSize: 12,
     marginTop: 6,
     marginLeft: 4,
   },
   buttonPrimary: {
-    backgroundColor: '#f97316',
+    backgroundColor: "#f97316",
     borderRadius: 16,
     height: 56,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     marginTop: 8,
-    shadowColor: '#f97316',
+    shadowColor: "#f97316",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
@@ -261,59 +261,59 @@ const styles = StyleSheet.create({
     opacity: 0.7,
   },
   buttonPrimaryText: {
-    color: '#ffffff',
+    color: "#ffffff",
     fontSize: 18,
-    fontWeight: '700',
+    fontWeight: "700",
   },
   dividerRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginVertical: 24,
   },
   dividerLine: {
     flex: 1,
     height: 1,
-    backgroundColor: '#e5e7eb',
+    backgroundColor: "#e5e7eb",
   },
   dividerText: {
-    color: '#9ca3af',
+    color: "#9ca3af",
     paddingHorizontal: 16,
-    fontWeight: '500',
+    fontWeight: "500",
   },
   buttonGoogle: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
     borderWidth: 1,
-    borderColor: '#e5e7eb',
-    backgroundColor: '#ffffff',
+    borderColor: "#e5e7eb",
+    backgroundColor: "#ffffff",
     borderRadius: 16,
     height: 56,
     marginBottom: 24,
   },
   googleIconPlaceholder: {
     fontSize: 20,
-    fontWeight: 'bold',
-    color: '#ef4444',
+    fontWeight: "bold",
+    color: "#ef4444",
     marginRight: 10,
   },
   buttonGoogleText: {
-    color: '#374151',
+    color: "#374151",
     fontSize: 16,
-    fontWeight: '700',
+    fontWeight: "700",
   },
   loginRow: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
   },
   loginText: {
-    color: '#6b7280',
+    color: "#6b7280",
     fontSize: 14,
   },
   loginLink: {
-    color: '#f97316',
+    color: "#f97316",
     fontSize: 14,
-    fontWeight: '700',
+    fontWeight: "700",
   },
 });

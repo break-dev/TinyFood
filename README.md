@@ -249,3 +249,29 @@ Siguiendo la arquitectura de 3 capas (`components/`, `hooks/`, `services/`):
 | `recipes`      | Sugerencias de recetas basadas en inventario y perfil del usuario.                  |
 | `user-profile` | Configuración de peso, talla, alergias, preferencias y alimentos prohibidos.        |
 | `alerts`       | Notificaciones de alimentos próximos a vencer.                                      |
+
+## EJECUCION
+
+# 1. Clonar y preparar
+
+git clone <repo>
+cd tinyfood && npm install
+cd ../tinyfoodapi && npm install
+
+# 2. Copiar los .env (el equipo los recibe de ti)
+
+# 3. Levantar todo
+
+# Terminal A — API
+
+cd tinyfoodapi && npm run start:dev
+
+# Terminal B — App (primera vez: build nativo)
+
+cd tinyfood && npx expo run:android # solo la primera vez
+
+# Siguientes veces:
+
+cd tinyfood && npx expo start
+
+El npx expo run:android solo es necesario una vez por máquina (o cuando cambias dependencias nativas). Después con npx expo start basta y el hot reload funciona normal, como en cualquier proyecto React.

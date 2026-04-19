@@ -1,5 +1,6 @@
-import { RegisterScreen } from '../modules/auth/components/register.screen';
+import { Redirect } from "expo-router";
 
+// El registro es via Google directamente desde la pantalla de login
 export default function RegisterRoute() {
-  return <RegisterScreen />;
+  return <Redirect href="/" />;
 }
