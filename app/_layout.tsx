@@ -3,11 +3,7 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { useEffect, useState } from "react";
 import type { Session } from "@supabase/supabase-js";
 import { supabase } from "../service/supabase.client";
-import { AuthService } from "../modules/auth/service/auth.service";
 import "../global.css";
-
-// Configura el SDK nativo de Google Sign-In una sola vez al arrancar la app
-AuthService.configure();
 
 function AuthStateListener() {
   const router = useRouter();

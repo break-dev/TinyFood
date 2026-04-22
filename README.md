@@ -255,8 +255,8 @@ Siguiendo la arquitectura de 3 capas (`components/`, `hooks/`, `services/`):
 # 1. Clonar y preparar
 
 git clone <repo>
-cd tinyfood && npm install
-cd ../tinyfoodapi && npm install
+cd TinyFood && npm install
+cd ../TinyFoodAPI && npm install
 
 # 2. Copiar los .env (el equipo los recibe de ti)
 
@@ -264,14 +264,11 @@ cd ../tinyfoodapi && npm install
 
 # Terminal A — API
 
-cd tinyfoodapi && npm run start:dev
+cd TinyFoodAPI && npm run start:dev
 
-# Terminal B — App (primera vez: build nativo)
+# Terminal B — App
 
-cd tinyfood && npx expo run:android # solo la primera vez
+cd TinyFood && npx expo start
 
-# Siguientes veces:
-
-cd tinyfood && npx expo start
-
-El npx expo run:android solo es necesario una vez por máquina (o cuando cambias dependencias nativas). Después con npx expo start basta y el hot reload funciona normal, como en cualquier proyecto React.
+# Escanear el QR con Expo Go (Android/iOS) o presionar 'w' para web.
+# No se necesita compilar nativamente. El login con Google abre el navegador del sistema.

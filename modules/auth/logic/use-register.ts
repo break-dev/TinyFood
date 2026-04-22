@@ -52,11 +52,10 @@ export function useRegister() {
 
   const handleGoogleRegister = async () => {
     setIsLoading(true);
-    const response = await AuthService.loginWithGoogleOAuth();
+    const response = await AuthService.loginWithGoogle();
     setIsLoading(false);
 
-    // La navegación la maneja app/auth/callback.tsx al recibir el deep link
-    if (!response.success) {
+    if (!response.success && response.message !== "Inicio de sesión cancelado") {
       Alert.alert("Error", response.message);
     }
   };
