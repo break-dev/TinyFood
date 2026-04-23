@@ -10,10 +10,9 @@ import {
   Platform,
 } from "react-native";
 import { useLogin } from "../logic/use-login";
-import { WebView } from "react-native-webview";
 
 export const LoginScreen = () => {
-  const { isLoading, authUrl, handleGoogleLogin, handleWebViewNavigation, cancelWebView } = useLogin();
+  const { isLoading, handleGoogleLogin } = useLogin();
 
   return (
     <View style={styles.container}>
@@ -34,7 +33,7 @@ export const LoginScreen = () => {
           disabled={isLoading}
           activeOpacity={0.8}
         >
-          {isLoading && !authUrl ? (
+          {isLoading ? (
             <ActivityIndicator color="#374151" />
           ) : (
             <>
@@ -49,42 +48,6 @@ export const LoginScreen = () => {
         </Text>
       </View>
 
-      {/* WebView Fallback para Android */}
-      {Platform.OS === 'android' && (
-        <Modal visible={!!authUrl} animationType="slide" presentationStyle="pageSheet">
-          <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
-            <View style={styles.webviewHeader}>
-              <TouchableOpacity onPress={cancelWebView} style={styles.closeButton}>
-                <Text style={styles.closeButtonText}>Cancelar</Text>
-              </TouchableOpacity>
-              <Text style={styles.webviewTitle}>Iniciar Sesión</Text>
-              <View style={{ width: 60 }} />
-            </View>
-            {authUrl && (
-              <WebView
-                source={{ uri: authUrl }}
-                style={{ flex: 1 }}
-                userAgent="Mozilla/5.0 (Linux; Android 10; SM-G975F) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.120 Mobile Safari/537.36"
-                onNavigationStateChange={(navState) => handleWebViewNavigation(navState.url)}
-                onShouldStartLoadWithRequest={(request) => {
-                  // Interceptamos la URL antes de que WebView intente cargarla (y falle si es custom scheme)
-                  if (request.url.startsWith('tinyfood://') || request.url.startsWith('exp://') || request.url.includes('auth/callback')) {
-                    handleWebViewNavigation(request.url);
-                    return false; // Bloquea la carga para que no tire WARN Can't open url
-                  }
-                  return true;
-                }}
-                startInLoadingState={true}
-                renderLoading={() => (
-                  <View style={styles.webviewLoader}>
-                    <ActivityIndicator size="large" color="#f97316" />
-                  </View>
-                )}
-              />
-            )}
-          </SafeAreaView>
-        </Modal>
-      )}
     </View>
   );
 };

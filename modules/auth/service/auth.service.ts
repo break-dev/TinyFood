@@ -1,73 +1,52 @@
-import * as WebBrowser from "expo-web-browser";
 import * as Linking from "expo-linking";
-import { makeRedirectUri } from "expo-auth-session";
 import * as QueryParams from "expo-auth-session/build/QueryParams";
 import { Platform } from "react-native";
 import { supabase } from "../../../service/supabase.client";
 import { AuthResponse } from "./responses";
 import { AuthRegisterRequest } from "./requests";
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
-// Necesario para que el navegador cierre automáticamente al volver a la app
-WebBrowser.maybeCompleteAuthSession();
+GoogleSignin.configure({
+  webClientId: process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID,
+  scopes: ['profile', 'email'],
+});
 
 export class AuthService {
   static async loginWithGoogle(): Promise<AuthResponse> {
     try {
-      // Genera la URL de retorno correcta automáticamente:
-      // Añadimos un path explícito porque a veces Supabase/Android fallan
-      // al hacer redirect a una URL base (sin ruta).
-      // En Expo Go esto generará: exp://IP:PORT/--/auth/callback
-      const redirectTo = makeRedirectUri({ path: 'auth/callback' });
-      console.log("[Auth] URL de redirección (Asegúrate de tener esto en Supabase):", redirectTo);
+      // 1. Iniciar sesión nativamente con Google
+      await GoogleSignin.hasPlayServices();
+      
+      // Forzar que siempre pregunte qué cuenta usar limpiando la sesión anterior
+      try {
+        await GoogleSignin.signOut();
+      } catch (e) {
+        // Ignorar si no había sesión previa
+      }
 
-      const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: "google",
-        options: {
-          redirectTo,
-          skipBrowserRedirect: true,
-          queryParams: {
-            prompt: 'select_account', // Obliga a Google a preguntar qué cuenta usar siempre
-          }
-        },
+      const userInfo = await GoogleSignin.signIn();
+      
+      // 2. Extraer el idToken
+      const idToken = userInfo?.data?.idToken;
+
+      if (!idToken) {
+        return { success: false, message: "No se pudo obtener el token de Google" };
+      }
+
+      // 3. Enviar el token a Supabase (crea o loguea al usuario automáticamente)
+      const { data, error } = await supabase.auth.signInWithIdToken({
+        provider: 'google',
+        token: idToken,
       });
 
       if (error) {
-        console.log("[Auth] Error signInWithOAuth:", error.message);
+        console.log("[Auth] Error signInWithIdToken:", error.message);
         return { success: false, message: error.message };
       }
-      
-      if (!data?.url) {
-        return { success: false, message: "No se obtuvo la URL de autenticación" };
-      }
 
-      console.log("[Auth] URL generada para WebView/Browser:", data.url);
-      
-      // En Android físico, retornamos la URL directamente para que la UI la abra en una WebView,
-      // evitando por completo el bug de Chrome Custom Tabs y el Account Chooser nativo.
-      if (Platform.OS === 'android') {
-        return { success: true, message: data.url };
-      }
-
-      const browserOptions = {
-        ephemeralBrowserSession: true, // Fuerza sesión limpia sin cookies previas
-      };
-
-      const result = await WebBrowser.openAuthSessionAsync(data.url, redirectTo, browserOptions);
-      console.log("[Auth] Navegador cerrado. Resultado:", result.type);
-
-      if (result.type === "success" && result.url) {
-        return await this.createSessionFromUrl(result.url);
-      }
-
-      if (result.type === "cancel") {
-        return { success: false, message: "Inicio de sesión cancelado" };
-      }
-
-      // Si el resultado es 'dismiss' (el usuario cerró manual o el navegador no reportó success),
-      // dejamos que el Linking.useURL global en _layout.tsx lo maneje si es que llegó el link.
-      return { success: false, message: "Autenticación no completada" };
+      return { success: true, message: "Sesión iniciada correctamente con Google" };
     } catch (error: any) {
-      console.error("[Auth] Error inesperado:", error);
+      console.error("[Auth] Error inesperado en Google Sign In:", error);
       return {
         success: false,
         message: error.message ?? "Error al iniciar sesión con Google",

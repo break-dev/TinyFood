@@ -1,11 +1,10 @@
 import { useState } from "react";
-import { Alert, Platform } from "react-native";
+import { Alert } from "react-native";
 import { supabase } from "../../../service/supabase.client";
 import { AuthService } from "../service/auth.service";
 
 export function useLogin() {
   const [isLoading, setIsLoading] = useState(false);
-  const [authUrl, setAuthUrl] = useState<string | null>(null);
 
   const handleGoogleLogin = async () => {
     setIsLoading(true);
@@ -14,21 +13,22 @@ export function useLogin() {
 
     if (!response.success) {
       setIsLoading(false);
-      if (response.message !== "Inicio de sesión cancelado") {
+      // Ignorar cancelaciones nativas (típicamente el error termina con "canceled" o el message es el de la librería)
+      if (
+        !response.message.toLowerCase().includes("cancel") && 
+        response.message !== "Inicio de sesión cancelado"
+      ) {
         Alert.alert("Error al iniciar sesión", response.message);
       }
       return;
     }
 
-    // En Android, el servicio retorna la URL para que abramos la WebView
-    if (Platform.OS === 'android' && response.message.startsWith('http')) {
-      setAuthUrl(response.message);
-      return; // El loading se apagará cuando termine el WebView
-    }
-
-    // Flujo normal para iOS/Web
+    // El inicio de sesión fue exitoso nativamente.
+    // Como enviamos el idToken a Supabase, `onAuthStateChange` debería detectar el SIGNED_IN automáticamente
+    // en la raíz de la app y navegar a la pantalla principal.
+    // Por si acaso, escuchamos aquí solo para quitar el loading si no se hace globalmente rápido.
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === "SIGNED_IN" || event === "INITIAL_SESSION" && session) {
+      if ((event === "SIGNED_IN" || event === "INITIAL_SESSION") && session) {
         setIsLoading(false);
         subscription.unsubscribe();
       } else if (event === "SIGNED_OUT") {
@@ -40,33 +40,8 @@ export function useLogin() {
     setTimeout(() => {
       setIsLoading(false);
       subscription.unsubscribe();
-    }, 60_000);
+    }, 15_000); // Reducir a 15s ya que el flujo nativo es mucho más rápido
   };
 
-  const handleWebViewNavigation = (url: string) => {
-    // Supabase a veces hace fallback a la "Site URL" (tinyfood://) si no le gusta la IP local
-    // o si la configuración de Redirect URLs tiene problemas de puertos.
-    // También interceptamos exp:// o auth/callback si Supabase respeta el redirect_to original.
-    if (url.includes('auth/callback') || url.startsWith('exp://') || url.startsWith('tinyfood://')) {
-      // Importante: Si la URL tiene un error o un token, la cerramos y procesamos
-      if (url.includes('#access_token') || url.includes('?error') || url.includes('#error')) {
-        setAuthUrl(null); // Cerrar WebView
-        console.log("[Auth] WebView interceptó URL con tokens:", url.substring(0, 50) + "...");
-        
-        AuthService.createSessionFromUrl(url).then((res) => {
-          if (!res.success) {
-            Alert.alert("Error de sesión", res.message);
-          }
-          setIsLoading(false);
-        });
-      }
-    }
-  };
-
-  const cancelWebView = () => {
-    setAuthUrl(null);
-    setIsLoading(false);
-  };
-
-  return { isLoading, authUrl, handleGoogleLogin, handleWebViewNavigation, cancelWebView };
+  return { isLoading, handleGoogleLogin };
 }
