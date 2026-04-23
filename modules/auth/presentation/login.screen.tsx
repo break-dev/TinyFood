@@ -5,11 +5,15 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   StyleSheet,
+  Modal,
+  SafeAreaView,
+  Platform,
 } from "react-native";
 import { useLogin } from "../logic/use-login";
+import { WebView } from "react-native-webview";
 
 export const LoginScreen = () => {
-  const { isLoading, handleGoogleLogin } = useLogin();
+  const { isLoading, authUrl, handleGoogleLogin, handleWebViewNavigation, cancelWebView } = useLogin();
 
   return (
     <View style={styles.container}>
@@ -30,7 +34,7 @@ export const LoginScreen = () => {
           disabled={isLoading}
           activeOpacity={0.8}
         >
-          {isLoading ? (
+          {isLoading && !authUrl ? (
             <ActivityIndicator color="#374151" />
           ) : (
             <>
@@ -44,6 +48,43 @@ export const LoginScreen = () => {
           Solo se puede acceder con una cuenta de Google válida.
         </Text>
       </View>
+
+      {/* WebView Fallback para Android */}
+      {Platform.OS === 'android' && (
+        <Modal visible={!!authUrl} animationType="slide" presentationStyle="pageSheet">
+          <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
+            <View style={styles.webviewHeader}>
+              <TouchableOpacity onPress={cancelWebView} style={styles.closeButton}>
+                <Text style={styles.closeButtonText}>Cancelar</Text>
+              </TouchableOpacity>
+              <Text style={styles.webviewTitle}>Iniciar Sesión</Text>
+              <View style={{ width: 60 }} />
+            </View>
+            {authUrl && (
+              <WebView
+                source={{ uri: authUrl }}
+                style={{ flex: 1 }}
+                userAgent="Mozilla/5.0 (Linux; Android 10; SM-G975F) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.120 Mobile Safari/537.36"
+                onNavigationStateChange={(navState) => handleWebViewNavigation(navState.url)}
+                onShouldStartLoadWithRequest={(request) => {
+                  // Interceptamos la URL antes de que WebView intente cargarla (y falle si es custom scheme)
+                  if (request.url.startsWith('tinyfood://') || request.url.startsWith('exp://') || request.url.includes('auth/callback')) {
+                    handleWebViewNavigation(request.url);
+                    return false; // Bloquea la carga para que no tire WARN Can't open url
+                  }
+                  return true;
+                }}
+                startInLoadingState={true}
+                renderLoading={() => (
+                  <View style={styles.webviewLoader}>
+                    <ActivityIndicator size="large" color="#f97316" />
+                  </View>
+                )}
+              />
+            )}
+          </SafeAreaView>
+        </Modal>
+      )}
     </View>
   );
 };
@@ -136,5 +177,38 @@ const styles = StyleSheet.create({
     color: "#9ca3af",
     fontSize: 13,
     lineHeight: 18,
+  },
+  webviewHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: "#e5e7eb",
+    backgroundColor: "#ffffff",
+  },
+  webviewTitle: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#1f2937",
+  },
+  closeButton: {
+    padding: 8,
+  },
+  closeButtonText: {
+    color: "#f97316",
+    fontSize: 16,
+    fontWeight: "500",
+  },
+  webviewLoader: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#ffffff",
   },
 });
