@@ -44,10 +44,8 @@ Usuario entra
 **Scripts disponibles:**
 
 ```bash
-expo start          # Inicia el servidor de desarrollo (Expo Go / simulador)
-expo start --ios    # Simulador iOS
-expo start --android # Emulador Android
-expo start --web    # Versión web (experimental)
+expo start run:android # Construye el proyecto para android, solo se ejecuta la primera vez
+expo start --dev-client # Inicia el servidor de desarrollo (Expo Go / simulador)
 ```
 
 ---
@@ -59,38 +57,38 @@ Cada funcionalidad se agrupa en un **módulo** dentro de `modules/`. Cada módul
 ```
 modules/
   <nombre-modulo>/
-    components/   ← Capa Presentation
-    hooks/        ← Capa Logic
-    services/     ← Capa Service (DTOs + comunicación externa)
+    presentation/ ← Capa Presentation - Componentes de UI, totalmente estáticos, consumen hooks
+    logic/ ← Capa Logic - Casos de uso mediante hooks que orquestan estados, validaciones y llamadas a servicios
+    services/ ← Capa Service (DTOs + comunicación externa - Solo para casos puntuales, se prioriza el uso de hook para llamar al servicio)
 ```
 
-### 3.1 Capa Presentation — `components/`
+### 3.1 Capa Presentation — `presentation/`
 
 - **Responsabilidad:** Renderizado visual únicamente.
 - **Regla:** No contiene lógica de negocio ni llamadas directas a servicios.
 - Consume únicamente los hooks de la capa Logic.
-- Convención de nombre para los screens: `<modulo>.screen.tsx` (ej. `login.screen.tsx`, `home.screen.tsx`).
+- Convención de nombre para los screens: `<modulo>.screen.tsx` (ej. `auth.screen.tsx`, `home.screen.tsx`).
 
-**Ejemplo:** `modules/login/components/login.screen.tsx`
+**Ejemplo:** `modules/auth/presentation/auth.screen.tsx`
 
-### 3.2 Capa Logic — `hooks/`
+### 3.2 Capa Logic — `logic/`
 
 - **Responsabilidad:** Lógica de negocio del frontend. Orquesta estados, validaciones y llamadas a servicios.
-- Implementada mediante React Hooks (`use-<modulo>.ts`).
+- Implementada mediante React Hooks (`use-<caso de uso>.ts`).
 - Es el único punto de contacto entre Presentation y Service.
 
-**Ejemplo actual:** `modules/login/hooks/use-login.ts`
+**Ejemplo actual:** `modules/auth/logic/use-auth.ts`
 
 ```typescript
-export function useLogin() {
+export function useAuth() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleLogin = async () => {
-    /* orquesta LoginService.authenticate */
+  const handleAuth = async () => {
+    /* orquesta AuthService.authenticate */
   };
-  const handleGoogleLogin = async () => {
+  const handleGoogleAuth = async () => {
     /* orquesta Google Sign-In */
   };
 
@@ -100,24 +98,31 @@ export function useLogin() {
     password,
     setPassword,
     isLoading,
-    handleLogin,
-    handleGoogleLogin,
+    handleAuth,
+    handleGoogleAuth,
   };
 }
 ```
 
-### 3.3 Capa Service — `services/`
+### 3.3 Capa Service — `service/`
 
-- **Responsabilidad:** Comunicación con la API (WebSockets o HTTP). Define los DTOs de entrada/salida.
+- **Responsabilidad:** Comunicación con la API (WebSockets o HTTP). Define los DTOs de entrada/salida por modulo.
 - Estructura por archivo:
-  - `<modulo>.service.ts` — Métodos de comunicación (estáticos o instanciados).
-  - `requests.ts` — Interfaces/types de los payloads enviados a la API.
-  - `responses.ts` — Interfaces/types de las respuestas recibidas de la API.
+  - `<modulo>.service.ts` — Clase con los métodos de comunicación.
+  - `<modulo>.requests.ts` — Interfaces/types de los payloads enviados a la API, validados mendiante zod.
+  - `<modulo>.responses.ts` — Interfaces/types de las respuestas recibidas de la API.
 
-**Ejemplo actual:** `modules/login/services/responses.ts`
+**Ejemplo actual:** `modules/auth/service/auth.service.ts`
+**Ejemplo actual:** `modules/auth/service/auth.requests.ts`
+**Ejemplo actual:** `modules/auth/service/auth.responses.ts`
 
 ```typescript
-export interface LoginResponse {
+export interface AuthRequest {
+  email?: string;
+  password?: string;
+}
+
+export interface AuthResponse {
   success: boolean;
   message: string;
   data?: {
@@ -138,50 +143,51 @@ Expo Router usa navegación basada en el sistema de archivos dentro de `app/`.
 ```
 app/
   _layout.tsx   ← Layout raíz. Stack Navigator con animación slide_from_right y header oculto.
-  index.tsx     ← Pantalla de Login (ruta "/")
-  home.tsx      ← Pantalla principal (ruta "/home")
+  index.tsx     ← Redirect a auth screen (ruta "/")
+  (public)
+    auth.tsx      ← Pantalla de auth (ruta "/auth")
+  (private)
+    home.tsx      ← Pantalla principal (ruta "/home")
 ```
 
 Cada archivo de ruta en `app/` importa el componente de presentación correspondiente desde su módulo:
 
-- `app/index.tsx` → renderiza componente del módulo `login`
-- `app/home.tsx` → renderiza componente del módulo `home`
+- `app/(public)/auth.tsx` → renderiza componente del módulo `auth`
+- `app/(private)/home.tsx` → renderiza componente del módulo `home`
 
 ---
 
 ## 5. Módulos Actuales
 
-### `modules/login`
+### `modules/auth`
 
 Gestiona el flujo de autenticación del usuario.
 
-| Archivo                       | Propósito                                           |
-| ----------------------------- | --------------------------------------------------- |
-| `components/login.screen.tsx` | UI del formulario de login                          |
-| `hooks/use-login.ts`          | Estados y acciones de login/Google                  |
-| `services/login.service.ts`   | Llamada a autenticación (actualmente mock)          |
-| `services/requests.ts`        | `LoginRequest { email?, password?, token? }`        |
-| `services/responses.ts`       | `LoginResponse { success, message, data?, error? }` |
+| Archivo                      | Propósito                                          |
+| ---------------------------- | -------------------------------------------------- |
+| `components/auth.screen.tsx` | UI de auth con google                              |
+| `hooks/use-auth.ts`          | Estados y acciones de auth/Google                  |
+| `services/auth.service.ts`   | Llamada a autenticación                            |
+| `services/auth.requests.ts`  | `AuthRequest { email?, password?, token? }`        |
+| `services/auth.responses.ts` | `AuthResponse { success, message, data?, error? }` |
 
-**Flujo:** `LoginView` → consume `useLogin` → llama `LoginService.authenticate` → navega a `/home` si `success: true`.
-
-**Estado actual:** `LoginService.authenticate` usa un mock con delay de 1500ms. El token de Google también es mock (`'google-123'`). Está preparado para reemplazarse con la llamada real a la API WebSocket.
+**Flujo:** `AuthScreen` → consume `useAuth` → llama `AuthService.authenticate` → navega a `/home` si `success: true`.
 
 ### `modules/home`
 
 Panel principal tras autenticación.
 
-| Archivo                      | Propósito                                                  |
-| ---------------------------- | ---------------------------------------------------------- |
-| `components/home.screen.tsx` | UI del dashboard                                           |
-| `hooks/use-home.ts`          | Carga de métricas, logout                                  |
-| `services/home.service.ts`   | Fetch de datos del dashboard (actualmente mock)            |
-| `services/requests.ts`       | `HomeRequest { page: number }`                             |
-| `services/responses.ts`      | `HomeResponse`, `HomeItemData { id, title, value, trend }` |
+| Archivo                      | Propósito                                                       |
+| ---------------------------- | --------------------------------------------------------------- |
+| `components/home.screen.tsx` | UI del home                                                     |
+| `hooks/use-home.ts`          | Estados y acciones del home                                     |
+| `services/home.service.ts`   | Fetch de datos del home                                         |
+| `services/home.requests.ts`  | `HomeRequest { page: number }`                                  |
+| `services/home.responses.ts` | `HomeResponse { success: boolean, data: any, message: string }` |
 
-### `modules/core`
+### `/common`
 
-Módulo transversal para servicios compartidos (actualmente vacío, se usará para el cliente WebSocket global, contextos, etc.).
+Carpeta transversal con componentes, hooks o servicios que son compartidos entre módulos, por ejemplo: cliente WebSocket, contextos globales, servicios de almacenamiento en memoria, etc.
 
 ---
 
@@ -197,22 +203,23 @@ Módulo transversal para servicios compartidos (actualmente vacío, se usará pa
 ## 7. Tipado TypeScript
 
 - TypeScript es obligatorio en todos los archivos (`.ts` / `.tsx`).
-- Todo payload de entrada y salida de la API debe tener su interfaz en `services/requests.ts` y `services/responses.ts` del módulo correspondiente.
+- Todo payload de entrada y salida de la API debe tener su interfaz en `services/<modulo>.requests.ts` y `services/<modulo>.responses.ts` del módulo correspondiente.
 - Nunca usar `any` a menos que sea estrictamente necesario y justificado con comentario.
 
 ---
 
 ## 8. Convenciones de Código
 
-| Concepto            | Convención                                         |
-| ------------------- | -------------------------------------------------- |
-| Nombre de módulo    | `kebab-case` (ej. `pantry`, `user-profile`)        |
-| Hooks               | `use-<modulo>.ts`, función exportada `useModulo()` |
-| Componentes (views) | `<modulo>.screen.tsx`, export default              |
-| Servicios           | `<modulo>.service.ts`, clase con métodos static    |
-| DTOs entrada        | `requests.ts`, interfaz `<Modulo>Request`          |
-| DTOs salida         | `responses.ts`, interfaz `<Modulo>Response`        |
-| Pantallas (rutas)   | `app/<pantalla>.tsx`, export default               |
+| Concepto            | Convención                                                       |
+| ------------------- | ---------------------------------------------------------------- |
+| Nombre de módulo    | `kebab-case` (ej. `pantry`, `user-profile`)                      |
+| Hooks               | `use-<caso de uso>.ts`, función exportada `useModulo()`          |
+| Componentes (views) | `<component>.tsx`, export default                                |
+| Servicios           | `<modulo>.service.ts`, clase con métodos static                  |
+| DTOs de entrada     | `<modulo>.requests.ts`, interfaz `REQ_<Nombre de la request>`    |
+| DTOs de salida      | `<modulo>.responses.ts`, interfaz `RES_<Nombre de la respuesta>` |
+| Pantallas (rutas)   | `app/<pantalla>.tsx`, export sin default                         |
+| Common              | `common/`, componentes, hooks o servicios compartidos            |
 
 ---
 
@@ -229,46 +236,17 @@ API_URL=http://localhost:3000
 
 ---
 
-## 10. Estado de Desarrollo (MVP)
-
-Los servicios actuales usan **mocks locales** con delays artificiales que simulan latencia de red. Cada mock está marcado con el comentario `// Mock Response` o `// Mock Request` y el código real comentado. Al integrar con la API real:
-
-1. Reemplazar el mock por la llamada WebSocket correspondiente (via `socket.emit / socket.on`).
-2. El evento de WebSocket debe seguir la convención de la API: `modulo:accion` (ej. `auth:sync`, `pantry:analyze_image`).
-3. El token de autenticación de Supabase debe enviarse en el payload o en el handshake inicial de la conexión.
-
----
-
-## 11. Próximos Módulos a Desarrollar
-
-Siguiendo la arquitectura de 3 capas (`components/`, `hooks/`, `services/`):
-
-| Módulo         | Descripción                                                                         |
-| -------------- | ----------------------------------------------------------------------------------- |
-| `pantry`       | Gestión del inventario de alimentos. Envía imágenes via WS y recibe análisis de IA. |
-| `recipes`      | Sugerencias de recetas basadas en inventario y perfil del usuario.                  |
-| `user-profile` | Configuración de peso, talla, alergias, preferencias y alimentos prohibidos.        |
-| `alerts`       | Notificaciones de alimentos próximos a vencer.                                      |
-
 ## EJECUCION
 
 # 1. Clonar y preparar
 
 git clone <repo>
 cd TinyFood && npm install
-cd ../TinyFoodAPI && npm install
 
-# 2. Copiar los .env (el equipo los recibe de ti)
+# 2. Copiar los .env
 
-# 3. Levantar todo
+# 3. Construir el proyecto nativamente
+npx expo run:android
 
-# Terminal A — API
-
-cd TinyFoodAPI && npm run start:dev
-
-# Terminal B — App
-
-cd TinyFood && npx expo start
-
-# Escanear el QR con Expo Go (Android/iOS) o presionar 'w' para web.
-# No se necesita compilar nativamente. El login con Google abre el navegador del sistema.
+# 4. Ejecutar
+npx expo start --dev-client
