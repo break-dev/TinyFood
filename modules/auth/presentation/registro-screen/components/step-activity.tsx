@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, Image } from "react-native";
 import Animated, { FadeInRight, FadeOutLeft } from "react-native-reanimated";
 import { Ionicons } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
@@ -24,10 +24,13 @@ export const StepActivity = ({ data, setData }: Props) => {
       exiting={FadeOutLeft}
       className="flex-1"
     >
-      <Text className="mb-2 text-3xl font-bold text-gray-900">Actividad</Text>
-      <Text className="mb-8 text-gray-500">
-        ¿Qué tan activo eres en tu día a día?
-      </Text>
+      {/* Header: Title */}
+      <View className="mb-8">
+        <Text className="mb-2 text-3xl font-bold text-gray-900">Actividad</Text>
+        <Text className="text-gray-500">
+          ¿Qué tan activo eres en tu día a día?
+        </Text>
+      </View>
 
       {levels.map((level) => (
         <TouchableOpacity
