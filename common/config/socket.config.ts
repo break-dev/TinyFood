@@ -11,4 +11,5 @@ export const socket: Socket = io(SOCKET_URL, {
   reconnection: true,
   reconnectionAttempts: 60,
   reconnectionDelay: 1000,
+  transports: ["websocket"],
 });

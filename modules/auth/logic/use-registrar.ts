@@ -59,7 +59,7 @@ export const useRegistrar = () => {
       if (apiRes.success) {
         const { data } = await supabase.auth.getSession();
         setUser(apiRes.data, data.session?.access_token || null);
-        router.replace("/(tabs)" as any);
+        // Redirección automática via layout
       }
     } catch (e) {
       console.error("[useRegistrar] Error al saltar:", e);
@@ -75,18 +75,26 @@ export const useRegistrar = () => {
     setLoading(true);
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     try {
+      // Convertir strings a arreglos para la API
+      const alimentosArr = formData.alimentos_prohibidos
+        ? formData.alimentos_prohibidos.split(",").map((s) => s.trim())
+        : [];
+      const preferenciasArr = formData.preferencias
+        ? formData.preferencias.split(",").map((s) => s.trim())
+        : [];
+
       const apiRes = await AuthService.registrar({
         peso: parseFloat(formData.peso) || undefined,
         talla: parseFloat(formData.talla) || undefined,
         nivel_actividad: formData.nivel_actividad,
-        alimentos_prohibidos: formData.alimentos_prohibidos,
-        preferencias: formData.preferencias,
+        alimentos_prohibidos: alimentosArr,
+        preferencias: preferenciasArr,
       });
 
       if (apiRes.success) {
         const { data } = await supabase.auth.getSession();
         setUser(apiRes.data, data.session?.access_token || null);
-        router.replace("/(tabs)" as any);
+        // Redirección automática via layout
       } else {
         throw new Error(apiRes.message as string);
       }

@@ -30,27 +30,40 @@ export class AuthService {
    */
   static async authWithGoogle(): Promise<ApiResponse<RES_Auth>> {
     try {
+      console.log("[AuthService] Iniciando authWithGoogle...");
       AuthService.configure(); // Asegurar configuración
+      console.log("[AuthService] Verificando PlayServices...");
       await GoogleSignin.hasPlayServices();
       try {
+        console.log("[AuthService] Haciendo signOut preventivo...");
         await GoogleSignin.signOut();
       } catch (e) {}
 
+      console.log("[AuthService] Abriendo modal de Google SignIn...");
       const userInfo = await GoogleSignin.signIn();
+      console.log("[AuthService] Modal completado. UserInfo obtenido.");
       const idToken = userInfo?.data?.idToken;
 
-      if (!idToken)
+      if (!idToken) {
+        console.log("[AuthService] No se obtuvo idToken.");
         return errorResponse("No se pudo obtener el token de Google");
+      }
 
+      console.log("[AuthService] Iniciando sesión en Supabase con idToken...");
       const { error } = await supabase.auth.signInWithIdToken({
         provider: "google",
         token: idToken,
       });
 
-      if (error) return errorResponse(error.message);
+      if (error) {
+        console.log("[AuthService] Error de Supabase:", error);
+        return errorResponse(error.message);
+      }
 
+      console.log("[AuthService] Éxito en authWithGoogle");
       return successResponse<RES_Auth>(null, "Sesión iniciada");
     } catch (error: any) {
+      console.error("[AuthService] Error capturado en authWithGoogle:", error);
       return errorResponse(error.message ?? "Error en Google Sign In");
     }
   }

@@ -3,11 +3,11 @@ import { useAuthStore } from "../../common/stores/auth.store";
 import { routes } from "@/common/utils/variables/routes";
 
 export default function PublicLayout() {
-  const { session, isInitialized } = useAuthStore();
+  const { usuario, isInitialized } = useAuthStore();
 
   if (!isInitialized) return null; // Estado de carga
 
-  if (session) {
+  if (usuario) {
     return <Redirect href={routes.home as any} />;
   }
 

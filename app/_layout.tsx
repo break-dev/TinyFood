@@ -18,9 +18,8 @@ export default function RootLayout() {
     // 1. Intentar cargar sesión inicial
     supabase.auth.getSession().then(async ({ data: { session } }) => {
       if (session) {
-        const { AuthService } = await import(
-          "../modules/auth/service/auth.service"
-        );
+        const { AuthService } =
+          await import("../modules/auth/service/auth.service");
         AuthService.configure();
         const res = await AuthService.autenticar();
         if (res.success) {
@@ -37,9 +36,15 @@ export default function RootLayout() {
     } = supabase.auth.onAuthStateChange(async (_event, session) => {
       try {
         if (session) {
-          const { AuthService } = await import(
-            "../modules/auth/service/auth.service"
-          );
+          // Si ya tenemos el usuario en el store, no hace falta pedirlo de nuevo a la API
+          const currentUsuario = useAuthStore.getState().usuario;
+          if (currentUsuario) {
+            setInitialized(true);
+            return;
+          }
+
+          const { AuthService } =
+            await import("../modules/auth/service/auth.service");
           AuthService.configure();
           const res = await AuthService.autenticar();
           if (res.success) {
