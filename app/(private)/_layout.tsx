@@ -1,6 +1,6 @@
 import { Stack, Redirect } from "expo-router";
 import { useAuthStore } from "../../common/stores/auth.store";
-import { routes } from "../../common/variables/routes";
+import { routes } from "../../common/utils/variables/routes";
 
 export default function PrivateLayout() {
   const { session, isInitialized } = useAuthStore();

@@ -1,5 +1,5 @@
 import { useRouter as useExpoRouter } from "expo-router";
-import { AppRoute } from "@/common/utils/variables/routes";
+import { AppRoute } from "../common/utils/variables/routes";
 
 export const useRouter = () => {
   const router = useExpoRouter();

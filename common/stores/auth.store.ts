@@ -1,21 +1,27 @@
 import { create } from "zustand";
-import type { Session, User } from "@supabase/supabase-js";
+import { RES_Auth } from "@/modules/auth/service/auth.responses";
 
 interface AuthState {
-  session: Session | null | undefined;
-  user: User | null | undefined;
+  usuario: RES_Auth | null; // Perfil de la base de datos (public.usuario)
+  token: string | null; // JWT de Supabase
   isInitialized: boolean;
-  setSession: (session: Session | null) => void;
+  setUser: (usuario: RES_Auth | null, token: string | null) => void;
+  logout: () => void;
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
-  session: undefined,
-  user: undefined,
+  usuario: null,
+  token: null,
   isInitialized: false,
-  setSession: (session) =>
+  setUser: (usuario, token) =>
     set({
-      session,
-      user: session?.user ?? null,
+      usuario,
+      token,
       isInitialized: true,
+    }),
+  logout: () =>
+    set({
+      usuario: null,
+      token: null,
     }),
 }));

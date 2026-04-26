@@ -8,19 +8,31 @@ import "../global.css";
 
 export default function RootLayout() {
   const url = Linking.useLinkingURL();
-  const setSession = useAuthStore((state) => state.setSession);
+  const setUser = useAuthStore((state) => state.setUser);
+  const logout = useAuthStore((state) => state.logout);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => setSession(data.session));
-
+    // Escuchar cambios de autenticación en Supabase
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
+    } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      if (session) {
+        // Intentar recuperar el perfil de nuestra API si hay sesión
+        const { AuthService } = await import(
+          "../modules/auth/service/auth.service"
+        );
+        const res = await AuthService.autenticar();
+        if (res.success) {
+          setUser(res.data, session.access_token);
+        }
+      } else {
+        // Limpiar store si se cierra sesión
+        logout();
+      }
     });
 
     return () => subscription.unsubscribe();
-  }, [setSession]);
+  }, [setUser, logout]);
 
   useEffect(() => {
     if (url) {

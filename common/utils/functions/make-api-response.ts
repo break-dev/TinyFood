@@ -1,4 +1,4 @@
-import { ApiResponse } from "../service/common.responses";
+import { ApiResponse } from "../../service/common.responses";
 
 export function successResponse<T>(
   data?: T | null,
