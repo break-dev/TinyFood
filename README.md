@@ -42,32 +42,38 @@ Usuario abre app
 
 ---
 
-## 3. Arquitectura Modular (Obligatoria)
+## 3. Arquitectura y Estructura de Carpetas
 
-Mantenemos una estructura estrictamente modular en `modules/`:
+El proyecto sigue una arquitectura **Modular y Orientada a Capas** para asegurar que el código sea escalable, testeable y fácil de mantener.
 
-```
-modules/
-  auth/
-    presentation/ ← Pantallas de Login y Registro (Multi-paso)
-    logic/        ← Hooks (useAutenticar, useRegistrar)
-    service/      ← AuthService (Google Nativo, Sockets)
-  home/
-    presentation/ ← Dashboard Principal
-    logic/        ← useHome, useLogout
-```
+### 3.1 Estructura Principal
 
-### 3.1 Reglas de Oro de Arquitectura
+-   `app/`: **Capa de Ruteo (Expo Router)**.
+    -   `(public)/`: Rutas accesibles sin autenticación (Login, Registro).
+    -   `(private)/`: Rutas protegidas que requieren sesión activa.
+    -   `index.tsx`: Orquestador inicial que decide el flujo de navegación.
+-   `modules/`: **Capa de Funcionalidades (Features)**. Cada carpeta representa un dominio del negocio.
+    -   `presentation/`: Componentes visuales y pantallas. **Regla:** No deben contener lógica compleja ni acceder a stores directamente.
+    -   `logic/`: Hooks personalizados (`use...`) que actúan como controladores. Orquestan servicios y actualizan el estado global.
+    -   `service/`: Clases o funciones que realizan peticiones al exterior (Sockets/API) específicas del módulo.
+-   `common/`: **Capa Transversal (Shared)**.
+    -   `config/`: Inicialización de SDKs (Supabase, Socket.io).
+    -   `stores/`: Definición de estados globales con **Zustand**.
+    -   `logic/`: Hooks de orquestación compartidos (ej. `useAuthState`).
+    -   `service/`: Servicios globales (ej. `SocketService` para manejo de reconexiones).
+    -   `utils/`:
+        -   `variables/`: Constantes de diseño, rutas, y strings.
+        -   `functions/`: Helpers puros y formateadores.
+-   `assets/`: Recursos estáticos (imágenes, fuentes, sonidos).
 
-1.  **Presentation NO consume Stores:** Los componentes de UI nunca deben importar archivos de `stores/`. Deben consumir la información a través de hooks en `logic/` o `common/logic/`.
-2.  **Logic orquestación:** La capa de lógica es la única que puede interactuar con los stores y los servicios.
-3.  **Componentes "Tontos":** Los componentes de React deben ser lo más declarativos posible. No deben contener lógica de negocio compleja, efectos secundarios extensos o suscripciones; todo esto debe ser abstraído en hooks.
+### 3.2 Convenciones y Reglas de Oro
 
-### 3.2 Gestión de Estado Global (`common/stores`)
-
-Usamos **Zustand** para la persistencia de datos globales. Sin embargo, para cumplir con la Regla #1, creamos hooks envoltorios:
-
-- `common/logic/use-auth-state.ts` → Envuelve a `auth.store.ts`.
+1.  **Modularidad Estricta:** Un módulo no debe importar archivos de la carpeta `presentation` de otro módulo. La comunicación entre módulos se hace a través de servicios o stores en `common`.
+2.  **Hooks de Lógica como Controladores:** Si un componente necesita datos de un store, debe pedírselos a un hook en la carpeta `logic`. Ejemplo:
+    -   ❌ `const { user } = useAuthStore();` (En un componente de UI)
+    -   ✅ `const { user } = useAuthState();` (Donde el hook encapsula el acceso al store)
+3.  **Estilos Declarativos:** Usamos exclusivamente **NativeWind** (Tailwind CSS). Esto permite un diseño consistente y rápido sin la verbosidad de `StyleSheet`.
+4.  **Tipado Total:** Cada respuesta de socket o función debe tener su interfaz definida en el archivo correspondiente para evitar el uso de `any`.
 
 ---
 
@@ -126,5 +132,33 @@ app/
 ## 8. Ejecución Local
 
 1. `npm install`
-2. Configurar `.env` con `EXPO_PUBLIC_SUPABASE_URL`, `EXPO_PUBLIC_SOCKET_URL`, etc.
+2. Configurar `.env` con las variables necesarias:
+    - `EXPO_PUBLIC_SUPABASE_URL` y `KEY`: Desde el dashboard de Supabase.
+    - `EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID`: Desde Google Cloud Console (ID de cliente web para OAuth).
+    - `EXPO_PUBLIC_SOCKET_URL`: Tu IP local (ver sección 9).
 3. `npx expo start --dev-client` (Requiere build nativo previo en el dispositivo).
+
+---
+
+## 9. Configuración de Red y Sockets
+
+### ¿Por qué no usar `localhost`?
+En el desarrollo móvil con Expo/React Native, `localhost` (127.0.0.1) se refiere al **dispositivo móvil o emulador**, no a tu computadora. Para que la app pueda comunicarse con la API ejecutándose en tu PC, debes usar la **dirección IP privada** de tu computadora en la misma red Wi-Fi.
+
+### Cómo obtener tu IP (Mac/Linux)
+Corre el siguiente comando en tu terminal:
+```bash
+ipconfig getifaddr en0
+```
+O búscalo en *Ajustes del Sistema > Red > Wi-Fi > Detalles*.
+
+### Cómo obtener tu IP (Windows)
+```bash
+ipconfig
+```
+Busca la sección "Adaptador de LAN inalámbrica Wi-Fi" y copia la "Dirección IPv4" (ej. `192.168.1.XX`).
+
+### Troubleshooting de Conexión
+- **Misma Red:** Asegúrate de que el celular y la PC estén en la misma red Wi-Fi.
+- **Firewall:** Si no conecta, verifica que el Firewall de tu OS permita conexiones entrantes en el puerto `3000`.
+- **IP Dinámica:** Si reinicias tu router, tu IP podría cambiar y deberás actualizarla en el `.env`.
