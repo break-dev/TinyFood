@@ -1,176 +1,90 @@
 import React from "react";
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  ActivityIndicator,
-  StyleSheet,
-  Modal,
-  SafeAreaView,
-  Platform,
-} from "react-native";
-import { useAuth } from "../logic/use-auth";
+import { View, Text, TouchableOpacity, ActivityIndicator } from "react-native";
+import { useAutenticar } from "../logic/use-autenticar";
+import Animated, { FadeInDown, FadeInUp } from "react-native-reanimated";
+import { Ionicons } from "@expo/vector-icons";
 
 export const AuthScreen = () => {
-  const { isLoading, handleGoogleAuth } = useAuth();
+  const { loading, onLoginPress, animatedLogoStyle } = useAutenticar();
 
   return (
-    <View style={styles.container}>
-      <View style={styles.abstractCircle} />
+    <View className="flex-1 bg-white">
+      {/* Círculos decorativos animados en el fondo */}
+      <Animated.View
+        style={animatedLogoStyle}
+        className="absolute -right-20 -top-20 h-80 w-80 rounded-full bg-orange-100 opacity-50"
+      />
+      <Animated.View
+        className="absolute -bottom-10 -left-10 h-40 w-40 rounded-full bg-orange-50 opacity-80"
+        entering={FadeInUp.delay(500).duration(1000)}
+      />
 
-      <View style={styles.header}>
-        <View style={styles.logoBadge}>
-          <Text style={styles.logoText}>T</Text>
-        </View>
-        <Text style={styles.title}>TinyFood</Text>
-        <Text style={styles.subtitle}>Reduce el desperdicio, come mejor</Text>
+      <View className="flex-1 items-center justify-center px-8">
+        {/* Logo Section */}
+        <Animated.View
+          entering={FadeInDown.duration(1000).springify()}
+          className="mb-8 items-center justify-center"
+        >
+          <View className="h-28 w-28 items-center justify-center rounded-[32px] bg-orange-500 shadow-xl shadow-orange-500/50">
+            <Ionicons name="restaurant" size={56} color="white" />
+          </View>
+        </Animated.View>
+
+        {/* Text Section */}
+        <Animated.View
+          entering={FadeInDown.delay(200).duration(1000).springify()}
+          className="mb-12 items-center"
+        >
+          <Text className="mb-2 text-5xl font-black tracking-tighter text-gray-900">
+            TinyFood
+          </Text>
+          <Text className="text-center text-lg font-medium text-gray-500">
+            Tu asistente inteligente para una{"\n"}vida saludable y sin
+            desperdicio
+          </Text>
+        </Animated.View>
+
+        {/* Action Section */}
+        <Animated.View
+          entering={FadeInUp.delay(400).duration(1000).springify()}
+          className="w-full"
+        >
+          <TouchableOpacity
+            onPress={onLoginPress}
+            disabled={loading}
+            activeOpacity={0.85}
+            className={`flex-row items-center justify-center rounded-2xl bg-gray-900 py-5 shadow-lg ${
+              loading ? "opacity-70" : ""
+            }`}
+          >
+            {loading ? (
+              <ActivityIndicator color="white" />
+            ) : (
+              <>
+                <Ionicons
+                  name="logo-google"
+                  size={20}
+                  color="white"
+                  style={{ marginRight: 12 }}
+                />
+                <Text className="text-lg font-bold text-white">
+                  Continuar con Google
+                </Text>
+              </>
+            )}
+          </TouchableOpacity>
+
+          <Text className="mt-6 text-center text-sm leading-5 text-gray-400 px-4">
+            Al continuar, aceptas nuestros Términos de Servicio y Política de
+            Privacidad.
+          </Text>
+        </Animated.View>
       </View>
 
-      <View style={styles.actions}>
-        <TouchableOpacity
-          style={[styles.buttonGoogle, isLoading && styles.buttonDisabled]}
-          onPress={handleGoogleAuth}
-          disabled={isLoading}
-          activeOpacity={0.8}
-        >
-          {isLoading ? (
-            <ActivityIndicator color="#374151" />
-          ) : (
-            <>
-              <Text style={styles.googleIcon}>G</Text>
-              <Text style={styles.buttonGoogleText}>Continuar con Google</Text>
-            </>
-          )}
-        </TouchableOpacity>
-
-        <Text style={styles.disclaimer}>
-          Solo se puede acceder con una cuenta de Google válida.
-        </Text>
+      {/* Footer Decoration */}
+      <View className="absolute bottom-10 w-full items-center">
+        <View className="h-1 w-12 rounded-full bg-gray-100" />
       </View>
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#ffffff",
-    justifyContent: "center",
-    paddingHorizontal: 32,
-  },
-  abstractCircle: {
-    position: "absolute",
-    top: -100,
-    right: -100,
-    width: 300,
-    height: 300,
-    borderRadius: 150,
-    backgroundColor: "rgba(251, 146, 60, 0.12)",
-  },
-  header: {
-    alignItems: "center",
-    marginBottom: 56,
-  },
-  logoBadge: {
-    width: 96,
-    height: 96,
-    backgroundColor: "#f97316",
-    borderRadius: 28,
-    alignItems: "center",
-    justifyContent: "center",
-    marginBottom: 24,
-    shadowColor: "#f97316",
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.3,
-    shadowRadius: 12,
-    elevation: 6,
-  },
-  logoText: {
-    color: "#ffffff",
-    fontSize: 48,
-    fontWeight: "900",
-  },
-  title: {
-    fontSize: 36,
-    fontWeight: "800",
-    color: "#1f2937",
-    marginBottom: 8,
-  },
-  subtitle: {
-    fontSize: 16,
-    color: "#6b7280",
-    fontWeight: "500",
-    textAlign: "center",
-  },
-  actions: {
-    gap: 16,
-  },
-  buttonGoogle: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    borderWidth: 1.5,
-    borderColor: "#e5e7eb",
-    backgroundColor: "#ffffff",
-    borderRadius: 16,
-    height: 56,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.06,
-    shadowRadius: 4,
-    elevation: 2,
-  },
-  buttonDisabled: {
-    opacity: 0.7,
-  },
-  googleIcon: {
-    fontSize: 20,
-    fontWeight: "bold",
-    color: "#ef4444",
-    marginRight: 10,
-  },
-  buttonGoogleText: {
-    color: "#374151",
-    fontSize: 16,
-    fontWeight: "700",
-  },
-  disclaimer: {
-    textAlign: "center",
-    color: "#9ca3af",
-    fontSize: 13,
-    lineHeight: 18,
-  },
-  webviewHeader: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: "#e5e7eb",
-    backgroundColor: "#ffffff",
-  },
-  webviewTitle: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#1f2937",
-  },
-  closeButton: {
-    padding: 8,
-  },
-  closeButtonText: {
-    color: "#f97316",
-    fontSize: 16,
-    fontWeight: "500",
-  },
-  webviewLoader: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#ffffff",
-  },
-});

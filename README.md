@@ -80,7 +80,7 @@ modules/
 **Ejemplo actual:** `modules/auth/logic/use-auth.ts`
 
 ```typescript
-export function useAuth() {
+export function useGoogleAuth() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -171,7 +171,7 @@ Gestiona el flujo de autenticación del usuario.
 | `services/auth.requests.ts`  | `AuthRequest { email?, password?, token? }`        |
 | `services/auth.responses.ts` | `AuthResponse { success, message, data?, error? }` |
 
-**Flujo:** `AuthScreen` → consume `useAuth` → llama `AuthService.authenticate` → navega a `/home` si `success: true`.
+**Flujo:** `AuthScreen` → consume `useGoogleAuth` → llama `AuthService.authenticate` → navega a `/home` si `success: true`.
 
 ### `modules/home`
 
@@ -246,7 +246,9 @@ cd TinyFood && npm install
 # 2. Copiar los .env
 
 # 3. Construir el proyecto nativamente
+
 npx expo run:android
 
 # 4. Ejecutar
+
 npx expo start --dev-client

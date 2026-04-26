@@ -1,8 +1,16 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { AuthService } from "../service/auth.service";
 import { useAuthStore } from "@/common/stores/auth.store";
 import { useRouter } from "@/common/logic/use-router";
 import { supabase } from "@/common/config/supabase.config";
+import {
+  useSharedValue,
+  withRepeat,
+  withTiming,
+  Easing,
+  useAnimatedStyle,
+} from "react-native-reanimated";
+import * as Haptics from "expo-haptics";
 
 /**
  * Hook para el Paso 1: Autenticación con Google/Supabase
@@ -13,6 +21,29 @@ export const useAutenticar = () => {
   const { setUser } = useAuthStore();
   const router = useRouter();
 
+  // Animaciones
+  const rotation = useSharedValue(0);
+
+  useEffect(() => {
+    rotation.value = withRepeat(
+      withTiming(360, {
+        duration: 20000,
+        easing: Easing.linear,
+      }),
+      -1,
+      false,
+    );
+  }, []);
+
+  const animatedLogoStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ rotate: `${rotation.value}deg` }],
+    };
+  });
+
+  /**
+   * Acción principal de login
+   */
   const handleAuth = async () => {
     setLoading(true);
     try {
@@ -43,5 +74,14 @@ export const useAutenticar = () => {
     }
   };
 
-  return { handleAuth, loading };
+  const onLoginPress = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    handleAuth();
+  };
+
+  return {
+    loading,
+    onLoginPress,
+    animatedLogoStyle,
+  };
 };

@@ -6,6 +6,7 @@ interface AuthState {
   token: string | null; // JWT de Supabase
   isInitialized: boolean;
   setUser: (usuario: RES_Auth | null, token: string | null) => void;
+  setInitialized: (value: boolean) => void;
   logout: () => void;
 }
 
@@ -19,9 +20,11 @@ export const useAuthStore = create<AuthState>((set) => ({
       token,
       isInitialized: true,
     }),
+  setInitialized: (value) => set({ isInitialized: value }),
   logout: () =>
     set({
       usuario: null,
       token: null,
+      isInitialized: true, // Ya terminó la verificación inicial
     }),
 }));

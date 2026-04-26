@@ -10,17 +10,27 @@ import {
 import { SocketService } from "@/common/service/socket.service";
 import { socket } from "@/common/config/socket.config";
 
-GoogleSignin.configure({
-  webClientId: process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID,
-  scopes: ["profile", "email"],
-});
-
 export class AuthService {
+  /**
+   * Configuración inicial de Google Sign In
+   */
+  static configure() {
+    try {
+      GoogleSignin.configure({
+        webClientId: process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID,
+        scopes: ["profile", "email"],
+      });
+    } catch (error) {
+      console.error("[AuthService] Error al configurar GoogleSignin:", error);
+    }
+  }
+
   /**
    * Login con Google nativo + Supabase
    */
   static async authWithGoogle(): Promise<ApiResponse<RES_Auth>> {
     try {
+      AuthService.configure(); // Asegurar configuración
       await GoogleSignin.hasPlayServices();
       try {
         await GoogleSignin.signOut();
