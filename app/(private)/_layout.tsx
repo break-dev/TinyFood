@@ -2,9 +2,11 @@ import { Tabs, Redirect } from "expo-router";
 import { useAuthState } from "../../common/logic/use-auth-state";
 import { routes } from "../../common/utils/variables/routes";
 import { Ionicons } from "@expo/vector-icons";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function PrivateLayout() {
   const { usuario, isInitialized } = useAuthState();
+  const insets = useSafeAreaInsets();
 
   if (!isInitialized) return null;
 
@@ -23,8 +25,8 @@ export default function PrivateLayout() {
           backgroundColor: "#ffffff",
           borderTopWidth: 1,
           borderTopColor: "#e5e7eb",
-          height: 60,
-          paddingBottom: 8,
+          height: 60 + insets.bottom,
+          paddingBottom: 8 + insets.bottom,
           paddingTop: 8,
         },
         tabBarShowLabel: false,
