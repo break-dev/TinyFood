@@ -1,9 +1,9 @@
 import { Stack, Redirect } from "expo-router";
-import { useAuthStore } from "../../common/stores/auth.store";
+import { useAuthState } from "../../common/logic/use-auth-state";
 import { routes } from "@/common/utils/variables/routes";
 
 export default function PublicLayout() {
-  const { usuario, isInitialized } = useAuthStore();
+  const { usuario, isInitialized } = useAuthState();
 
   if (!isInitialized) return null; // Estado de carga
 

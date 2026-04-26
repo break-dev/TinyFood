@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { RES_Auth } from "@/modules/auth/service/auth.responses";
 
-interface AuthState {
+interface IAuthStore {
   usuario: RES_Auth | null; // Perfil de la base de datos (public.usuario)
   token: string | null; // JWT de Supabase
   isInitialized: boolean;
@@ -10,7 +10,7 @@ interface AuthState {
   logout: () => void;
 }
 
-export const useAuthStore = create<AuthState>((set) => ({
+export const useAuthStore = create<IAuthStore>((set) => ({
   usuario: null,
   token: null,
   isInitialized: false,

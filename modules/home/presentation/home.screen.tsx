@@ -2,13 +2,13 @@ import React from "react";
 import { View, Text, TouchableOpacity, ActivityIndicator } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useLogout } from "../logic/use-logout";
-import { useAuthStore } from "@/common/stores/auth.store";
+import { useAuthState } from "@/common/logic/use-auth-state";
 import { Ionicons } from "@expo/vector-icons";
 import Animated, { FadeInDown } from "react-native-reanimated";
 
 export const HomeScreen = () => {
   const { isLoading, handleLogout } = useLogout();
-  const usuario = useAuthStore((state) => state.usuario);
+  const { usuario } = useAuthState();
 
   if (isLoading) {
     return (

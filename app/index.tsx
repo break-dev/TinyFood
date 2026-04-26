@@ -1,9 +1,9 @@
 import { Redirect } from "expo-router";
 import { routes } from "../common/utils/variables/routes";
-import { useAuthStore } from "../common/stores/auth.store";
+import { useAuthState } from "../common/logic/use-auth-state";
 
 export default function Index() {
-  const { usuario, isInitialized } = useAuthStore();
+  const { usuario, isInitialized } = useAuthState();
 
   if (!isInitialized) return null;
 

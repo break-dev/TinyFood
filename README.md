@@ -57,13 +57,17 @@ modules/
     logic/        ← useHome, useLogout
 ```
 
-### 3.1 Gestión de Estado Global (`common/stores`)
+### 3.1 Reglas de Oro de Arquitectura
 
-Usamos **Zustand** para evitar el "prop drilling". El `auth.store.ts` es la fuente de verdad:
+1.  **Presentation NO consume Stores:** Los componentes de UI nunca deben importar archivos de `stores/`. Deben consumir la información a través de hooks en `logic/` o `common/logic/`.
+2.  **Logic orquestación:** La capa de lógica es la única que puede interactuar con los stores y los servicios.
+3.  **Componentes "Tontos":** Los componentes de React deben ser lo más declarativos posible. No deben contener lógica de negocio compleja, efectos secundarios extensos o suscripciones; todo esto debe ser abstraído en hooks.
 
-- `usuario`: Objeto con el perfil completo de la base de datos.
-- `token`: JWT activo de Supabase.
-- `isInitialized`: Flag para evitar parpadeos durante la carga inicial.
+### 3.2 Gestión de Estado Global (`common/stores`)
+
+Usamos **Zustand** para la persistencia de datos globales. Sin embargo, para cumplir con la Regla #1, creamos hooks envoltorios:
+
+- `common/logic/use-auth-state.ts` → Envuelve a `auth.store.ts`.
 
 ---
 
