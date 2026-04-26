@@ -109,7 +109,7 @@ export function useAuth() {
 - **Responsabilidad:** Comunicación con la API (WebSockets o HTTP). Define los DTOs de entrada/salida por modulo.
 - Estructura por archivo:
   - `<modulo>.service.ts` — Clase con los métodos de comunicación.
-  - `<modulo>.requests.ts` — Interfaces/types de los payloads enviados a la API, validados mendiante zod.
+  - `<modulo>.requests.ts` — Interfaces/types de los payloads enviados a la API, validados mendiante zod si los datos los introdujo el usuario, si es generado por la app no se valida y queda como interfaz pura.
   - `<modulo>.responses.ts` — Interfaces/types de las respuestas recibidas de la API.
 
 **Ejemplo actual:** `modules/auth/service/auth.service.ts`

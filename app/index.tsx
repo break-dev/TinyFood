@@ -1,5 +1,6 @@
-import { LoginScreen } from "../modules/auth/presentation/login.screen";
+import { Redirect } from "expo-router";
+import { routes } from "../common/variables/routes";
 
-export default function IndexScreen() {
-  return <LoginScreen />;
+export default function Index() {
+  return <Redirect href={routes.auth as any} />;
 }
