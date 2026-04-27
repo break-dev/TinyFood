@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, TouchableOpacity, ActivityIndicator } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useLogout } from "../logic/use-logout";
+import { useLogout } from "@/common/logic/use-logout";
 import { useAuthState } from "@/common/logic/use-auth-state";
 import { Ionicons } from "@expo/vector-icons";
 import Animated, { FadeInDown } from "react-native-reanimated";

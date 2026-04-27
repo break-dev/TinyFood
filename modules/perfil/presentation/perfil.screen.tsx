@@ -10,6 +10,7 @@ import {
 } from "@gorhom/bottom-sheet";
 import * as Haptics from "expo-haptics";
 import { useAuthState } from "@/common/logic/use-auth-state";
+import { useLogout } from "@/common/logic/use-logout";
 import { useUpdatePerfil } from "../logic/use-update-perfil";
 import { ProfileCard } from "./components/profile-card";
 import { SheetFisica } from "./components/sheets/sheet-fisica";
@@ -29,7 +30,8 @@ const activityLabels: Record<number, string> = {
 };
 
 export const PerfilScreen = () => {
-  const { usuario, logout } = useAuthState();
+  const { usuario } = useAuthState();
+  const { handleLogout } = useLogout();
   const { formData, setFormData, handleSave, isLoading, resetForm } =
     useUpdatePerfil();
 
@@ -72,12 +74,20 @@ export const PerfilScreen = () => {
 
   return (
     <SafeAreaView className="flex-1 bg-white">
-      <ScrollView
-        className="flex-1"
-        contentContainerStyle={{ padding: 24, paddingBottom: 40 }}
-      >
-        {/* ── Header ── */}
-        <View className="items-center mt-4 mb-8">
+      {/* ── Custom Header Bar ── */}
+      <View className="flex-row items-center justify-between px-6 py-4 border-b border-gray-50">
+        <Text className="text-xl font-bold text-gray-900">Mi Perfil</Text>
+        <TouchableOpacity
+          onPress={handleLogout}
+          className="h-10 w-10 items-center justify-center rounded-xl bg-red-50"
+        >
+          <Ionicons name="log-out-outline" size={22} color="#ef4444" />
+        </TouchableOpacity>
+      </View>
+
+      <View className="flex-1 px-6 py-4">
+        {/* ── Header Info ── */}
+        <View className="items-center mt-2 mb-8">
           <View className="w-24 h-24 rounded-full overflow-hidden border-2 border-orange-500 mb-4">
             {usuario?.url_foto ? (
               <Image
@@ -164,20 +174,7 @@ export const PerfilScreen = () => {
           }
           onPress={() => openSheet("salud")}
         />
-        {/* ── Cerrar sesión ── */}
-        <TouchableOpacity
-          onPress={() => {
-            Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-            logout();
-          }}
-          className="mt-6 bg-red-50 flex-row items-center justify-center p-4 rounded-2xl border border-red-100"
-        >
-          <Ionicons name="log-out-outline" size={22} color="#ef4444" />
-          <Text className="ml-2 text-red-500 font-bold text-lg">
-            Cerrar sesión
-          </Text>
-        </TouchableOpacity>
-      </ScrollView>
+      </View>
 
       {/* ── Bottom Sheet ── */}
       <BottomSheetModal

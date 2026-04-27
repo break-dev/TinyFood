@@ -54,9 +54,7 @@ export const useRegistrar = () => {
     setLoading(true);
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     try {
-      const apiRes = await AuthService.registrar({
-        nombre: "Usuario",
-      });
+      const apiRes = await AuthService.registrar({});
 
       if (apiRes.success) {
         const { data } = await supabase.auth.getSession();

@@ -1,7 +1,8 @@
-import React, { useRef } from "react";
-import { View, Text, TextInput, Image } from "react-native";
+import React, { useState } from "react";
+import { View, Text, TextInput, Image, TouchableOpacity, Platform } from "react-native";
 import Animated, { FadeInRight, FadeOutLeft } from "react-native-reanimated";
 import { Ionicons } from "@expo/vector-icons";
+import DateTimePicker from "@react-native-community/datetimepicker";
 
 interface Props {
   data: any;
@@ -9,15 +10,31 @@ interface Props {
 }
 
 export const StepPhysical = ({ data, setData }: Props) => {
-  // Referencias para saltar entre inputs
-  const mesRef = useRef<TextInput>(null);
-  const anioRef = useRef<TextInput>(null);
+  const [showPicker, setShowPicker] = useState(false);
 
-  // Extraer valores actuales del string DD/MM/YYYY
-  const [d = "", m = "", a = ""] = (data.fecha_nacimiento || "").split("/");
+  // Función para convertir de Date a string DD/MM/YYYY
+  const formatDate = (date: Date) => {
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+  };
 
-  const updateDate = (dia: string, mes: string, anio: string) => {
-    setData({ ...data, fecha_nacimiento: `${dia}/${mes}/${anio}` });
+  // Función para convertir de string DD/MM/YYYY a Date (para que el picker abra en la fecha correcta)
+  const parseDate = () => {
+    if (data.fecha_nacimiento && data.fecha_nacimiento.length === 10) {
+      const [d, m, y] = data.fecha_nacimiento.split("/").map(Number);
+      return new Date(y, m - 1, d);
+    }
+    return new Date(2000, 0, 1); // Fecha sugerida por defecto
+  };
+
+  const onChangeDate = (event: any, selectedDate?: Date) => {
+    if (Platform.OS === "android") setShowPicker(false);
+    
+    if (selectedDate) {
+      setData({ ...data, fecha_nacimiento: formatDate(selectedDate) });
+    }
   };
 
   return (
@@ -65,68 +82,33 @@ export const StepPhysical = ({ data, setData }: Props) => {
         </View>
       </View>
 
-      {/* Fecha Nacimiento con 3 Celdas */}
+      {/* Fecha Nacimiento - Estilo Onboarding con Picker */}
       <View className="mb-6">
         <Text className="mb-2 font-semibold text-gray-700">Fecha Nacimiento</Text>
-        <View className="flex-row items-center gap-2">
-          {/* Día */}
-          <View className="flex-1 flex-row items-center rounded-2xl bg-white border border-gray-200 px-4 py-4">
-            <TextInput
-              className="flex-1 text-center text-lg"
-              placeholder="DD"
-              keyboardType="number-pad"
-              maxLength={2}
-              value={d}
-              onChangeText={(text) => {
-                const cleaned = text.replace(/\D/g, "");
-                updateDate(cleaned, m, a);
-                if (cleaned.length === 2) mesRef.current?.focus();
-              }}
-            />
-          </View>
+        <TouchableOpacity
+          onPress={() => setShowPicker(true)}
+          activeOpacity={0.7}
+          className="flex-row items-center rounded-2xl bg-white border border-gray-200 px-4 py-4"
+        >
+          <Ionicons name="calendar-outline" size={20} color="#6b7280" />
+          <Text
+            className={`ml-3 flex-1 text-lg ${
+              data.fecha_nacimiento ? "text-gray-900" : "text-gray-400"
+            }`}
+          >
+            {data.fecha_nacimiento || "DD/MM/YYYY"}
+          </Text>
+        </TouchableOpacity>
 
-          <Text className="text-xl text-gray-400">/</Text>
-
-          {/* Mes */}
-          <View className="flex-1 flex-row items-center rounded-2xl bg-white border border-gray-200 px-4 py-4">
-            <TextInput
-              ref={mesRef}
-              className="flex-1 text-center text-lg"
-              placeholder="MM"
-              keyboardType="number-pad"
-              maxLength={2}
-              value={m}
-              onChangeText={(text) => {
-                const cleaned = text.replace(/\D/g, "");
-                updateDate(d, cleaned, a);
-                if (cleaned.length === 2) anioRef.current?.focus();
-              }}
-              onKeyPress={({ nativeEvent }) => {
-                if (nativeEvent.key === "Backspace" && m === "") {
-                  // Opcional: regresar al anterior
-                }
-              }}
-            />
-          </View>
-
-          <Text className="text-xl text-gray-400">/</Text>
-
-          {/* Año */}
-          <View className="flex-[1.5] flex-row items-center rounded-2xl bg-white border border-gray-200 px-4 py-4">
-            <TextInput
-              ref={anioRef}
-              className="flex-1 text-center text-lg"
-              placeholder="YYYY"
-              keyboardType="number-pad"
-              maxLength={4}
-              value={a}
-              onChangeText={(text) => {
-                const cleaned = text.replace(/\D/g, "");
-                updateDate(d, m, cleaned);
-              }}
-            />
-          </View>
-        </View>
+        {showPicker && (
+          <DateTimePicker
+            value={parseDate()}
+            mode="date"
+            display={Platform.OS === "ios" ? "spinner" : "default"}
+            maximumDate={new Date()}
+            onChange={onChangeDate}
+          />
+        )}
       </View>
 
       {/* 📸 Imagen del onboarding */}

@@ -23,7 +23,7 @@ const TEAM = [
   {
     name: "Pedro Mendoza Carranza",
     role: "Desarrollador",
-    initials: "NA",
+    initials: "PM",
     color: "#E6F1FB",
     textColor: "#185FA5",
     github: "https://github.com/tu-usuario",
@@ -34,7 +34,7 @@ const TEAM = [
   {
     name: "Yuleisy Quipuzcoa Lopez",
     role: "Desarrollador",
-    initials: "NA",
+    initials: "YQ",
     color: "#EAF3DE",
     textColor: "#3B6D11",
     github: "https://github.com/YuleisyQuipuzcoa22",
@@ -44,7 +44,7 @@ const TEAM = [
   {
     name: "Ana Belén Sanchez Boy",
     role: "Desarrollador",
-    initials: "NA",
+    initials: "AB",
     color: "#FBEAF0",
     textColor: "#993556",
     github: "https://github.com/ABSanxd",
