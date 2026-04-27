@@ -11,6 +11,7 @@ import { useRegistrar } from "../../logic/use-registrar";
 import { Ionicons } from "@expo/vector-icons";
 import { StepPhysical } from "./components/step-physical";
 import { StepActivity } from "./components/step-activity";
+import { StepFood } from "./components/step-food";
 import { StepMedical } from "./components/step-medical";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -57,7 +58,7 @@ export const RegistroScreen = () => {
             )}
 
             <View className="flex-row items-center gap-1">
-              {[1, 2, 3].map((s) => (
+              {[1, 2, 3, 4].map((s) => (
                 <View
                   key={s}
                   className={`h-2 w-8 rounded-full ${
@@ -81,6 +82,9 @@ export const RegistroScreen = () => {
               <StepActivity data={formData} setData={setFormData} />
             )}
             {step === 3 && (
+              <StepFood data={formData} setData={setFormData} />
+            )}
+            {step === 4 && (
               <StepMedical data={formData} setData={setFormData} />
             )}
           </View>

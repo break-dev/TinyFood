@@ -11,14 +11,16 @@ import * as Haptics from "expo-haptics";
 export const useRegistrar = () => {
   const [loading, setLoading] = useState(false);
   const [step, setStep] = useState(1);
-  const totalSteps = 3;
+  const totalSteps = 4;
 
   const [formData, setFormData] = useState({
     peso: "",
     talla: "",
+    fecha_nacimiento: "",
     nivel_actividad: 2,
-    alimentos_prohibidos: "",
-    preferencias: "",
+    alimentos_prohibidos: [] as string[],
+    preferencias: [] as string[],
+    informacion_medica: [] as { nombre: string; descripcion: string }[],
   });
 
   const { setUser } = useAuthStore();
@@ -75,18 +77,32 @@ export const useRegistrar = () => {
     setLoading(true);
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     try {
-      // Convertir strings a arreglos para la API
-      const alimentosArr = formData.alimentos_prohibidos
-        ? formData.alimentos_prohibidos.split(",").map((s) => s.trim())
-        : [];
-      const preferenciasArr = formData.preferencias
-        ? formData.preferencias.split(",").map((s) => s.trim())
-        : [];
+      // Enviar directamente los arreglos nativos del estado
+      const alimentosArr = formData.alimentos_prohibidos;
+      const preferenciasArr = formData.preferencias;
+      
+      // Convertir informacion médica ya está en el formato correcto
+      const infoMedicaArr = formData.informacion_medica;
+
+      // Validar y formatear fecha de nacimiento (DD/MM/YYYY -> ISO)
+      let fechaNac = undefined;
+      if (formData.fecha_nacimiento && formData.fecha_nacimiento.length === 10) {
+        const [day, month, year] = formData.fecha_nacimiento.split("/");
+        if (day && month && year) {
+          // Javascript Date usa meses del 0 al 11, por eso restamos 1 al mes
+          const parsedDate = new Date(Number(year), Number(month) - 1, Number(day));
+          if (!isNaN(parsedDate.getTime())) {
+            fechaNac = parsedDate.toISOString();
+          }
+        }
+      }
 
       const apiRes = await AuthService.registrar({
         peso: parseFloat(formData.peso) || undefined,
         talla: parseFloat(formData.talla) || undefined,
+        fecha_nacimiento: fechaNac,
         nivel_actividad: formData.nivel_actividad,
+        informacion_medica: infoMedicaArr,
         alimentos_prohibidos: alimentosArr,
         preferencias: preferenciasArr,
       });
