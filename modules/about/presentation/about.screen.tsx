@@ -26,10 +26,10 @@ const TEAM = [
     initials: "PM",
     color: "#E6F1FB",
     textColor: "#185FA5",
-    github: "https://github.com/tu-usuario",
+    github: "https://github.com/PEDROCOM12",
     linkedin:
       "https://www.linkedin.com/in/pedro-mendoza-2277b9245/?skipRedirect=true",
-    instagram: "https://www.instagram.com/upn/",
+    instagram: "https://www.instagram.com/t3nt4.9_vlc/",
   },
   {
     name: "Yuleisy Quipuzcoa Lopez",
