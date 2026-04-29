@@ -15,23 +15,48 @@ import {
 } from "@gorhom/bottom-sheet";
 import { Ionicons } from "@expo/vector-icons";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { REQ_RegistrarComida } from "../../service/despensa.requests";
+import {
+  REQ_ActualizarComida,
+  REQ_RegistrarComida,
+} from "../../service/despensa.requests";
 import { EstadoComida } from "@/common/utils/enums/estado-comida.enum";
 import * as Haptics from "expo-haptics";
 import Animated, { FadeIn } from "react-native-reanimated";
 
+import { RES_Comida } from "../../service/despensa.responses";
+
 interface Props {
   onRegister: (data: REQ_RegistrarComida) => Promise<boolean>;
+  onUpdate: (data: REQ_ActualizarComida) => Promise<boolean>;
+  comidaParaEditar?: RES_Comida | null;
 }
 
 export const RegistroComida = React.forwardRef<BottomSheetModal, Props>(
-  ({ onRegister }, ref) => {
+  ({ onRegister, onUpdate, comidaParaEditar }, ref) => {
     const [nombre, setNombre] = useState("");
     const [cantidad, setCantidad] = useState("");
     const [descripcion, setDescripcion] = useState("");
     const [fechaVencimiento, setFechaVencimiento] = useState<Date | null>(null);
     const [showDatePicker, setShowDatePicker] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
+
+    React.useEffect(() => {
+      if (comidaParaEditar) {
+        setNombre(comidaParaEditar.nombre);
+        setCantidad(comidaParaEditar.cantidad);
+        setDescripcion(comidaParaEditar.descripcion || "");
+        setFechaVencimiento(
+          comidaParaEditar.fecha_vencimiento
+            ? new Date(comidaParaEditar.fecha_vencimiento)
+            : null,
+        );
+      } else {
+        setNombre("");
+        setCantidad("");
+        setDescripcion("");
+        setFechaVencimiento(null);
+      }
+    }, [comidaParaEditar]);
 
     const snapPoints = useMemo(() => ["85%"], []);
 
@@ -55,13 +80,25 @@ export const RegistroComida = React.forwardRef<BottomSheetModal, Props>(
 
       setIsSubmitting(true);
       try {
-        const success = await onRegister({
-          nombre,
-          cantidad,
-          descripcion: descripcion || undefined,
-          fecha_vencimiento: fechaVencimiento?.toISOString(),
-          estado: EstadoComida.PorConsumir,
-        });
+        let success = false;
+
+        if (comidaParaEditar) {
+          success = await onUpdate({
+            id: comidaParaEditar.id,
+            nombre,
+            cantidad,
+            descripcion: descripcion || undefined,
+            fecha_vencimiento: fechaVencimiento?.toISOString(),
+          });
+        } else {
+          success = await onRegister({
+            nombre,
+            cantidad,
+            descripcion: descripcion || undefined,
+            fecha_vencimiento: fechaVencimiento?.toISOString(),
+            estado: EstadoComida.PorConsumir,
+          });
+        }
 
         if (success) {
           setNombre("");
@@ -99,10 +136,12 @@ export const RegistroComida = React.forwardRef<BottomSheetModal, Props>(
             <View className="flex-row items-center justify-between mb-8">
               <View>
                 <Text className="text-3xl font-black text-gray-900 tracking-tighter">
-                  Nuevo Alimento
+                  {comidaParaEditar ? "Editar Alimento" : "Nuevo Alimento"}
                 </Text>
                 <Text className="text-gray-400 font-medium text-sm">
-                  Agrégalo a tu inventario inteligente
+                  {comidaParaEditar
+                    ? "Actualiza los detalles de tu alimento"
+                    : "Agrégalo a tu inventario inteligente"}
                 </Text>
               </View>
               <TouchableOpacity
@@ -236,7 +275,11 @@ export const RegistroComida = React.forwardRef<BottomSheetModal, Props>(
               >
                 <View className="flex-row items-center">
                   <Text className="text-white text-xl font-black mr-2">
-                    {isSubmitting ? "Procesando..." : "Guardar en Despensa"}
+                    {isSubmitting
+                      ? "Procesando..."
+                      : comidaParaEditar
+                        ? "Guardar Cambios"
+                        : "Guardar en Despensa"}
                   </Text>
                   {!isSubmitting && (
                     <Ionicons name="arrow-forward" size={24} color="white" />

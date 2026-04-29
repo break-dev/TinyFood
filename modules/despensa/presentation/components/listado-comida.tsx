@@ -15,6 +15,7 @@ interface Props {
   isRefreshing: boolean;
   onRefresh: () => void;
   onDelete: (id: number) => void;
+  onEdit: (comida: RES_Comida) => void;
 }
 
 export const ListadoComida = ({
@@ -22,6 +23,7 @@ export const ListadoComida = ({
   isRefreshing,
   onRefresh,
   onDelete,
+  onEdit,
 }: Props) => {
   if (comidas.length === 0 && !isRefreshing) {
     return (
@@ -70,67 +72,72 @@ export const ListadoComida = ({
     const status = getStatusInfo(item.fecha_vencimiento);
 
     return (
-      <Animated.View
-        entering={FadeInRight.delay(index * 50).duration(400)}
-        layout={Layout.springify()}
-        className="mb-4 bg-white p-5 rounded-[28px] shadow-sm border border-gray-100 flex-row items-center"
+      <TouchableOpacity
+        activeOpacity={0.7}
+        onPress={() => onEdit(item)}
       >
-        <View
-          className={`h-14 w-14 rounded-2xl items-center justify-center ${status.color}10`}
+        <Animated.View
+          entering={FadeInRight.delay(index * 50).duration(400)}
+          layout={Layout.springify()}
+          className="mb-4 bg-white p-5 rounded-[28px] shadow-sm border border-gray-100 flex-row items-center"
         >
-          <Ionicons
-            name={status.icon as any}
-            size={28}
-            color={
-              status.color
-                .replace("bg-", "")
-                .replace("emerald", "green")
-                .split("-")[0] === "emerald"
-                ? "#10b981"
-                : status.color.replace("bg-", "").split("-")[0]
-            }
-          />
-        </View>
-
-        <View className="flex-1 ml-4">
-          <View className="flex-row items-center justify-between">
-            <Text
-              className="text-gray-900 font-extrabold text-lg flex-1"
-              numberOfLines={1}
-            >
-              {item.nombre}
-            </Text>
-            <View className={`${status.color} px-3 py-1 rounded-full`}>
-              <Text className="text-white text-[10px] font-black uppercase tracking-widest">
-                {status.label}
-              </Text>
-            </View>
+          <View
+            className={`h-14 w-14 rounded-2xl items-center justify-center ${status.color}10`}
+          >
+            <Ionicons
+              name={status.icon as any}
+              size={28}
+              color={
+                status.color
+                  .replace("bg-", "")
+                  .replace("emerald", "green")
+                  .split("-")[0] === "emerald"
+                  ? "#10b981"
+                  : status.color.replace("bg-", "").split("-")[0]
+              }
+            />
           </View>
 
-          <Text className="text-gray-400 font-bold text-sm mt-0.5">
-            {item.cantidad}
-          </Text>
-
-          {item.fecha_vencimiento && (
-            <View className="flex-row items-center mt-2 bg-gray-50 self-start px-2 py-1 rounded-lg">
-              <Ionicons name="calendar-outline" size={12} color="#9ca3af" />
-              <Text className="text-[10px] font-bold text-gray-500 ml-1">
-                {new Date(item.fecha_vencimiento).toLocaleDateString("es-ES", {
-                  day: "numeric",
-                  month: "short",
-                })}
+          <View className="flex-1 ml-4">
+            <View className="flex-row items-center justify-between">
+              <Text
+                className="text-gray-900 font-extrabold text-lg flex-1"
+                numberOfLines={1}
+              >
+                {item.nombre}
               </Text>
+              <View className={`${status.color} px-3 py-1 rounded-full`}>
+                <Text className="text-white text-[10px] font-black uppercase tracking-widest">
+                  {status.label}
+                </Text>
+              </View>
             </View>
-          )}
-        </View>
 
-        <TouchableOpacity
-          onPress={() => onDelete(item.id)}
-          className="h-10 w-10 items-center justify-center rounded-2xl bg-gray-50 ml-2"
-        >
-          <Ionicons name="trash-outline" size={18} color="#6b7280" />
-        </TouchableOpacity>
-      </Animated.View>
+            <Text className="text-gray-400 font-bold text-sm mt-0.5">
+              {item.cantidad}
+            </Text>
+
+            {item.fecha_vencimiento && (
+              <View className="flex-row items-center mt-2 bg-gray-50 self-start px-2 py-1 rounded-lg">
+                <Ionicons name="calendar-outline" size={12} color="#9ca3af" />
+                <Text className="text-[10px] font-bold text-gray-500 ml-1">
+                  {new Date(item.fecha_vencimiento).toLocaleDateString("es-ES", {
+                    day: "numeric",
+                    month: "short",
+                  })}
+                </Text>
+              </View>
+            )}
+          </View>
+
+          <TouchableOpacity
+            onPress={() => onDelete(item.id)}
+            className="h-10 w-10 items-center justify-center rounded-2xl bg-gray-50 ml-2"
+          >
+            <Ionicons name="trash-outline" size={18} color="#6b7280" />
+          </TouchableOpacity>
+        </Animated.View>
+      </TouchableOpacity>
     );
   };
 

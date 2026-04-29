@@ -15,6 +15,7 @@ import { useDespensa } from "../logic/use-despensa";
 import { ListadoComida } from "./components/listado-comida";
 import { RegistroComida } from "./components/registro-comida";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
+import { RES_Comida } from "../service/despensa.responses";
 
 export const DespensaScreen = () => {
   const { isLoading: isLoggingOut, handleLogout } = useLogout();
@@ -25,12 +26,21 @@ export const DespensaScreen = () => {
     isRefreshing,
     onRefresh,
     registrarComida,
+    actualizarComida,
     eliminarComida,
   } = useDespensa();
 
+  const [comidaParaEditar, setComidaParaEditar] =
+    React.useState<RES_Comida | null>(null);
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
 
   const openModal = () => {
+    setComidaParaEditar(null);
+    bottomSheetModalRef.current?.present();
+  };
+
+  const handleEdit = (comida: RES_Comida) => {
+    setComidaParaEditar(comida);
     bottomSheetModalRef.current?.present();
   };
 
@@ -112,6 +122,7 @@ export const DespensaScreen = () => {
             isRefreshing={isRefreshing}
             onRefresh={onRefresh}
             onDelete={eliminarComida}
+            onEdit={handleEdit}
           />
         )}
       </View>
@@ -128,7 +139,12 @@ export const DespensaScreen = () => {
       </View>
 
       {/* Registry Modal */}
-      <RegistroComida ref={bottomSheetModalRef} onRegister={registrarComida} />
+      <RegistroComida
+        ref={bottomSheetModalRef}
+        onRegister={registrarComida}
+        onUpdate={actualizarComida}
+        comidaParaEditar={comidaParaEditar}
+      />
 
       {/* Logout Overlay */}
       {isLoggingOut && (
