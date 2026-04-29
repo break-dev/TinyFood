@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "250995478473",
+    "project_id": "tinyfood",
+    "storage_bucket": "tinyfood.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:250995478473:android:df1c4172ec1a3b0d922218",
+        "android_client_info": {
+          "package_name": "com.tinyfood.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "250995478473-nsbp0j3sla3p2ebv4q67dob1npd4ukge.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDtRzQ-4sSYq73XXAVzsm7c_28gaEkr20Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "250995478473-nsbp0j3sla3p2ebv4q67dob1npd4ukge.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

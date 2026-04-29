@@ -10,6 +10,12 @@
     "preview": {
       "android": {
         "buildType": "apk"
+      },
+      "env": {
+        "EXPO_PUBLIC_SUPABASE_URL": "https://hjueayjsimyooxlrcnfa.supabase.co",
+        "EXPO_PUBLIC_SUPABASE_KEY": "sb_publishable_2fqJih8R0J0SLf0dvBP4pw_s3h9j0qi",
+        "EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID": "250995478473-nsbp0j3sla3p2ebv4q67dob1npd4ukge.apps.googleusercontent.com",
+        "EXPO_PUBLIC_SOCKET_URL": "https://tinyfoodapi.onrender.com"
       }
     },
     "production": {}

@@ -90,6 +90,48 @@ Para que el Login de Google funcione en el APK instalado:
 2.  Registra ese **SHA-1** y el Package Name (`com.tinyfood.app`) en la **Google Cloud Console**.
 3.  Sin este registro, el botón de Google fallará con un "Developer Error".
 
+### 6.3 `google-services.json` (Obligatorio para builds nativos)
+
+> **Síntoma sin este archivo:** la app crashea inmediatamente al abrir el APK, sin ningún mensaje de error. En el dev client no ocurre porque Expo lo maneja internamente.
+
+El archivo `google-services.json` es **requerido por el plugin `@react-native-google-signin/google-signin`** para compilar cualquier build nativo (preview o production). No se obtiene de Google Cloud Console, sino de **Firebase Console**.
+
+**Cómo obtenerlo (primera vez):**
+1.  Ve a [console.firebase.google.com](https://console.firebase.google.com) y crea un proyecto conectado al proyecto Cloud existente (`TinyFood`).
+2.  Dentro del proyecto Firebase → **Agregar app Android**.
+3.  Package name: `com.tinyfood.app`. Agrega el SHA-1 si lo tienes disponible.
+4.  Descarga el `google-services.json` y colócalo en la **raíz del proyecto** (junto al `app.json`).
+5.  Verifica que `app.json` tenga la referencia (ya está configurado):
+    ```json
+    "android": {
+      "googleServicesFile": "./google-services.json"
+    }
+    ```
+
+**Nota de seguridad:** `google-services.json` **sí puede subirse a GitHub**. Sus valores son identificadores públicos restringidos por package name y SHA-1, no credenciales secretas.
+
+### 6.4 Variables de Entorno en EAS Builds (Crítico)
+
+> **Síntoma sin esto:** la app crashea al inicio con el error `supabaseUrl is required.` El dev client funciona bien porque ahí sí se lee el `.env` local.
+
+**El problema:** el archivo `.env` **solo funciona en desarrollo local** (con `expo start`). EAS Build no lo lee. Las variables `EXPO_PUBLIC_*` se embeben en el bundle JS en tiempo de compilación, por lo que deben estar declaradas en `eas.json` bajo el perfil correspondiente.
+
+**Solución:** declarar las variables en cada perfil de `eas.json`:
+
+```json
+"preview": {
+  "android": { "buildType": "apk" },
+  "env": {
+    "EXPO_PUBLIC_SUPABASE_URL": "...",
+    "EXPO_PUBLIC_SUPABASE_KEY": "...",
+    "EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID": "...",
+    "EXPO_PUBLIC_SOCKET_URL": "..."
+  }
+}
+```
+
+> **Importante:** si en el futuro agregas una variable nueva al `.env`, recuerda también agregarla al perfil correspondiente en `eas.json`, de lo contrario el build la ignorará.
+
 ---
 
 ## 7. Ejecución y Desarrollo 🛠️
