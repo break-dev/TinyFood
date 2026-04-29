@@ -18,7 +18,9 @@ const levels = [
 
 export const SheetActividad = ({ data, setData }: Props) => (
   <View>
-    <Text className="text-xl font-bold text-gray-900 mb-4">Nivel de actividad</Text>
+    <Text className="text-xl font-bold text-gray-900 mb-4">
+      Nivel de actividad
+    </Text>
     {levels.map((level) => (
       <TouchableOpacity
         key={level.id}
@@ -33,9 +35,13 @@ export const SheetActividad = ({ data, setData }: Props) => (
         }`}
       >
         <View className="flex-1">
-          <Text className={`text-lg font-bold ${
-            data.nivel_actividad === level.id ? "text-orange-600" : "text-gray-900"
-          }`}>
+          <Text
+            className={`text-lg font-bold ${
+              data.nivel_actividad === level.id
+                ? "text-orange-600"
+                : "text-gray-900"
+            }`}
+          >
             {level.label}
           </Text>
           <Text className="text-gray-500">{level.desc}</Text>

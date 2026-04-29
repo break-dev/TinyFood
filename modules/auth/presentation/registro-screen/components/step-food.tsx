@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity } from "react-native";
 import Animated, { FadeInRight, FadeOutLeft } from "react-native-reanimated";
 import { Ionicons } from "@expo/vector-icons";
-import { ALERGIAS_SUGERIDAS } from "@/common/utils/enums/alergias";
-import { DIETAS_SUGERIDAS } from "@/common/utils/enums/dietas";
+import { ALERGIAS_SUGERIDAS } from "@/common/utils/variables/alergias";
+import { DIETAS_SUGERIDAS } from "@/common/utils/variables/dietas";
 
 interface Props {
   data: any;
@@ -20,7 +20,9 @@ export const StepFood = ({ data, setData }: Props) => {
     if (isSelected) {
       setData({
         ...data,
-        alimentos_prohibidos: data.alimentos_prohibidos.filter((i: string) => i !== item),
+        alimentos_prohibidos: data.alimentos_prohibidos.filter(
+          (i: string) => i !== item,
+        ),
       });
     } else {
       setData({
@@ -31,10 +33,16 @@ export const StepFood = ({ data, setData }: Props) => {
   };
 
   const addCustomAlergia = () => {
-    if (customAlergia.trim() && !data.alimentos_prohibidos.includes(customAlergia.trim())) {
+    if (
+      customAlergia.trim() &&
+      !data.alimentos_prohibidos.includes(customAlergia.trim())
+    ) {
       setData({
         ...data,
-        alimentos_prohibidos: [...data.alimentos_prohibidos, customAlergia.trim()],
+        alimentos_prohibidos: [
+          ...data.alimentos_prohibidos,
+          customAlergia.trim(),
+        ],
       });
     }
     setCustomAlergia("");
@@ -85,7 +93,7 @@ export const StepFood = ({ data, setData }: Props) => {
         <Text className="mb-2 font-bold text-gray-700 text-lg">
           Alergias / Alimentos Prohibidos
         </Text>
-        
+
         {/* Sugerencias Alergias */}
         <View className="mb-3 flex-row flex-wrap gap-2">
           {ALERGIAS_SUGERIDAS.map((alergia) => {
@@ -150,7 +158,7 @@ export const StepFood = ({ data, setData }: Props) => {
         <Text className="mb-2 font-bold text-gray-700 text-lg">
           Preferencias o Dietas
         </Text>
-        
+
         {/* Sugerencias Dietas */}
         <View className="mb-3 flex-row flex-wrap gap-2">
           {DIETAS_SUGERIDAS.map((dieta) => {
@@ -207,7 +215,6 @@ export const StepFood = ({ data, setData }: Props) => {
             ))}
         </View>
       </View>
-
     </Animated.View>
   );
 };

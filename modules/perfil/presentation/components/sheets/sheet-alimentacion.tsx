@@ -12,8 +12,12 @@ export const SheetAlimentacion = ({ data, setData }: Props) => (
     <Text className="text-xl font-bold text-gray-900 mb-2">Alimentación</Text>
 
     <View>
-      <Text className="mb-2 font-semibold text-gray-600">Alergias / Prohibidos</Text>
-      <Text className="mb-2 text-gray-400 text-sm">Separados por coma. Ej: Maní, Lactosa</Text>
+      <Text className="mb-2 font-semibold text-gray-600">
+        Alergias / Prohibidos
+      </Text>
+      <Text className="mb-2 text-gray-400 text-sm">
+        Separados por coma. Ej: Maní, Lactosa
+      </Text>
       <View className="flex-row items-center rounded-2xl bg-gray-100 px-4 py-4">
         <Ionicons name="medkit-outline" size={20} color="#6b7280" />
         <TextInput
@@ -26,8 +30,12 @@ export const SheetAlimentacion = ({ data, setData }: Props) => (
     </View>
 
     <View>
-      <Text className="mb-2 font-semibold text-gray-600">Preferencias / Dietas</Text>
-      <Text className="mb-2 text-gray-400 text-sm">Separados por coma. Ej: Vegano, Keto</Text>
+      <Text className="mb-2 font-semibold text-gray-600">
+        Preferencias / Dietas
+      </Text>
+      <Text className="mb-2 text-gray-400 text-sm">
+        Separados por coma. Ej: Vegano, Keto
+      </Text>
       <View className="flex-row items-center rounded-2xl bg-gray-100 px-4 py-4">
         <Ionicons name="nutrition-outline" size={20} color="#6b7280" />
         <TextInput

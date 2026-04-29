@@ -1,5 +1,5 @@
-import { HomeScreen } from "../../modules/home/presentation/home.screen";
+import { DespensaScreen } from "../../modules/despensa/presentation/despensa.screen";
 
 export default function HomeRoute() {
-  return <HomeScreen />;
+  return <DespensaScreen />;
 }

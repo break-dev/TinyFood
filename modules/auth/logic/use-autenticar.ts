@@ -66,11 +66,13 @@ export const useAutenticar = () => {
         console.log("[useAutenticar] Usuario existe, guardando en store...");
         const { data } = await supabase.auth.getSession();
         setUser(apiRes.data, data.session?.access_token || null);
-        // NO hacemos router.replace aquí. 
+        // NO hacemos router.replace aquí.
         // El PublicLayout detectará el 'usuario' y hará el Redirect solo.
       } else if (apiRes.message === "USER_NOT_FOUND") {
         // CASO: Usuario NO EXISTE
-        console.log("[useAutenticar] Usuario NO existe, navegando a register...");
+        console.log(
+          "[useAutenticar] Usuario NO existe, navegando a register...",
+        );
         router.navigate("/(public)/register" as any); // Esta sí es necesaria manual
       } else {
         throw new Error(apiRes.message as string);

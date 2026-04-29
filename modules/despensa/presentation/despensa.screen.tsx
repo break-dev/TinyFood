@@ -6,7 +6,7 @@ import { useAuthState } from "@/common/logic/use-auth-state";
 import { Ionicons } from "@expo/vector-icons";
 import Animated, { FadeInDown } from "react-native-reanimated";
 
-export const HomeScreen = () => {
+export const DespensaScreen = () => {
   const { isLoading, handleLogout } = useLogout();
   const { usuario } = useAuthState();
 

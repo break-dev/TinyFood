@@ -21,7 +21,7 @@ export const SheetSalud = ({ data, setData }: Props) => {
   const agregarCondicion = () => {
     if (!nuevaNombre.trim()) return;
     const existe = condiciones.some(
-      (c) => c.nombre.toLowerCase() === nuevaNombre.trim().toLowerCase()
+      (c) => c.nombre.toLowerCase() === nuevaNombre.trim().toLowerCase(),
     );
     if (!existe) {
       setData({
@@ -47,7 +47,7 @@ export const SheetSalud = ({ data, setData }: Props) => {
     setData({
       ...data,
       informacion_medica: condiciones.map((c) =>
-        c.nombre === nombre ? { ...c, descripcion } : c
+        c.nombre === nombre ? { ...c, descripcion } : c,
       ),
     });
   };

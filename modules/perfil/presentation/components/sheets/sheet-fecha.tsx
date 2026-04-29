@@ -12,13 +12,13 @@ export const SheetFecha = ({ data, setData }: Props) => {
   const [mostrarPicker, setMostrarPicker] = useState(false);
 
   const parseDate = () => {
-  if (data.fecha_nacimiento) {
-    // Parsear manualmente para evitar conversión UTC
-    const [year, month, day] = data.fecha_nacimiento.split("-").map(Number);
-    return new Date(year, month - 1, day); // mes es 0-indexed
-  }
-  return new Date(2000, 0, 1);
-};
+    if (data.fecha_nacimiento) {
+      // Parsear manualmente para evitar conversión UTC
+      const [year, month, day] = data.fecha_nacimiento.split("-").map(Number);
+      return new Date(year, month - 1, day); // mes es 0-indexed
+    }
+    return new Date(2000, 0, 1);
+  };
 
   return (
     <View className="gap-4">

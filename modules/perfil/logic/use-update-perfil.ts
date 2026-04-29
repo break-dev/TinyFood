@@ -79,7 +79,7 @@ export function useUpdatePerfil() {
       if (res.success && res.data) {
         await setUser(res.data as unknown as RES_Auth, token);
         Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-        return true; 
+        return true;
       }
     } catch (error) {
       console.error("[useUpdatePerfil] Error:", error);

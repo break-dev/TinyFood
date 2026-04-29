@@ -1,5 +1,12 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, Image, TouchableOpacity, Platform } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  Image,
+  TouchableOpacity,
+  Platform,
+} from "react-native";
 import Animated, { FadeInRight, FadeOutLeft } from "react-native-reanimated";
 import { Ionicons } from "@expo/vector-icons";
 import DateTimePicker from "@react-native-community/datetimepicker";
@@ -31,7 +38,7 @@ export const StepPhysical = ({ data, setData }: Props) => {
 
   const onChangeDate = (event: any, selectedDate?: Date) => {
     if (Platform.OS === "android") setShowPicker(false);
-    
+
     if (selectedDate) {
       setData({ ...data, fecha_nacimiento: formatDate(selectedDate) });
     }
@@ -84,7 +91,9 @@ export const StepPhysical = ({ data, setData }: Props) => {
 
       {/* Fecha Nacimiento - Estilo Onboarding con Picker */}
       <View className="mb-6">
-        <Text className="mb-2 font-semibold text-gray-700">Fecha Nacimiento</Text>
+        <Text className="mb-2 font-semibold text-gray-700">
+          Fecha Nacimiento
+        </Text>
         <TouchableOpacity
           onPress={() => setShowPicker(true)}
           activeOpacity={0.7}

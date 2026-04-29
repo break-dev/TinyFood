@@ -78,17 +78,24 @@ export const useRegistrar = () => {
       // Enviar directamente los arreglos nativos del estado
       const alimentosArr = formData.alimentos_prohibidos;
       const preferenciasArr = formData.preferencias;
-      
+
       // Convertir informacion médica ya está en el formato correcto
       const infoMedicaArr = formData.informacion_medica;
 
       // Validar y formatear fecha de nacimiento (DD/MM/YYYY -> ISO)
       let fechaNac = undefined;
-      if (formData.fecha_nacimiento && formData.fecha_nacimiento.length === 10) {
+      if (
+        formData.fecha_nacimiento &&
+        formData.fecha_nacimiento.length === 10
+      ) {
         const [day, month, year] = formData.fecha_nacimiento.split("/");
         if (day && month && year) {
           // Javascript Date usa meses del 0 al 11, por eso restamos 1 al mes
-          const parsedDate = new Date(Number(year), Number(month) - 1, Number(day));
+          const parsedDate = new Date(
+            Number(year),
+            Number(month) - 1,
+            Number(day),
+          );
           if (!isNaN(parsedDate.getTime())) {
             fechaNac = parsedDate.toISOString();
           }

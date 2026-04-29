@@ -1,5 +1,11 @@
 import React from "react";
-import { View, Text, TouchableOpacity, ActivityIndicator, Image } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  ActivityIndicator,
+  Image,
+} from "react-native";
 import { useAutenticar } from "../logic/use-autenticar";
 import Animated, { FadeInDown, FadeInUp } from "react-native-reanimated";
 import { Ionicons } from "@expo/vector-icons";
@@ -37,7 +43,7 @@ export const AuthScreen = () => {
             <Image
               source={require("@/assets/images/auth/mascota-peek.png")}
               className="h-40 w-40"
-              style={{ transform: [{ rotate: '0deg' }] }}
+              style={{ transform: [{ rotate: "0deg" }] }}
               resizeMode="contain"
             />
           </View>
@@ -69,15 +75,21 @@ export const AuthScreen = () => {
         >
           <View className="flex-row items-center rounded-full bg-green-50 px-4 py-2">
             <Ionicons name="scan-outline" size={14} color="#16a34a" />
-            <Text className="ml-1.5 text-sm font-semibold text-green-600">Foto IA</Text>
+            <Text className="ml-1.5 text-sm font-semibold text-green-600">
+              Foto IA
+            </Text>
           </View>
           <View className="flex-row items-center rounded-full bg-green-50 px-4 py-2">
             <Ionicons name="timer-outline" size={14} color="#16a34a" />
-            <Text className="ml-1.5 text-sm font-semibold text-green-600">Cero desperdicio</Text>
+            <Text className="ml-1.5 text-sm font-semibold text-green-600">
+              Cero desperdicio
+            </Text>
           </View>
           <View className="flex-row items-center rounded-full bg-green-50 px-4 py-2">
             <Ionicons name="restaurant-outline" size={14} color="#16a34a" />
-            <Text className="ml-1.5 text-sm font-semibold text-green-600">Recetas</Text>
+            <Text className="ml-1.5 text-sm font-semibold text-green-600">
+              Recetas
+            </Text>
           </View>
         </Animated.View>
 
@@ -90,8 +102,9 @@ export const AuthScreen = () => {
             onPress={onLoginPress}
             disabled={loading}
             activeOpacity={0.85}
-            className={`flex-row items-center justify-center rounded-2xl bg-gray-900 py-5 shadow-lg ${loading ? "opacity-70" : ""
-              }`}
+            className={`flex-row items-center justify-center rounded-2xl bg-gray-900 py-5 shadow-lg ${
+              loading ? "opacity-70" : ""
+            }`}
           >
             {loading ? (
               <ActivityIndicator color="white" />

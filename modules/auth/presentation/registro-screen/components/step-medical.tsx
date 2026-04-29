@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity } from "react-native";
 import Animated, { FadeInRight, FadeOutLeft } from "react-native-reanimated";
 import { Ionicons } from "@expo/vector-icons";
-import { CONDICIONES_MEDICAS_SUGERIDAS } from "@/common/utils/enums/condiciones-medicas";
+import { CONDICIONES_MEDICAS_SUGERIDAS } from "@/common/utils/variables/condiciones-medicas";
 
 interface Condicion {
   nombre: string;
@@ -21,7 +21,7 @@ export const StepMedical = ({ data, setData }: Props) => {
   const addCondicion = (nombre: string) => {
     if (!nombre.trim()) return;
     const existe = data.informacion_medica.find(
-      (c: Condicion) => c.nombre.toLowerCase() === nombre.trim().toLowerCase()
+      (c: Condicion) => c.nombre.toLowerCase() === nombre.trim().toLowerCase(),
     );
     if (!existe) {
       setData({
@@ -40,7 +40,7 @@ export const StepMedical = ({ data, setData }: Props) => {
     setData({
       ...data,
       informacion_medica: data.informacion_medica.filter(
-        (c: Condicion) => c.nombre !== nombre
+        (c: Condicion) => c.nombre !== nombre,
       ),
     });
   };
@@ -50,7 +50,7 @@ export const StepMedical = ({ data, setData }: Props) => {
     setData({
       ...data,
       informacion_medica: data.informacion_medica.map((c: Condicion) =>
-        c.nombre === nombre ? { ...c, descripcion } : c
+        c.nombre === nombre ? { ...c, descripcion } : c,
       ),
     });
   };
@@ -65,8 +65,7 @@ export const StepMedical = ({ data, setData }: Props) => {
       <View className="mb-6">
         <Text className="mb-2 text-3xl font-bold text-gray-900">Salud</Text>
         <Text className="text-gray-500">
-          Agrega tus condiciones médicas para mejorar
-          tus recomendaciones.
+          Agrega tus condiciones médicas para mejorar tus recomendaciones.
         </Text>
       </View>
 
@@ -78,7 +77,7 @@ export const StepMedical = ({ data, setData }: Props) => {
         <View className="flex-row flex-wrap gap-2">
           {CONDICIONES_MEDICAS_SUGERIDAS.map((sug) => {
             const isSelected = data.informacion_medica.some(
-              (c: Condicion) => c.nombre === sug
+              (c: Condicion) => c.nombre === sug,
             );
             return (
               <TouchableOpacity
@@ -86,10 +85,11 @@ export const StepMedical = ({ data, setData }: Props) => {
                 onPress={() =>
                   isSelected ? removeCondicion(sug) : addCondicion(sug)
                 }
-                className={`rounded-full px-4 py-2 border ${isSelected
-                  ? "border-orange-500 bg-orange-100"
-                  : "border-gray-200 bg-white"
-                  }`}
+                className={`rounded-full px-4 py-2 border ${
+                  isSelected
+                    ? "border-orange-500 bg-orange-100"
+                    : "border-gray-200 bg-white"
+                }`}
               >
                 <Text
                   className={
