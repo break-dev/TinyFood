@@ -8,25 +8,16 @@ import { supabase } from "../config/supabase.config";
 export function useLogout() {
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleLogout = () => {
-    Alert.alert("Cerrar Sesión", "¿Seguro que deseas salir de TinyFood?", [
-      { text: "Cancelar", style: "cancel" },
-      {
-        text: "Sí, salir",
-        style: "destructive",
-        onPress: async () => {
-          try {
-            setIsLoading(true);
-            await supabase.auth.signOut();
-            // El listener de Auth en _layout se encargará de redirigir al login
-          } catch (error) {
-            console.error("[useLogout] Error al cerrar sesión:", error);
-          } finally {
-            setIsLoading(false);
-          }
-        },
-      },
-    ]);
+  const handleLogout = async () => {
+    try {
+      setIsLoading(true);
+      await supabase.auth.signOut();
+      // El listener de Auth en _layout se encargará de redirigir al login
+    } catch (error) {
+      console.error("[useLogout] Error al cerrar sesión:", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return { isLoading, handleLogout };

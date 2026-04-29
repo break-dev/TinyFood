@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useCallback, useMemo } from "react";
 import {
   View,
   Text,
@@ -20,12 +20,13 @@ import { MotiView } from "moti";
 import { useDespensa } from "../logic/use-despensa";
 import { ListadoComida } from "./components/listado-comida";
 import { RegistroComida } from "./components/registro-comida";
-import { BottomSheetModal } from "@gorhom/bottom-sheet";
+import { BottomSheetModal, BottomSheetBackdrop } from "@gorhom/bottom-sheet";
 import { RES_Comida } from "../service/despensa.responses";
+import { ElegantModal } from "@/common/presentation/components/elegant-modal";
 
 export const DespensaScreen = () => {
   const insets = useSafeAreaInsets();
-  const { isLoading: isLoggingOut, handleLogout } = useLogout();
+  const { isLoading: isLoggingOut, handleLogout: logoutFn } = useLogout();
   const { usuario } = useAuthState();
   const {
     comidas,
@@ -40,6 +41,11 @@ export const DespensaScreen = () => {
   const [comidaParaEditar, setComidaParaEditar] =
     React.useState<RES_Comida | null>(null);
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
+  const [showLogoutModal, setShowLogoutModal] = React.useState(false);
+
+  const handleLogout = () => {
+    setShowLogoutModal(true);
+  };
 
   const openModal = () => {
     setComidaParaEditar(null);
@@ -51,6 +57,18 @@ export const DespensaScreen = () => {
     bottomSheetModalRef.current?.present();
   };
 
+  const renderBackdrop = useCallback(
+    (props: any) => (
+      <BottomSheetBackdrop
+        {...props}
+        disappearsOnIndex={-1}
+        appearsOnIndex={0}
+        opacity={0.5}
+      />
+    ),
+    [],
+  );
+
   const proximosVencimientos = comidas.filter((c) => {
     if (!c.fecha_vencimiento) return false;
     const diff = new Date(c.fecha_vencimiento).getTime() - new Date().getTime();
@@ -58,7 +76,9 @@ export const DespensaScreen = () => {
   }).length;
 
   return (
-    <View style={{ flex: 1, backgroundColor: "#f9fafb", paddingTop: insets.top }}>
+    <View
+      style={{ flex: 1, backgroundColor: "#f9fafb", paddingTop: insets.top }}
+    >
       <StatusBar barStyle="dark-content" />
 
       {/* Header */}
@@ -159,14 +179,14 @@ export const DespensaScreen = () => {
         )}
       </View>
 
-      {/* Floating Action Button */}
-      <View className="absolute bottom-10 right-6">
+      {/* Botón flotante para añadir comida */}
+      <View className="absolute bottom-32 right-6">
         <TouchableOpacity
           onPress={openModal}
           activeOpacity={0.8}
           className="h-16 w-16 items-center justify-center rounded-full bg-gray-900 shadow-2xl shadow-black/40"
         >
-          <Plus size={32} color="white" strokeWidth={2.5} />
+          <Plus size={32} color="white" strokeWidth={3} />
         </TouchableOpacity>
       </View>
 
@@ -178,12 +198,18 @@ export const DespensaScreen = () => {
         comidaParaEditar={comidaParaEditar}
       />
 
-      {/* Logout Overlay */}
-      {isLoggingOut && (
-        <View className="absolute inset-0 bg-white/80 items-center justify-center">
-          <ActivityIndicator size="large" color="#f97316" />
-        </View>
-      )}
+      {/* Logout Confirmation Modal */}
+      <ElegantModal
+        visible={showLogoutModal}
+        onClose={() => setShowLogoutModal(false)}
+        onConfirm={logoutFn}
+        title="Cerrar Sesión"
+        description="¿Seguro que deseas salir de TinyFood? Tu inventario te extrañará 🍎"
+        confirmText="Sí, salir"
+        cancelText="Cancelar"
+        type="danger"
+        icon={LogOut}
+      />
     </View>
   );
 };

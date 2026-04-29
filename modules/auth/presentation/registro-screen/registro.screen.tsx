@@ -66,19 +66,24 @@ export const RegistroScreen = () => {
               <View className="h-10 w-10" />
             )}
 
-            <View className="flex-row items-center gap-1">
+            <View className="flex-row items-center gap-2">
               {[1, 2, 3, 4].map((s) => (
                 <View
                   key={s}
-                  className={`h-2 w-8 rounded-full ${
-                    s <= step ? "bg-orange-500" : "bg-gray-200"
+                  className={`h-2 w-10 rounded-full ${
+                    s <= step ? "bg-orange-500" : "bg-gray-100"
                   }`}
                 />
               ))}
             </View>
 
-            <TouchableOpacity onPress={handleSkip}>
-              <Text className="font-bold text-orange-500">Omitir</Text>
+            <TouchableOpacity onPress={handleSkip} activeOpacity={0.7}>
+              <Text 
+                className="text-orange-500 text-sm"
+                style={{ fontFamily: "Outfit_700Bold" }}
+              >
+                Omitir
+              </Text>
             </TouchableOpacity>
           </View>
 
@@ -97,16 +102,20 @@ export const RegistroScreen = () => {
           </View>
 
           {/* Footer — Solo Continuar/Finalizar */}
-          <View className="mt-8" style={{ paddingBottom: insets.bottom + 8 }}>
+          <View className="mt-10" style={{ paddingBottom: insets.bottom + 10 }}>
             <TouchableOpacity
               onPress={nextStep}
               disabled={loading}
-              className="flex-row items-center justify-center rounded-2xl bg-orange-500 py-5 shadow-lg shadow-orange-500/30"
+              activeOpacity={0.9}
+              className="flex-row items-center justify-center rounded-[32px] bg-gray-900 py-6 shadow-2xl shadow-black/20"
             >
-              <Text className="mr-2 text-lg font-bold text-white">
-                {step === totalSteps ? "Finalizar" : "Continuar"}
+              <Text 
+                className="mr-3 text-xl text-white"
+                style={{ fontFamily: "Outfit_900Black" }}
+              >
+                {step === totalSteps ? "Finalizar Registro" : "Siguiente Paso"}
               </Text>
-              <Ionicons name="arrow-forward" size={20} color="white" />
+              <Ionicons name="arrow-forward" size={22} color="white" strokeWidth={3} />
             </TouchableOpacity>
           </View>
         </ScrollView>

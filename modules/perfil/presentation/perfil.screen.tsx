@@ -30,6 +30,7 @@ import { SheetActividad } from "./components/sheets/sheet-actividad";
 import { SheetAlimentacion } from "./components/sheets/sheet-alimentacion";
 import { SheetSalud } from "./components/sheets/sheet-salud";
 import { SheetFecha } from "./components/sheets/sheet-fecha";
+import { ElegantModal } from "@/common/presentation/components/elegant-modal";
 
 type SheetType = "fisica" | "actividad" | "alimentacion" | "salud" | "fecha";
 
@@ -44,12 +45,17 @@ const activityLabels: Record<number, string> = {
 export const PerfilScreen = () => {
   const insets = useSafeAreaInsets();
   const { usuario } = useAuthState();
-  const { handleLogout } = useLogout();
+  const { handleLogout: logoutFn } = useLogout();
   const { formData, setFormData, handleSave, isLoading, resetForm } =
     useUpdatePerfil();
 
   const bottomSheetRef = useRef<BottomSheetModal>(null);
   const [activeSheet, setActiveSheet] = useState<SheetType | null>(null);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
+
+  const handleLogout = () => {
+    setShowLogoutModal(true);
+  };
 
   const openSheet = (type: SheetType) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -311,6 +317,18 @@ export const PerfilScreen = () => {
           </BottomSheetScrollView>
         </BottomSheetView>
       </BottomSheetModal>
+      {/* Logout Confirmation Modal */}
+      <ElegantModal
+        visible={showLogoutModal}
+        onClose={() => setShowLogoutModal(false)}
+        onConfirm={logoutFn}
+        title="Cerrar Sesión"
+        description="¿Seguro que deseas salir de TinyFood? Tu inventario te extrañará 🍎"
+        confirmText="Sí, salir"
+        cancelText="Cancelar"
+        type="danger"
+        icon={LogOut}
+      />
     </View>
   );
 };

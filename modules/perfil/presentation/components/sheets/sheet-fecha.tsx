@@ -1,7 +1,8 @@
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity, Platform } from "react-native";
-import DateTimePicker from "@react-native-community/datetimepicker";
+import { View, Text, TouchableOpacity, Platform, Modal } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { MotiView } from "moti";
+import { ModernCalendar } from "@/common/presentation/components/modern-calendar";
 
 interface Props {
   data: any;
@@ -42,28 +43,36 @@ export const SheetFecha = ({ data, setData }: Props) => {
       </TouchableOpacity>
 
       {/* Picker — solo se muestra al presionar */}
-      {mostrarPicker && (
-        <DateTimePicker
-          value={parseDate()}
-          mode="date"
-          display="default"
-          maximumDate={new Date()}
-          minimumDate={new Date(1900, 0, 1)}
-          onChange={(_, date) => {
-            setMostrarPicker(false);
-            if (date) {
-              // Usar año, mes, día directamente sin conversión UTC
-              const year = date.getFullYear();
-              const month = String(date.getMonth() + 1).padStart(2, "0");
-              const day = String(date.getDate()).padStart(2, "0");
-              setData({
-                ...data,
-                fecha_nacimiento: `${year}-${month}-${day}`,
-              });
-            }
-          }}
-        />
-      )}
+      <Modal
+        visible={mostrarPicker}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={() => setMostrarPicker(false)}
+      >
+        <View className="flex-1 items-center justify-center bg-black/40 px-6">
+          <TouchableOpacity 
+            activeOpacity={1} 
+            onPress={() => setMostrarPicker(false)}
+            className="absolute inset-0" 
+          />
+          <MotiView
+            from={{ opacity: 0, scale: 0.9, translateY: 20 }}
+            animate={{ opacity: 1, scale: 1, translateY: 0 }}
+            className="w-full"
+          >
+            <ModernCalendar
+              value={data.fecha_nacimiento}
+              onChange={(date) => {
+                setMostrarPicker(false);
+                setData({
+                  ...data,
+                  fecha_nacimiento: date,
+                });
+              }}
+            />
+          </MotiView>
+        </View>
+      </Modal>
 
       {data.fecha_nacimiento && (
         <View className="bg-orange-50 rounded-2xl p-3 border border-orange-100">

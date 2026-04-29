@@ -62,19 +62,31 @@ export const StepMedical = ({ data, setData }: Props) => {
       className="flex-1"
     >
       {/* Header: Title */}
-      <View className="mb-6">
-        <Text className="mb-2 text-3xl font-bold text-gray-900">Salud</Text>
-        <Text className="text-gray-500">
-          Agrega tus condiciones médicas para mejorar tus recomendaciones.
+      <View className="mb-10">
+        <Text
+          className="mb-3 text-4xl text-gray-900 tracking-tighter"
+          style={{ fontFamily: "Outfit_900Black" }}
+        >
+          Salud
+        </Text>
+        <Text
+          className="text-lg text-gray-500 leading-6"
+          style={{ fontFamily: "Outfit_400Regular" }}
+        >
+          Agrega tus condiciones médicas para que podamos darte recomendaciones
+          más seguras y precisas.
         </Text>
       </View>
 
       {/* Bloque 1: Sugerencias */}
-      <View className="mb-6">
-        <Text className="mb-3 font-semibold text-gray-700">
-          Sugerencias rápidas:
+      <View className="mb-10">
+        <Text
+          className="mb-4 ml-1 text-[10px] font-bold uppercase tracking-widest text-gray-400"
+          style={{ fontFamily: "Outfit_700Bold" }}
+        >
+          Sugerencias Rápidas
         </Text>
-        <View className="flex-row flex-wrap gap-2">
+        <View className="flex-row flex-wrap gap-3">
           {CONDICIONES_MEDICAS_SUGERIDAS.map((sug) => {
             const isSelected = data.informacion_medica.some(
               (c: Condicion) => c.nombre === sug,
@@ -85,18 +97,22 @@ export const StepMedical = ({ data, setData }: Props) => {
                 onPress={() =>
                   isSelected ? removeCondicion(sug) : addCondicion(sug)
                 }
-                className={`rounded-full px-4 py-2 border ${
+                activeOpacity={0.8}
+                className={`rounded-2xl px-5 py-3 border shadow-sm ${
                   isSelected
-                    ? "border-orange-500 bg-orange-100"
-                    : "border-gray-200 bg-white"
+                    ? "border-orange-500 bg-orange-500 shadow-orange-500/20"
+                    : "border-gray-50 bg-white shadow-black/5"
                 }`}
               >
                 <Text
-                  className={
-                    isSelected ? "font-bold text-orange-700" : "text-gray-600"
-                  }
+                  className={`text-sm ${
+                    isSelected ? "text-white" : "text-gray-600"
+                  }`}
+                  style={{
+                    fontFamily: isSelected ? "Outfit_700Bold" : "Outfit_400Regular",
+                  }}
                 >
-                  {sug} {isSelected && "✓"}
+                  {sug} {isSelected && " ✓"}
                 </Text>
               </TouchableOpacity>
             );
@@ -105,44 +121,62 @@ export const StepMedical = ({ data, setData }: Props) => {
       </View>
 
       {/* Bloque 2: Input para otra condición */}
-      <View className="mb-6">
-        <Text className="mb-2 font-semibold text-gray-700">Otra condición</Text>
-        <View className="flex-row items-center rounded-2xl border border-gray-200 bg-white px-4 py-2">
+      <View className="mb-10">
+        <Text
+          className="mb-4 ml-1 text-[10px] font-bold uppercase tracking-widest text-gray-400"
+          style={{ fontFamily: "Outfit_700Bold" }}
+        >
+          Otra Condición
+        </Text>
+        <View className="flex-row items-center rounded-3xl border border-gray-100 bg-gray-50 px-5 py-2 shadow-sm">
           <TextInput
-            className="flex-1 py-2 text-base"
+            className="flex-1 py-3 text-base text-gray-900"
+            style={{ fontFamily: "Outfit_400Regular" }}
             placeholder="Ej: Intolerancia al gluten"
+            placeholderTextColor="#cbd5e1"
             value={customCondicion}
             onChangeText={setCustomCondicion}
             onSubmitEditing={() => addCondicion(customCondicion)}
           />
-          <TouchableOpacity onPress={() => addCondicion(customCondicion)}>
-            <Ionicons name="add-circle" size={32} color="#f97316" />
+          <TouchableOpacity
+            onPress={() => addCondicion(customCondicion)}
+            className="ml-2"
+          >
+            <Ionicons name="add-circle" size={36} color="#f97316" />
           </TouchableOpacity>
         </View>
       </View>
 
       {/* Bloque 3: Detalles de las condiciones seleccionadas */}
       {data.informacion_medica.length > 0 && (
-        <View className="mb-6">
-          <Text className="mb-3 font-semibold text-gray-700">
-            Detalles de tus condiciones:
+        <View className="mb-10">
+          <Text
+            className="mb-4 ml-1 text-[10px] font-bold uppercase tracking-widest text-gray-400"
+            style={{ fontFamily: "Outfit_700Bold" }}
+          >
+            Detalles de tus condiciones
           </Text>
           {data.informacion_medica.map((cond: Condicion) => (
             <View
               key={cond.nombre}
-              className="mb-4 rounded-2xl border border-orange-100 bg-orange-50 p-4"
+              className="mb-5 rounded-[32px] border border-orange-50 bg-orange-50/30 p-6 shadow-sm"
             >
-              <View className="mb-2 flex-row items-center justify-between">
-                <Text className="text-lg font-bold text-orange-900">
+              <View className="mb-4 flex-row items-center justify-between">
+                <Text
+                  className="text-xl text-orange-900"
+                  style={{ fontFamily: "Outfit_700Bold" }}
+                >
                   {cond.nombre}
                 </Text>
                 <TouchableOpacity onPress={() => removeCondicion(cond.nombre)}>
-                  <Ionicons name="close-circle" size={24} color="#ef4444" />
+                  <Ionicons name="close-circle" size={26} color="#ef4444" />
                 </TouchableOpacity>
               </View>
               <TextInput
-                className="rounded-xl border border-orange-200 bg-white px-4 py-3 text-gray-800"
-                placeholder={`Detalles de tu ${cond.nombre.toLowerCase()}...`}
+                className="rounded-2xl border border-orange-100 bg-white px-5 py-4 text-gray-800"
+                style={{ fontFamily: "Outfit_400Regular" }}
+                placeholder={`Más detalles sobre esto...`}
+                placeholderTextColor="#cbd5e1"
                 multiline
                 numberOfLines={2}
                 value={cond.descripcion}

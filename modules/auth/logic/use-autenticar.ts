@@ -52,7 +52,11 @@ export const useAutenticar = () => {
       // 1. Login nativo con Google + Supabase Auth
       const googleRes = await AuthService.authWithGoogle();
       console.log("[useAutenticar] Resultado googleRes:", googleRes);
+
       if (!googleRes.success) {
+        if (googleRes.message === "CANCELLED") {
+          return; // No hacemos nada, el usuario solo dio atrás
+        }
         throw new Error(googleRes.message as string);
       }
 

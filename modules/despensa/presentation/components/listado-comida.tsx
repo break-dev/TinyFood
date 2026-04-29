@@ -37,7 +37,7 @@ export const ListadoComida = ({
       <MotiView
         from={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="flex-1 items-center justify-center py-20"
+        className="flex-1 items-center justify-center py-20 mb-48"
       >
         <View className="h-32 w-32 bg-orange-50 rounded-full items-center justify-center mb-6 shadow-sm">
           <PackageSearch size={48} color="#f97316" strokeWidth={1.5} />

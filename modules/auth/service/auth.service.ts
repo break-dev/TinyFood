@@ -1,6 +1,9 @@
 import * as QueryParams from "expo-auth-session/build/QueryParams";
 import { supabase } from "../../../common/config/supabase.config";
-import { GoogleSignin } from "@react-native-google-signin/google-signin";
+import {
+  GoogleSignin,
+  statusCodes,
+} from "@react-native-google-signin/google-signin";
 import { ApiResponse } from "@/common/service/common.responses";
 import { RES_Auth } from "./auth.responses";
 import {
@@ -63,6 +66,10 @@ export class AuthService {
       console.log("[AuthService] Éxito en authWithGoogle");
       return successResponse<RES_Auth>(null, "Sesión iniciada");
     } catch (error: any) {
+      if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+        console.log("[AuthService] El usuario canceló el inicio de sesión");
+        return errorResponse("CANCELLED");
+      }
       console.error("[AuthService] Error capturado en authWithGoogle:", error);
       return errorResponse(error.message ?? "Error en Google Sign In");
     }

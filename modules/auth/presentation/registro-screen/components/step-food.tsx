@@ -81,39 +81,53 @@ export const StepFood = ({ data, setData }: Props) => {
       className="flex-1"
     >
       {/* Header: Title */}
-      <View className="mb-6">
-        <Text className="mb-2 text-3xl font-bold text-gray-900">Alimentos</Text>
-        <Text className="text-gray-500">
-          Cuéntanos qué no puedes comer y qué dieta prefieres seguir.
+      <View className="mb-10">
+        <Text
+          className="mb-3 text-4xl text-gray-900 tracking-tighter"
+          style={{ fontFamily: "Outfit_900Black" }}
+        >
+          Alimentos
+        </Text>
+        <Text
+          className="text-lg text-gray-500 leading-6"
+          style={{ fontFamily: "Outfit_400Regular" }}
+        >
+          Cuéntanos qué no puedes comer y qué dieta prefieres seguir para
+          personalizar tus recetas.
         </Text>
       </View>
 
       {/* SECCIÓN 1: ALERGIAS */}
-      <View className="mb-8">
-        <Text className="mb-2 font-bold text-gray-700 text-lg">
-          Alergias / Alimentos Prohibidos
+      <View className="mb-10">
+        <Text
+          className="mb-4 ml-1 text-[10px] font-bold uppercase tracking-widest text-gray-400"
+          style={{ fontFamily: "Outfit_700Bold" }}
+        >
+          Alergias / Prohibidos
         </Text>
 
         {/* Sugerencias Alergias */}
-        <View className="mb-3 flex-row flex-wrap gap-2">
+        <View className="mb-6 flex-row flex-wrap gap-3">
           {ALERGIAS_SUGERIDAS.map((alergia) => {
             const isSelected = data.alimentos_prohibidos.includes(alergia);
             return (
               <TouchableOpacity
                 key={alergia}
                 onPress={() => toggleAlergia(alergia)}
-                className={`rounded-full px-4 py-2 border ${
+                activeOpacity={0.8}
+                className={`rounded-2xl px-5 py-3 border shadow-sm ${
                   isSelected
-                    ? "border-orange-500 bg-orange-100"
-                    : "border-gray-200 bg-white"
+                    ? "border-orange-500 bg-orange-500 shadow-orange-500/20"
+                    : "border-gray-50 bg-white shadow-black/5"
                 }`}
               >
                 <Text
-                  className={
-                    isSelected ? "font-bold text-orange-700" : "text-gray-600"
-                  }
+                  className={`text-sm ${
+                    isSelected ? "text-white" : "text-gray-600"
+                  }`}
+                  style={{ fontFamily: isSelected ? "Outfit_700Bold" : "Outfit_400Regular" }}
                 >
-                  {alergia} {isSelected && "✓"}
+                  {alergia} {isSelected && " ✓"}
                 </Text>
               </TouchableOpacity>
             );
@@ -121,20 +135,22 @@ export const StepFood = ({ data, setData }: Props) => {
         </View>
 
         {/* Input Libre Alergias */}
-        <View className="flex-row items-center rounded-2xl border border-gray-200 bg-white px-4 py-1 mb-2">
+        <View className="flex-row items-center rounded-3xl border border-gray-100 bg-gray-50 px-5 py-2 mb-4 shadow-sm">
           <TextInput
-            className="flex-1 py-2 text-base"
+            className="flex-1 py-3 text-base text-gray-900"
+            style={{ fontFamily: "Outfit_400Regular" }}
             placeholder="Otro (Ej: Fresas)"
+            placeholderTextColor="#cbd5e1"
             value={customAlergia}
             onChangeText={setCustomAlergia}
             onSubmitEditing={addCustomAlergia}
           />
-          <TouchableOpacity onPress={addCustomAlergia}>
-            <Ionicons name="add-circle" size={32} color="#f97316" />
+          <TouchableOpacity onPress={addCustomAlergia} className="ml-2">
+            <Ionicons name="add-circle" size={36} color="#f97316" />
           </TouchableOpacity>
         </View>
 
-        {/* Chips Agregados Manualmente (Que no están en sugerencias) */}
+        {/* Chips Agregados Manualmente */}
         <View className="flex-row flex-wrap gap-2">
           {data.alimentos_prohibidos
             .filter((a: string) => !ALERGIAS_SUGERIDAS.includes(a))
@@ -142,43 +158,51 @@ export const StepFood = ({ data, setData }: Props) => {
               <TouchableOpacity
                 key={item}
                 onPress={() => toggleAlergia(item)}
-                className="rounded-full px-4 py-2 border border-orange-500 bg-orange-100 flex-row items-center"
+                className="rounded-xl px-4 py-2 bg-orange-100/50 border border-orange-200 flex-row items-center"
               >
-                <Text className="font-bold text-orange-700 mr-1">{item}</Text>
-                <Ionicons name="close" size={16} color="#c2410c" />
+                <Text 
+                  className="text-orange-700 mr-2"
+                  style={{ fontFamily: "Outfit_700Bold" }}
+                >
+                  {item}
+                </Text>
+                <Ionicons name="close" size={16} color="#f97316" />
               </TouchableOpacity>
             ))}
         </View>
       </View>
 
-      <View className="h-[1px] w-full bg-gray-200 mb-8" />
-
       {/* SECCIÓN 2: DIETAS */}
-      <View className="mb-8">
-        <Text className="mb-2 font-bold text-gray-700 text-lg">
+      <View className="mb-10">
+        <Text
+          className="mb-4 ml-1 text-[10px] font-bold uppercase tracking-widest text-gray-400"
+          style={{ fontFamily: "Outfit_700Bold" }}
+        >
           Preferencias o Dietas
         </Text>
 
         {/* Sugerencias Dietas */}
-        <View className="mb-3 flex-row flex-wrap gap-2">
+        <View className="mb-6 flex-row flex-wrap gap-3">
           {DIETAS_SUGERIDAS.map((dieta) => {
             const isSelected = data.preferencias.includes(dieta);
             return (
               <TouchableOpacity
                 key={dieta}
                 onPress={() => toggleDieta(dieta)}
-                className={`rounded-full px-4 py-2 border ${
+                activeOpacity={0.8}
+                className={`rounded-2xl px-5 py-3 border shadow-sm ${
                   isSelected
-                    ? "border-green-500 bg-green-100"
-                    : "border-gray-200 bg-white"
+                    ? "border-emerald-500 bg-emerald-500 shadow-emerald-500/20"
+                    : "border-gray-50 bg-white shadow-black/5"
                 }`}
               >
                 <Text
-                  className={
-                    isSelected ? "font-bold text-green-700" : "text-gray-600"
-                  }
+                  className={`text-sm ${
+                    isSelected ? "text-white" : "text-gray-600"
+                  }`}
+                  style={{ fontFamily: isSelected ? "Outfit_700Bold" : "Outfit_400Regular" }}
                 >
-                  {dieta} {isSelected && "✓"}
+                  {dieta} {isSelected && " ✓"}
                 </Text>
               </TouchableOpacity>
             );
@@ -186,16 +210,18 @@ export const StepFood = ({ data, setData }: Props) => {
         </View>
 
         {/* Input Libre Dietas */}
-        <View className="flex-row items-center rounded-2xl border border-gray-200 bg-white px-4 py-1 mb-2">
+        <View className="flex-row items-center rounded-3xl border border-gray-100 bg-gray-50 px-5 py-2 mb-4 shadow-sm">
           <TextInput
-            className="flex-1 py-2 text-base"
+            className="flex-1 py-3 text-base text-gray-900"
+            style={{ fontFamily: "Outfit_400Regular" }}
             placeholder="Otra (Ej: Dieta Mediterránea)"
+            placeholderTextColor="#cbd5e1"
             value={customDieta}
             onChangeText={setCustomDieta}
             onSubmitEditing={addCustomDieta}
           />
-          <TouchableOpacity onPress={addCustomDieta}>
-            <Ionicons name="add-circle" size={32} color="#22c55e" />
+          <TouchableOpacity onPress={addCustomDieta} className="ml-2">
+            <Ionicons name="add-circle" size={36} color="#10b981" />
           </TouchableOpacity>
         </View>
 
@@ -207,10 +233,15 @@ export const StepFood = ({ data, setData }: Props) => {
               <TouchableOpacity
                 key={item}
                 onPress={() => toggleDieta(item)}
-                className="rounded-full px-4 py-2 border border-green-500 bg-green-100 flex-row items-center"
+                className="rounded-xl px-4 py-2 bg-emerald-100/50 border border-emerald-200 flex-row items-center"
               >
-                <Text className="font-bold text-green-700 mr-1">{item}</Text>
-                <Ionicons name="close" size={16} color="#15803d" />
+                <Text 
+                  className="text-emerald-700 mr-2"
+                  style={{ fontFamily: "Outfit_700Bold" }}
+                >
+                  {item}
+                </Text>
+                <Ionicons name="close" size={16} color="#10b981" />
               </TouchableOpacity>
             ))}
         </View>
