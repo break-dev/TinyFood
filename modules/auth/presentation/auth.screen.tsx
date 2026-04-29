@@ -1,138 +1,177 @@
 import React from "react";
 import {
   View,
-  Text,
+  Text as RNText,
   TouchableOpacity,
   ActivityIndicator,
-  Image,
 } from "react-native";
+import {
+  Scan,
+  Timer,
+  Utensils,
+  Apple,
+  ChevronRight,
+} from "lucide-react-native";
+import { MotiView } from "moti";
 import { useAutenticar } from "../logic/use-autenticar";
-import Animated, { FadeInDown, FadeInUp } from "react-native-reanimated";
-import { Ionicons } from "@expo/vector-icons";
 
 export const AuthScreen = () => {
   const { loading, onLoginPress, animatedLogoStyle } = useAutenticar();
 
   return (
     <View className="flex-1 bg-white">
-      {/* Círculos decorativos animados */}
-      <Animated.View
-        style={animatedLogoStyle}
-        className="absolute -right-20 -top-20 h-80 w-80 rounded-full bg-orange-100 opacity-50"
+      {/* Decorative Circles */}
+      <MotiView
+        from={{ opacity: 0, scale: 0.5, translateX: 50 }}
+        animate={{ opacity: 0.5, scale: 1, translateX: 0 }}
+        transition={{ type: "timing", duration: 1500 }}
+        className="absolute -right-20 -top-20 h-80 w-80 rounded-full bg-orange-100"
       />
-      <Animated.View
-        className="absolute -bottom-10 -left-10 h-40 w-40 rounded-full bg-orange-50 opacity-80"
-        entering={FadeInUp.delay(500).duration(1000)}
+      <MotiView
+        from={{ opacity: 0, scale: 0.5, translateX: -50 }}
+        animate={{ opacity: 0.8, scale: 1, translateX: 0 }}
+        transition={{ type: "timing", duration: 1500, delay: 500 }}
+        className="absolute -bottom-10 -left-10 h-40 w-40 rounded-full bg-orange-50"
       />
 
-      {/* 📸 Imagen superior izquierda — descomentar cuando tengas tu imagen */}
-      {/* <Image
-        source={require("@/assets/images/auth/auth-top-left.png")}
-        className="absolute left-0 top-12 h-24 w-24"
-        resizeMode="contain"
-      /> */}
-
-      <View className="flex-1 items-center justify-center px-8">
-        {/* Logo Section with Mascot */}
-        <Animated.View
-          entering={FadeInDown.duration(1000).springify()}
-          className="mb-6 flex-row items-center justify-center"
+      <View className="flex-1 items-center justify-center px-10">
+        {/* Logo Section */}
+        <MotiView
+          from={{ opacity: 0, translateY: 30 }}
+          animate={{ opacity: 1, translateY: 0 }}
+          transition={{ type: "spring", damping: 15 }}
+          className="mb-8 items-center"
         >
-          {/* 📸 Mascota asomándose */}
-          <View className="absolute -left-28 -top-8 z-10">
-            <Image
-              source={require("@/assets/images/auth/mascota-peek.png")}
-              className="h-40 w-40"
-              style={{ transform: [{ rotate: "0deg" }] }}
-              resizeMode="contain"
-            />
+          <View className="h-40 w-40 items-center justify-center rounded-[48px] bg-orange-500 shadow-2xl shadow-orange-500/50 overflow-hidden">
+            {/* Mascot peek replacement or better visual */}
+            <Apple size={80} color="white" strokeWidth={1.5} />
           </View>
-
-          <View className="h-32 w-32 items-center justify-center rounded-3xl bg-orange-500 shadow-xl shadow-orange-500/50">
-            <Ionicons name="restaurant" size={64} color="white" />
-          </View>
-        </Animated.View>
+        </MotiView>
 
         {/* Text Section */}
-        <Animated.View
-          entering={FadeInDown.delay(200).duration(1000).springify()}
-          className="mb-4 items-center"
+        <MotiView
+          from={{ opacity: 0, translateY: 20 }}
+          animate={{ opacity: 1, translateY: 0 }}
+          transition={{ delay: 300 }}
+          className="mb-10 items-center"
         >
-          <Text className="mb-1 text-5xl font-black tracking-tighter text-gray-900">
+          <RNText
+            className="text-6xl text-gray-900 tracking-tighter"
+            style={{ fontFamily: "Outfit_900Black" }}
+          >
             TinyFood
-          </Text>
-          <View className="mt-1 mb-3 h-1 w-16 rounded-full bg-orange-400" />
-          <Text className="text-center text-lg font-medium text-gray-500">
+          </RNText>
+          <View className="mt-2 mb-5 h-1.5 w-20 rounded-full bg-orange-400" />
+          <RNText
+            className="text-center text-xl text-gray-500 leading-7"
+            style={{ fontFamily: "Outfit_400Regular" }}
+          >
             Tu asistente inteligente para una{"\n"}vida saludable y sin
             desperdicio
-          </Text>
-        </Animated.View>
+          </RNText>
+        </MotiView>
 
         {/* Feature Pills */}
-        <Animated.View
-          entering={FadeInDown.delay(350).duration(800).springify()}
-          className="mb-10 flex-row flex-wrap justify-center gap-2"
+        <MotiView
+          from={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 600 }}
+          className="mb-14 flex-row flex-wrap justify-center gap-3"
         >
-          <View className="flex-row items-center rounded-full bg-green-50 px-4 py-2">
-            <Ionicons name="scan-outline" size={14} color="#16a34a" />
-            <Text className="ml-1.5 text-sm font-semibold text-green-600">
-              Foto IA
-            </Text>
-          </View>
-          <View className="flex-row items-center rounded-full bg-green-50 px-4 py-2">
-            <Ionicons name="timer-outline" size={14} color="#16a34a" />
-            <Text className="ml-1.5 text-sm font-semibold text-green-600">
-              Cero desperdicio
-            </Text>
-          </View>
-          <View className="flex-row items-center rounded-full bg-green-50 px-4 py-2">
-            <Ionicons name="restaurant-outline" size={14} color="#16a34a" />
-            <Text className="ml-1.5 text-sm font-semibold text-green-600">
-              Recetas
-            </Text>
-          </View>
-        </Animated.View>
+          {[
+            {
+              Icon: Scan,
+              label: "Foto IA",
+              color: "text-emerald-600",
+              bg: "bg-emerald-50",
+            },
+            {
+              Icon: Timer,
+              label: "Cero Desperdicio",
+              color: "text-orange-600",
+              bg: "bg-orange-50",
+            },
+            {
+              Icon: Utensils,
+              label: "Recetas",
+              color: "text-blue-600",
+              bg: "bg-blue-50",
+            },
+          ].map((item, idx) => (
+            <View
+              key={idx}
+              className={`flex-row items-center rounded-full ${item.bg} px-5 py-3 border border-white`}
+            >
+              <item.Icon
+                size={16}
+                color={
+                  item.color === "text-emerald-600"
+                    ? "#10b981"
+                    : item.color === "text-orange-600"
+                      ? "#f97316"
+                      : "#3b82f6"
+                }
+              />
+              <RNText
+                className={`ml-2 text-sm font-bold ${item.color}`}
+                style={{ fontFamily: "Outfit_700Bold" }}
+              >
+                {item.label}
+              </RNText>
+            </View>
+          ))}
+        </MotiView>
 
         {/* Action Section */}
-        <Animated.View
-          entering={FadeInUp.delay(400).duration(1000).springify()}
+        <MotiView
+          from={{ opacity: 0, translateY: 20 }}
+          animate={{ opacity: 1, translateY: 0 }}
+          transition={{ delay: 900 }}
           className="w-full"
         >
           <TouchableOpacity
             onPress={onLoginPress}
             disabled={loading}
-            activeOpacity={0.85}
-            className={`flex-row items-center justify-center rounded-2xl bg-gray-900 py-5 shadow-lg ${
+            activeOpacity={0.9}
+            className={`flex-row items-center justify-center rounded-[32px] bg-gray-900 h-20 shadow-xl ${
               loading ? "opacity-70" : ""
             }`}
           >
             {loading ? (
               <ActivityIndicator color="white" />
             ) : (
-              <>
-                <Ionicons
-                  name="logo-google"
-                  size={20}
-                  color="white"
-                  style={{ marginRight: 12 }}
-                />
-                <Text className="text-lg font-bold text-white">
+              <View className="flex-row items-center">
+                <RNText
+                  className="text-xl text-white mr-2"
+                  style={{ fontFamily: "Outfit_900Black" }}
+                >
                   Continuar con Google
-                </Text>
-              </>
+                </RNText>
+                <ChevronRight size={24} color="white" strokeWidth={3} />
+              </View>
             )}
           </TouchableOpacity>
 
-          <Text className="mt-6 text-center text-sm leading-5 text-gray-400 px-4">
-            Al continuar, aceptas nuestros Términos de Servicio y Política de
-            Privacidad.
-          </Text>
-        </Animated.View>
+          <RNText
+            className="mt-8 text-center text-xs text-gray-400 px-6 leading-5"
+            style={{ fontFamily: "Outfit_400Regular" }}
+          >
+            Al continuar, aceptas nuestros{" "}
+            <RNText className="text-gray-600 font-bold">
+              Términos de Servicio
+            </RNText>{" "}
+            y{" "}
+            <RNText className="text-gray-600 font-bold">
+              Política de Privacidad
+            </RNText>
+            .
+          </RNText>
+        </MotiView>
       </View>
 
       {/* Footer Decoration */}
-      <View className="absolute bottom-10 w-full items-center">
-        <View className="h-1 w-12 rounded-full bg-gray-100" />
+      <View className="absolute bottom-12 w-full items-center">
+        <View className="h-1.5 w-12 rounded-full bg-gray-100" />
       </View>
     </View>
   );

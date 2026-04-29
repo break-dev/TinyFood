@@ -1,12 +1,8 @@
 import React from "react";
-import {
-  View,
-  Text,
-  ScrollView,
-  Linking,
-  TouchableOpacity,
-} from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { View, Text as RNText, Linking, TouchableOpacity } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { MotiView, MotiScrollView } from "moti";
+import { Info, ChevronRight, Heart as HeartIcon } from "lucide-react-native";
 import { Ionicons } from "@expo/vector-icons";
 
 const TEAM = [
@@ -63,106 +59,168 @@ const SOCIAL = [
 ];
 
 export const AboutScreen = () => {
+  const insets = useSafeAreaInsets();
   const openLink = (url: string) => Linking.openURL(url);
 
   return (
-    <SafeAreaView className="flex-1 bg-white">
-      <ScrollView className="flex-1 p-6">
-        <View className="items-center mb-8">
-          <View className="bg-orange-100 p-4 rounded-full mb-4">
-            <Ionicons name="information-circle" size={48} color="#f97316" />
-          </View>
-          <Text className="text-3xl font-bold text-gray-800">
+    <View style={{ flex: 1, backgroundColor: "white", paddingTop: insets.top }}>
+      <MotiScrollView
+        showsVerticalScrollIndicator={false}
+        className="flex-1 p-6"
+      >
+        <View className="items-center mb-10 mt-4">
+          <MotiView
+            from={{ scale: 0.5, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            className="bg-orange-50 p-6 rounded-[32px] mb-6 shadow-sm border border-orange-100"
+          >
+            <Info size={48} color="#f97316" strokeWidth={1.5} />
+          </MotiView>
+          <RNText
+            className="text-4xl text-gray-900 tracking-tighter"
+            style={{ fontFamily: "Outfit_900Black" }}
+          >
             Sobre TinyFood
-          </Text>
-          <Text className="text-orange-500 font-medium">Versión 1.0.0</Text>
+          </RNText>
+          <View className="bg-orange-500 px-4 py-1.5 rounded-full mt-2">
+            <RNText
+              className="text-white text-xs"
+              style={{ fontFamily: "Outfit_900Black" }}
+            >
+              VERSIÓN 1.0.0
+            </RNText>
+          </View>
         </View>
 
-        <View className="bg-gray-50 p-5 rounded-2xl mb-6">
-          <Text className="text-gray-700 leading-6 text-lg">
+        <MotiView
+          from={{ opacity: 0, translateY: 20 }}
+          animate={{ opacity: 1, translateY: 0 }}
+          transition={{ delay: 200 }}
+          className="bg-gray-50 p-8 rounded-[40px] mb-10 border border-gray-100"
+        >
+          <RNText
+            className="text-gray-600 leading-7 text-xl text-center"
+            style={{ fontFamily: "Outfit_400Regular" }}
+          >
             TinyFood es una iniciativa diseñada para reducir el desperdicio de
             alimentos en el hogar, utilizando inteligencia artificial para
             gestionar tu despensa de forma inteligente.
-          </Text>
-        </View>
+          </RNText>
+        </MotiView>
 
         {/* Equipo */}
-        <Text className="text-s font-semibold text-gray-400 uppercase tracking-widest mb-3">
-          Equipo de desarrollo
-        </Text>
-        <View className="gap-3 mb-6">
+        <RNText
+          className="text-[10px] text-gray-400 uppercase tracking-[4px] mb-6 ml-1"
+          style={{ fontFamily: "Outfit_900Black" }}
+        >
+          EQUIPO DE DESARROLLO
+        </RNText>
+
+        <View className="gap-4 mb-10">
           {TEAM.map((member, i) => (
-            <View
+            <MotiView
               key={i}
-              className="flex-row items-center bg-white border border-gray-100 p-3 rounded-2xl"
-              style={{
-                shadowColor: "#000",
-                shadowOpacity: 0.04,
-                shadowRadius: 4,
-                elevation: 1,
-              }}
+              from={{ opacity: 0, translateX: -20 }}
+              animate={{ opacity: 1, translateX: 0 }}
+              transition={{ delay: 400 + i * 100 }}
+              className="flex-row items-center bg-white border border-gray-100 p-4 rounded-[32px] shadow-sm"
             >
               <View
-                style={{ backgroundColor: member.color, width: 40, height: 40 }}
-                className="rounded-full items-center justify-center mr-3"
+                style={{ backgroundColor: member.color }}
+                className="w-12 h-12 rounded-2xl items-center justify-center mr-4"
               >
-                <Text
-                  style={{ color: member.textColor }}
-                  className="text-xs font-semibold"
+                <RNText
+                  className="text-base"
+                  style={{
+                    fontFamily: "Outfit_900Black",
+                    color: member.textColor,
+                  }}
                 >
                   {member.initials}
-                </Text>
+                </RNText>
               </View>
               <View className="flex-1">
-                <Text className="font-semibold text-gray-800 text-base">
+                <RNText
+                  className="text-gray-900 text-lg"
+                  style={{ fontFamily: "Outfit_700Bold" }}
+                >
                   {member.name}
-                </Text>
-                <Text className="text-gray-400 text-sm">{member.role}</Text>
+                </RNText>
+                <RNText
+                  className="text-gray-400 text-xs uppercase tracking-widest"
+                  style={{ fontFamily: "Outfit_400Regular" }}
+                >
+                  {member.role}
+                </RNText>
               </View>
               <View className="flex-row gap-2">
-                <TouchableOpacity
-                  onPress={() => openLink(member.instagram)}
-                  className="w-9 h-9 rounded-lg border border-gray-100 items-center justify-center"
-                >
-                  <Ionicons name="logo-instagram" size={18} color="#6b7280" />
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() => openLink(member.github)}
-                  className="w-9 h-9 rounded-lg border border-gray-100 items-center justify-center"
-                >
-                  <Ionicons name="logo-github" size={18} color="#6b7280" />
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() => openLink(member.linkedin)}
-                  className="w-9 h-9 rounded-lg border border-gray-100 items-center justify-center"
-                >
-                  <Ionicons name="logo-linkedin" size={18} color="#6b7280" />
-                </TouchableOpacity>
+                {[
+                  {
+                    iconName: "logo-instagram" as const,
+                    url: member.instagram,
+                  },
+                  { iconName: "logo-github" as const, url: member.github },
+                  { iconName: "logo-linkedin" as const, url: member.linkedin },
+                ].map((social, idx) => (
+                  <TouchableOpacity
+                    key={idx}
+                    onPress={() => openLink(social.url)}
+                    className="w-10 h-10 rounded-xl bg-gray-50 items-center justify-center border border-gray-100"
+                  >
+                    <Ionicons
+                      name={social.iconName}
+                      size={16}
+                      color="#6b7280"
+                    />
+                  </TouchableOpacity>
+                ))}
               </View>
-            </View>
+            </MotiView>
           ))}
         </View>
 
         {/* Solo IG grupal */}
-        <Text className="text-s font-semibold text-gray-400 uppercase tracking-widest mb-3">
-          Síguenos
-        </Text>
-        <TouchableOpacity
-          onPress={() => openLink(SOCIAL[0].url)}
-          className="flex-row items-center gap-2 bg-gray-50 border border-gray-100 rounded-xl px-4 py-3 mb-6"
+        <RNText
+          className="text-[10px] text-gray-400 uppercase tracking-[4px] mb-6 ml-1"
+          style={{ fontFamily: "Outfit_900Black" }}
         >
-          <Ionicons name="logo-instagram" size={18} color="#f97316" />
-          <Text className="text-sm font-medium text-gray-700">
+          SÍGUENOS
+        </RNText>
+        <TouchableOpacity
+          activeOpacity={0.8}
+          onPress={() => openLink(SOCIAL[0].url)}
+          className="flex-row items-center bg-orange-50 border border-orange-100 rounded-[32px] px-6 py-5 mb-12 shadow-sm shadow-orange-500/10"
+        >
+          <Ionicons name="logo-instagram" size={24} color="#f97316" />
+          <RNText
+            className="text-lg ml-4 text-orange-900"
+            style={{ fontFamily: "Outfit_700Bold" }}
+          >
             @the_berlin.crew
-          </Text>
+          </RNText>
           <View className="flex-1" />
-          <Ionicons name="chevron-forward" size={14} color="#d1d5db" />
+          <ChevronRight size={20} color="#f97316" strokeWidth={3} />
         </TouchableOpacity>
 
-        <Text className="text-center text-s text-gray-300">
-          Hecho con amor en Perú 🇵🇪
-        </Text>
-      </ScrollView>
-    </SafeAreaView>
+        <View className="items-center mb-20">
+          <View className="flex-row items-center mb-2">
+            <RNText
+              className="text-gray-300 text-sm"
+              style={{ fontFamily: "Outfit_400Regular" }}
+            >
+              Hecho con{" "}
+            </RNText>
+            <HeartIcon size={14} color="#ef4444" fill="#ef4444" />
+            <RNText
+              className="text-gray-300 text-sm"
+              style={{ fontFamily: "Outfit_400Regular" }}
+            >
+              {" "}
+              en Perú 🇵🇪
+            </RNText>
+          </View>
+        </View>
+      </MotiScrollView>
+    </View>
   );
 };

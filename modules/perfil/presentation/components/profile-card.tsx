@@ -1,28 +1,51 @@
 import React from "react";
-import { View, Text, TouchableOpacity } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { View, Text as RNText, TouchableOpacity } from "react-native";
+import { LucideIcon, ChevronRight } from "lucide-react-native";
+import { MotiView } from "moti";
 
 interface Props {
-  icon: string;
+  Icon: LucideIcon;
   title: string;
   subtitle: string;
   onPress: () => void;
+  delay?: number;
 }
 
-export const ProfileCard = ({ icon, title, subtitle, onPress }: Props) => (
-  <TouchableOpacity
-    onPress={onPress}
-    className="mb-3 flex-row items-center rounded-2xl bg-gray-50 p-4 border border-gray-100"
-  >
-    <View className="w-10 h-10 rounded-full bg-orange-100 items-center justify-center mr-3">
-      <Ionicons name={icon as any} size={20} color="#f97316" />
-    </View>
-    <View className="flex-1">
-      <Text className="text-xs text-gray-400 mb-0.5">{title}</Text>
-      <Text className="text-gray-800 font-medium" numberOfLines={1}>
-        {subtitle || "Sin datos"}
-      </Text>
-    </View>
-    <Ionicons name="chevron-forward" size={18} color="#d1d5db" />
+export const ProfileCard = ({
+  Icon,
+  title,
+  subtitle,
+  onPress,
+  delay = 0,
+}: Props) => (
+  <TouchableOpacity activeOpacity={0.7} onPress={onPress}>
+    <MotiView
+      from={{ opacity: 0, translateX: -20 }}
+      animate={{ opacity: 1, translateX: 0 }}
+      transition={{ delay }}
+      className="mb-4 flex-row items-center rounded-[28px] bg-white p-5 shadow-sm border border-gray-100"
+    >
+      <View className="w-12 h-12 rounded-2xl bg-orange-50 items-center justify-center mr-4">
+        <Icon size={22} color="#f97316" strokeWidth={2.5} />
+      </View>
+      <View className="flex-1">
+        <RNText
+          className="text-[10px] text-gray-400 uppercase tracking-widest mb-1"
+          style={{ fontFamily: "Outfit_700Bold" }}
+        >
+          {title}
+        </RNText>
+        <RNText
+          className="text-gray-800 text-base"
+          style={{ fontFamily: "Outfit_700Bold" }}
+          numberOfLines={1}
+        >
+          {subtitle || "Sin datos"}
+        </RNText>
+      </View>
+      <View className="h-8 w-8 items-center justify-center rounded-xl bg-gray-50">
+        <ChevronRight size={16} color="#d1d5db" strokeWidth={2.5} />
+      </View>
+    </MotiView>
   </TouchableOpacity>
 );
