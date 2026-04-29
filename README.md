@@ -1,171 +1,104 @@
-# TinyFood — Frontend
+# TinyFood — Frontend 🥘
 
-> **Para IA del IDE:** Lee este documento completo antes de generar o sugerir cualquier código. Contiene las reglas, arquitectura y convenciones de este proyecto.
-
-## 1. Contexto del Negocio
-
-**Problema:** Los usuarios desperdician comida por no llevar un control de su despensa y no saben qué cocinar con lo que tienen, especialmente considerando restricciones médicas o nutricionales.
-
-**Solución:** Aplicación móvil que gestiona la despensa del hogar con ayuda de IA:
-
-- El usuario fotografía sus alimentos → la IA los identifica y estima su fecha de caducidad.
-- La app alerta antes de que los alimentos se estropeen.
-- Sugiere recetas basadas en el inventario actual y las restricciones del usuario.
-
-**Happy Path de Autenticación:**
-
-```
-Usuario abre app
-  → Redirección inteligente (Index) según sesión
-    → Login con Google Nativo
-      → Verificación en API (¿Existe perfil?)
-        → SI: Dashboard (Despensa)
-        → NO: Formulario de Registro Multi-paso (Peso, Talla, Alergias)
-```
+> **Para IA del IDE:** Lee este documento completo antes de generar o sugerir cualquier código. Contiene las reglas, arquitectura y convenciones estrictas de este proyecto.
 
 ---
 
-## 2. Stack Tecnológico
+## 1. Contexto del Negocio 💡
 
-| Herramienta             | Versión  | Uso                                       |
-| ----------------------- | -------- | ----------------------------------------- |
-| Expo                    | ~54.0.33 | SDK de desarrollo nativo                  |
-| React Native            | 0.81.5   | Framework base móvil                      |
-| TypeScript              | ~5.9.2   | **Obligatorio** en todo el proyecto       |
-| Expo Router             | ~6.0.23  | Navegación basada en carpetas             |
-| NativeWind              | ^4.2.3   | Estilos con clases Tailwind               |
-| Zustand                 | ^4.5.2   | Gestión de estado global (AuthStore)      |
-| Socket.IO Client        | ^4.8.1   | Comunicación en tiempo real con la API    |
-| Supabase Auth           | ^2.62.2  | Gestión de sesiones y OAuth               |
-| Google Sign-In          | ^13.1.0  | Autenticación Nativa (Android/iOS)        |
-| React Native Reanimated | ~4.1.1   | Animaciones fluidas y micro-interacciones |
+**TinyFood** es un asistente inteligente diseñado para combatir el desperdicio de alimentos y mejorar la salud nutricional del hogar. La app utiliza IA para gestionar el inventario de la despensa y sugerir recetas personalizadas basadas en lo que el usuario ya tiene, sus alergias y sus metas físicas.
+
+### Flujo Crítico de Autenticación
+1.  **Inicio Inteligente:** El orquestador decide si enviar al usuario al Dashboard o al Login según la sesión de Supabase.
+2.  **Login Nativo:** Uso de Google Sign-In nativo para una experiencia fluida.
+3.  **Verificación de Perfil:** Si el usuario no tiene datos físicos registrados en la API, es forzado a completar el registro multi-paso.
 
 ---
 
-## 3. Arquitectura y Estructura de Carpetas
+## 2. Stack Tecnológico Moderno 🚀
 
-El proyecto sigue una arquitectura **Modular y Orientada a Capas** para asegurar que el código sea escalable, testeable y fácil de mantener.
-
-### 3.1 Estructura Principal
-
-- `app/`: **Capa de Ruteo (Expo Router)**.
-  - `(public)/`: Rutas accesibles sin autenticación (Login, Registro).
-  - `(private)/`: Rutas protegidas que requieren sesión activa.
-  - `index.tsx`: Orquestador inicial que decide el flujo de navegación.
-- `modules/`: **Capa de Funcionalidades (Features)**. Cada carpeta representa un dominio del negocio.
-  - `presentation/`: Componentes visuales y pantallas. **Regla:** No deben contener lógica compleja ni acceder a stores directamente.
-  - `logic/`: Hooks personalizados (`use...`) que actúan como controladores. Orquestan servicios y actualizan el estado global.
-  - `service/`: Clases o funciones que realizan peticiones al exterior (Sockets/API). **Regla:** Las interfaces de peticiones deben ir en `nombre.requests.ts` y las respuestas en `nombre.responses.ts`. Los enums deben importarse de `common/utils/enums`.
-- `common/`: **Capa Transversal (Shared)**.
-  - `config/`: Inicialización de SDKs (Supabase, Socket.io).
-  - `stores/`: Definición de estados globales con **Zustand**.
-  - `logic/`: Hooks de orquestación compartidos (ej. `useAuthState`).
-  - `service/`: Servicios globales (ej. `SocketService` para manejo de reconexiones).
-  - `utils/`:
-    - `variables/`: Constantes de diseño, rutas, y strings.
-    - `functions/`: Helpers puros y formateadores.
-- `assets/`: Recursos estáticos (imágenes, fuentes, sonidos).
-
-### 3.2 Convenciones y Reglas de Oro
-
-1.  **Modularidad Estricta:** Un módulo no debe importar archivos de la carpeta `presentation` de otro módulo. La comunicación entre módulos se hace a través de servicios o stores en `common`.
-2.  **Hooks de Lógica como Controladores:** Si un componente necesita datos de un store, debe pedírselos a un hook en la carpeta `logic`. Ejemplo:
-    - ❌ `const { user } = useAuthStore();` (En un componente de UI)
-    - ✅ `const { user } = useAuthState();` (Donde el hook encapsula el acceso al store)
-3.  **Estilos Declarativos:** Usamos exclusivamente **NativeWind** (Tailwind CSS). Esto permite un diseño consistente y rápido sin la verbosidad de `StyleSheet`.
-4.  **Tipado Total:** Cada respuesta de socket o función debe tener su interfaz definida en el archivo correspondiente para evitar el uso de `any`.
+| Categoría | Herramienta | Versión | Uso |
+| :--- | :--- | :--- | :--- |
+| **Núcleo** | Expo / React Native | SDK 54 / 0.81.5 | Base del desarrollo nativo. |
+| **Navegación** | Expo Router | ~6.0.23 | Navegación basada en archivos (File-based routing). |
+| **Estilos** | NativeWind (Tailwind) | ^4.2.3 | Estilos declarativos y diseño consistente. |
+| **Estado** | Zustand | ^5.0.12 | Gestión de estado global ligera y escalable. |
+| **Backend** | Socket.IO Client | ^4.8.3 | Comunicación en tiempo real y bidireccional. |
+| **Auth** | Supabase / Google | ^2.103.0 | Gestión de identidad y persistencia de sesión. |
+| **Listas** | Shopify FlashList | 2.0.2 | Listado de alto rendimiento (reemplaza FlatList). |
+| **Animaciones** | Moti / Reanimated | ~4.1.1 | Micro-interacciones y transiciones fluidas. |
+| **UI Kit** | Bottom Sheet / Toast | ^5.2.10 | Componentes de interacción premium. |
 
 ---
 
-## 4. Estructura de Navegación (Expo Router)
+## 3. Arquitectura y Reglas de Oro 🏗️
 
-La app utiliza grupos de rutas para separar el acceso público del privado:
+El proyecto sigue una arquitectura **Modular y Orientada a Capas**, optimizada para la legibilidad y el mantenimiento a largo plazo.
 
-```
-app/
-  index.tsx       ← Punto de entrada. Decide si ir a despensa o Auth.
-  _layout.tsx     ← Root Layout. Gestiona onAuthStateChange de Supabase.
-  (public)/
-    _layout.tsx   ← Protege rutas públicas. Redirige a despensa si hay usuario.
-    auth.tsx      ← Pantalla de Login (Google).
-    register.tsx  ← Formulario de registro (Peso, Talla, Salud).
-  (private)/
-    _layout.tsx   ← Protege rutas privadas. Redirige a Auth si no hay usuario.
-    despensa.tsx      ← Dashboard Principal (Módulo Despensa).
-```
+### 3.1 Estructura de Carpetas
+-   `app/`: Capa de ruteo. Contiene layouts y rutas públicas/privadas.
+-   `modules/`: Capa de dominio. Cada carpeta (`auth`, `despensa`, `perfil`) es un módulo independiente.
+    -   `presentation/`: Pantallas y componentes visuales. **Prohibido** usar lógica compleja aquí.
+    -   `logic/`: Hooks personalizados (`use...`) que actúan como **Controladores**. Aquí reside la lógica.
+    -   `service/`: Llamadas a la API/Sockets.
+-   `common/`: Recursos compartidos (configs, stores globales, utils).
 
----
-
-## 5. Lógica de Autenticación y Registro
-
-### 5.1 Flujo de Inicio de Sesión (`useAutenticar.ts`)
-
-1. Se invoca `AuthService.authWithGoogle()`.
-2. Se obtiene el ID Token de Google y se inicia sesión en Supabase.
-3. Se emite un evento Socket `auth:autenticar` a la API.
-4. Si la API responde `USER_NOT_FOUND`, se navega a `/register`.
-
-### 5.2 Registro Detallado (`useRegistrar.ts`)
-
-1. Formulario de 3 pasos: Físico (Peso/Talla) -> Actividad -> Salud (Alergias).
-2. Los campos de texto (Alergias/Preferencias) se convierten de **String separado por comas** a **Array (`string[]`)** antes de enviarse a la API.
+### 3.2 Convenciones Estrictas (Obligatorio)
+1.  **Text Components:** No uses `Text` de `react-native` directamente. Importa como `import { Text as RNText } from "react-native"` para evitar colisiones y asegurar el uso de fuentes personalizadas.
+2.  **Safe Areas:** **No uses `<SafeAreaView />`**. Está deprecado en versiones recientes de RN. Usa el hook `useSafeAreaInsets()` y aplica el padding manualmente a un `View` para mayor control.
+3.  **Haptics:** Cada acción importante (botones, éxito de formularios, errores) debe incluir `expo-haptics` para mejorar el feedback táctil.
+4.  **Estilos:** Solo usa clases de **Tailwind** (`className`). El uso de `StyleSheet.create` está prohibido a menos que sea estrictamente necesario para animaciones complejas de Reanimated.
+5.  **Tipado:** Todas las interfaces de la API deben seguir el patrón `REQ_Nombre` para peticiones y `RES_Nombre` para respuestas.
 
 ---
 
-## 6. Comunicación con la API (WebSockets)
+## 4. Diseño y Experiencia de Usuario (UX) ✨
 
-- **SocketService:** Envoltura sobre Socket.io que maneja promesas y timeouts de 10s.
-- **Protocolo:** Todas las peticiones al servidor son vía `socket.emit` con un callback de respuesta (`ack`).
-- **Autenticación:** El token se envía en el `handshake.auth` o como propiedad `token` en el payload.
-
----
-
-## 7. Convenciones de Desarrollo
-
-1.  **Estilos:** Solo clases de **Tailwind** (`className`). Prohibido `StyleSheet.create`.
-2.  **Rutas:** Usar el objeto `routes` de `@/common/utils/variables/routes` para navegar.
-3.  **Tipado:** Todas las respuestas de la API deben estar tipadas como `RES_Nombre`.
-4.  **Haptics:** Usar `expo-haptics` para dar feedback táctil en acciones importantes (botones, éxito/error).
+Para lograr una sensación **Premium**, seguimos estas directrices:
+-   **Micro-animaciones:** Uso constante de `MotiView` para entradas de elementos y estados de carga.
+-   **Feedback Visual:** Implementación de `react-native-toast-message` para notificaciones de sistema.
+-   **Skeleton Loaders:** Evitar indicadores de carga genéricos; preferir skeletons o animaciones temáticas.
+-   **Teclado:** Uso de `KeyboardAvoidingView` y cierres de teclado automáticos para que la interacción se sienta nativa y no "webby".
 
 ---
 
-## 8. Ejecución Local
+## 5. Comunicación y API 🔌
 
-1. `npm install`
-2. Configurar `.env` con las variables necesarias:
-   - `EXPO_PUBLIC_SUPABASE_URL` y `KEY`: Desde el dashboard de Supabase.
-   - `EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID`: Desde Google Cloud Console (ID de cliente web para OAuth).
-   - `EXPO_PUBLIC_SOCKET_URL`: Tu IP local (ver sección 9).
-3. `npx expo start --dev-client` (Requiere build nativo previo en el dispositivo).
+### Protocolo Socket.IO
+Toda la comunicación con la API se realiza a través de `SocketService`, que envuelve las emisiones en Promesas con timeouts de 10 segundos.
+
+### Variables de Entorno (`.env`)
+-   `EXPO_PUBLIC_SOCKET_URL`: URL de la API.
+    -   **Producción:** `https://tinyfoodapi.onrender.com`
+    -   **Local:** Tu IP local (ej. `http://192.168.100.XX:3000`) si la API no está en la nube.
+-   `EXPO_PUBLIC_SUPABASE_URL/KEY`: Credenciales de Supabase.
+-   `EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID`: Client ID para autenticación.
 
 ---
 
-## 9. Configuración de Red y Sockets
+## 6. Generación de APK y Builds Natos 📱
 
-### ¿Por qué no usar `localhost`?
+Este proyecto utiliza **EAS Build** para generar binarios instalables.
 
-En el desarrollo móvil con Expo/React Native, `localhost` (127.0.0.1) se refiere al **dispositivo móvil o emulador**, no a tu computadora. Para que la app pueda comunicarse con la API ejecutándose en tu PC, debes usar la **dirección IP privada** de tu computadora en la misma red Wi-Fi.
+### 6.1 Proceso de Build (Android APK)
+1.  **Comando:** `eas build --profile preview --platform android`
+2.  **Perfil Preview:** Genera un archivo `.apk` descargable directamente desde Expo.
 
-### Cómo obtener tu IP (Mac/Linux)
+### 6.2 Firma y Google Sign-In (Paso Crítico)
+Para que el Login de Google funcione en el APK instalado:
+1.  Obtén el SHA-1 del build: `eas credentials --platform android` (selecciona perfil `preview`).
+2.  Registra ese **SHA-1** y el Package Name (`com.tinyfood.app`) en la **Google Cloud Console**.
+3.  Sin este registro, el botón de Google fallará con un "Developer Error".
 
-Corre el siguiente comando en tu terminal:
+---
 
-```bash
-ipconfig getifaddr en0
-```
+## 7. Ejecución y Desarrollo 🛠️
 
-O búscalo en _Ajustes del Sistema > Red > Wi-Fi > Detalles_.
+1.  **Instalar:** `npm install`
+2.  **Configurar:** Crear `.env` basado en `env.example`.
+3.  **Correr:** `npx expo start --dev-client`
+    -   *Nota:* Al usar librerías nativas, **debes** usar un Development Build o el APK generado para probar todas las funciones (especialmente Auth y Haptics).
 
-### Cómo obtener tu IP (Windows)
+---
 
-```bash
-ipconfig
-```
-
-Busca la sección "Adaptador de LAN inalámbrica Wi-Fi" y copia la "Dirección IPv4" (ej. `192.168.1.XX`).
-
-### Troubleshooting de Conexión
-
-- **Misma Red:** Asegúrate de que el celular y la PC estén en la misma red Wi-Fi.
-- **Firewall:** Si no conecta, verifica que el Firewall de tu OS permita conexiones entrantes en el puerto `3000`.
-- **IP Dinámica:** Si reinicias tu router, tu IP podría cambiar y deberás actualizarla en el `.env`.
+> **Mantenimiento:** Este README debe actualizarse cada vez que se agregue una nueva dependencia global o se cambie un flujo arquitectónico mayor.
