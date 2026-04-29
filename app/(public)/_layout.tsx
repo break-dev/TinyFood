@@ -8,7 +8,7 @@ export default function PublicLayout() {
   if (!isInitialized) return null; // Estado de carga
 
   if (usuario) {
-    return <Redirect href={routes.home as any} />;
+    return <Redirect href={routes.despensa as any} />;
   }
 
   return (

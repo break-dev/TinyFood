@@ -16,7 +16,7 @@ export default function PrivateLayout() {
 
   return (
     <Tabs
-      initialRouteName="home"
+      initialRouteName="despensa"
       screenOptions={{
         headerShown: false,
         tabBarActiveTintColor: "#f97316",
@@ -47,7 +47,7 @@ export default function PrivateLayout() {
         }}
       />
       <Tabs.Screen
-        name="home"
+        name="despensa"
         options={{
           tabBarIcon: ({ focused, color, size }) => (
             <Ionicons
@@ -69,7 +69,7 @@ export default function PrivateLayout() {
             />
           ),
         }}
-      />      
+      />
     </Tabs>
   );
 }

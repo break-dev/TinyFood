@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Alert } from "react-native";
-import { HomeService } from "../service/home.service";
+import { despensaService } from "../service/despensa.service";
 
 export function useLogout() {
   const [isLoading, setIsLoading] = useState(false);
@@ -13,7 +13,7 @@ export function useLogout() {
         style: "destructive",
         onPress: async () => {
           setIsLoading(true);
-          await HomeService.logout();
+          await despensaService.logout();
           setIsLoading(false);
         },
       },

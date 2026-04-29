@@ -1,6 +1,6 @@
 export const routes = {
   auth: "/(public)/auth",
-  home: "/(private)/home",
+  despensa: "/(private)/despensa",
   about: "/(private)/about",
   perfil: "/(private)/perfil",
   index: "/",

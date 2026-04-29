@@ -7,5 +7,5 @@ export default function Index() {
 
   if (!isInitialized) return null;
 
-  return <Redirect href={(usuario ? routes.home : routes.auth) as any} />;
+  return <Redirect href={(usuario ? routes.despensa : routes.auth) as any} />;
 }
