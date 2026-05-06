@@ -30,8 +30,9 @@ export function useRegistroComida({
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Sincroniza el formulario al abrir en modo edición
+  // Sincroniza el formulario al abrir en modo edición o limpiar al cerrar
   useEffect(() => {
+    // Si hay un objeto para editar, sincronizamos
     if (comidaParaEditar) {
       setNombre(comidaParaEditar.nombre);
       setCantidad(comidaParaEditar.cantidad);
@@ -41,7 +42,10 @@ export function useRegistroComida({
           ? new Date(comidaParaEditar.fecha_vencimiento)
           : null,
       );
-    } else {
+    }
+    // Si NO hay objeto para editar (modo creación), solo limpiamos si el formulario NO tiene datos
+    // Esto evita que al re-renderizar el padre se borre lo que el usuario está escribiendo
+    else if (!nombre && !cantidad && !descripcion && !fechaVencimiento) {
       setNombre("");
       setCantidad("");
       setDescripcion("");
@@ -53,7 +57,7 @@ export function useRegistroComida({
     ref.current?.dismiss();
   }, [ref]);
 
-  const handleSave = async () => {
+  const handleSave = useCallback(async () => {
     if (!nombre || !cantidad) {
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
       Toast.show({
@@ -112,7 +116,16 @@ export function useRegistroComida({
     } finally {
       setIsSubmitting(false);
     }
-  };
+  }, [
+    nombre,
+    cantidad,
+    descripcion,
+    fechaVencimiento,
+    comidaParaEditar,
+    onRegister,
+    onUpdate,
+    handleDismiss,
+  ]);
 
   return {
     // Estado del formulario
