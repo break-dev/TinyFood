@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AuthService } from "../service/auth.service";
 import { useAuthStore } from "@/common/stores/auth.store";
 import { useRouter } from "@/common/logic/use-router";
@@ -14,6 +14,7 @@ export const useRegistrar = () => {
   const totalSteps = 4;
 
   const [formData, setFormData] = useState({
+    nombre: "",
     peso: "",
     talla: "",
     fecha_nacimiento: "",
@@ -25,6 +26,24 @@ export const useRegistrar = () => {
 
   const { setUser } = useAuthStore();
   const router = useRouter();
+
+  // Pre-llenar datos desde Supabase (si vienen de Google/Social)
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (user) {
+        setFormData((prev) => ({
+          ...prev,
+          nombre:
+            user.user_metadata?.full_name ||
+            user.user_metadata?.name ||
+            prev.nombre,
+          // Si el proveedor social diera la fecha de nacimiento (raro pero posible)
+          fecha_nacimiento:
+            user.user_metadata?.birthdate || prev.fecha_nacimiento,
+        }));
+      }
+    });
+  }, []);
 
   /**
    * Avanzar al siguiente paso o finalizar el registro.
@@ -54,7 +73,15 @@ export const useRegistrar = () => {
     setLoading(true);
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     try {
-      const apiRes = await AuthService.registrar({});
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      const apiRes = await AuthService.registrar({
+        nombre:
+          user?.user_metadata?.full_name ||
+          user?.user_metadata?.name ||
+          undefined,
+      });
 
       if (apiRes.success) {
         const { data } = await supabase.auth.getSession();
@@ -103,6 +130,7 @@ export const useRegistrar = () => {
       }
 
       const apiRes = await AuthService.registrar({
+        nombre: formData.nombre || undefined,
         peso: parseFloat(formData.peso) || undefined,
         talla: parseFloat(formData.talla) || undefined,
         fecha_nacimiento: fechaNac,

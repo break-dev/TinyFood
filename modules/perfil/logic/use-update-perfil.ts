@@ -10,6 +10,7 @@ interface Condicion {
 }
 
 interface FormData {
+  nombre: string;
   fecha_nacimiento: string;
   peso: string;
   talla: string;
@@ -20,6 +21,7 @@ interface FormData {
 }
 
 const buildInitialForm = (usuario: any): FormData => ({
+  nombre: usuario?.nombre ?? "",
   fecha_nacimiento: usuario?.fecha_nacimiento
     ? usuario.fecha_nacimiento.toString().split("T")[0]
     : "",
@@ -63,6 +65,7 @@ export function useUpdatePerfil() {
     setIsLoading(true);
     try {
       const res = await PerfilService.actualizarPerfil({
+        nombre: formData.nombre || undefined,
         peso: parseFloat(formData.peso) || undefined,
         talla: parseFloat(formData.talla) || undefined,
         nivel_actividad: formData.nivel_actividad,

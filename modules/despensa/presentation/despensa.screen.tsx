@@ -22,7 +22,7 @@ import { ListadoComida } from "./listado-comida/listado-comida";
 import { RegistroComida } from "./registro-comida/registro-comida";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { RES_Comida } from "../service/despensa.responses";
-import { ElegantModal } from "@/common/presentation/components/elegant-modal";
+import { ModalEstandar } from "@/common/presentation/components/modal-estandar";
 
 export const DespensaScreen = () => {
   const insets = useSafeAreaInsets();
@@ -183,7 +183,7 @@ export const DespensaScreen = () => {
       />
 
       {/* Logout Confirmation Modal */}
-      <ElegantModal
+      <ModalEstandar
         visible={showLogoutModal}
         onClose={() => setShowLogoutModal(false)}
         onConfirm={logoutFn}

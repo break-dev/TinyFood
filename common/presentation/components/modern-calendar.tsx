@@ -3,47 +3,15 @@ import { View, Text, TouchableOpacity, ScrollView } from "react-native";
 import { Calendar, LocaleConfig } from "react-native-calendars";
 import { MotiView, AnimatePresence } from "moti";
 import { ChevronDown, ChevronUp } from "lucide-react-native";
+import { getMeses } from "@/common/utils/functions/get-meses";
+import { getDias } from "@/common/utils/functions/get-dias";
 
 // Configuración en español
 LocaleConfig.locales["es"] = {
-  monthNames: [
-    "Enero",
-    "Febrero",
-    "Marzo",
-    "Abril",
-    "Mayo",
-    "Junio",
-    "Julio",
-    "Agosto",
-    "Septiembre",
-    "Octubre",
-    "Noviembre",
-    "Diciembre",
-  ],
-  monthNamesShort: [
-    "Ene.",
-    "Feb.",
-    "Mar",
-    "Abr",
-    "May",
-    "Jun",
-    "Jul.",
-    "Ago",
-    "Sep.",
-    "Oct.",
-    "Nov.",
-    "Dic.",
-  ],
-  dayNames: [
-    "Domingo",
-    "Lunes",
-    "Martes",
-    "Miércoles",
-    "Jueves",
-    "Viernes",
-    "Sábado",
-  ],
-  dayNamesShort: ["Dom.", "Lun.", "Mar.", "Mié.", "Jue.", "Vie.", "Sáb."],
+  monthNames: getMeses(),
+  monthNamesShort: getMeses(true),
+  dayNames: getDias(),
+  dayNamesShort: getDias(true),
   today: "Hoy",
 };
 LocaleConfig.defaultLocale = "es";
@@ -81,23 +49,6 @@ export const ModernCalendar = ({ value, onChange }: Props) => {
     <View className="bg-white rounded-[40px] border border-gray-100 shadow-2xl overflow-hidden">
       <View className="p-4 border-b border-gray-50 flex-row gap-2">
         <TouchableOpacity
-          onPress={toggleYearPicker}
-          className="flex-row items-center bg-gray-50 px-4 py-2 rounded-2xl border border-gray-100"
-        >
-          <Text
-            className="text-gray-900 mr-2"
-            style={{ fontFamily: "Outfit_700Bold" }}
-          >
-            Año: {viewingYear}
-          </Text>
-          {showYearPicker ? (
-            <ChevronUp size={16} color="#f97316" />
-          ) : (
-            <ChevronDown size={16} color="#9ca3af" />
-          )}
-        </TouchableOpacity>
-
-        <TouchableOpacity
           onPress={toggleMonthPicker}
           className="flex-row items-center bg-gray-50 px-4 py-2 rounded-2xl border border-gray-100"
         >
@@ -108,6 +59,23 @@ export const ModernCalendar = ({ value, onChange }: Props) => {
             Mes: {months[viewingMonth - 1]}
           </Text>
           {showMonthPicker ? (
+            <ChevronUp size={16} color="#f97316" />
+          ) : (
+            <ChevronDown size={16} color="#9ca3af" />
+          )}
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          onPress={toggleYearPicker}
+          className="flex-row items-center bg-gray-50 px-4 py-2 rounded-2xl border border-gray-100"
+        >
+          <Text
+            className="text-gray-900 mr-2"
+            style={{ fontFamily: "Outfit_700Bold" }}
+          >
+            Año: {viewingYear}
+          </Text>
+          {showYearPicker ? (
             <ChevronUp size={16} color="#f97316" />
           ) : (
             <ChevronDown size={16} color="#9ca3af" />

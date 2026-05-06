@@ -54,9 +54,17 @@ export const SheetSalud = ({ data, setData }: Props) => {
 
   return (
     <View className="gap-4">
-      <Text className="text-xl font-bold text-gray-900">Salud</Text>
-      <Text className="text-gray-400 text-sm -mt-2">
-        Agrega o edita tus condiciones médicas.
+      <Text
+        className="text-3xl text-gray-900 tracking-tighter"
+        style={{ fontFamily: "Outfit_900Black" }}
+      >
+        Salud
+      </Text>
+      <Text
+        className="text-gray-400 text-sm -mt-2 mb-4"
+        style={{ fontFamily: "Outfit_400Regular" }}
+      >
+        Agrega o edita tus condiciones médicas para un plan más seguro.
       </Text>
 
       {/* Condiciones existentes */}
@@ -74,7 +82,13 @@ export const SheetSalud = ({ data, setData }: Props) => {
             </TouchableOpacity>
           </View>
           <TextInput
-            className="rounded-xl border border-orange-200 bg-white px-4 py-3 text-gray-800"
+            className="rounded-xl border border-orange-200 bg-white px-4 py-3"
+            style={{
+              fontFamily: "Outfit_400Regular",
+              fontSize: 14,
+              color: "#1f2937",
+              fontWeight: "normal",
+            }}
             placeholder={`Detalles de tu ${cond.nombre.toLowerCase()}...`}
             multiline
             numberOfLines={2}
@@ -90,7 +104,13 @@ export const SheetSalud = ({ data, setData }: Props) => {
         <View className="flex-row items-center rounded-xl bg-white border border-gray-200 px-4 py-3">
           <Ionicons name="medkit-outline" size={18} color="#6b7280" />
           <TextInput
-            className="ml-3 flex-1 text-base"
+            className="ml-3 flex-1"
+            style={{
+              fontFamily: "Outfit_400Regular",
+              fontSize: 16,
+              color: "#1f2937",
+              fontWeight: "normal",
+            }}
             placeholder="Nombre (Ej: Diabetes)"
             value={nuevaNombre}
             onChangeText={setNuevaNombre}
@@ -99,7 +119,13 @@ export const SheetSalud = ({ data, setData }: Props) => {
         <View className="flex-row items-center rounded-xl bg-white border border-gray-200 px-4 py-3">
           <Ionicons name="document-text-outline" size={18} color="#6b7280" />
           <TextInput
-            className="ml-3 flex-1 text-base"
+            className="ml-3 flex-1"
+            style={{
+              fontFamily: "Outfit_400Regular",
+              fontSize: 16,
+              color: "#1f2937",
+              fontWeight: "normal",
+            }}
             placeholder="Descripción (Ej: Tipo 2)"
             value={nuevaDesc}
             onChangeText={setNuevaDesc}

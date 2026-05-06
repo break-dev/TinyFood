@@ -81,7 +81,7 @@ export const StepMedical = ({ data, setData }: Props) => {
       {/* Bloque 1: Sugerencias */}
       <View className="mb-10">
         <Text
-          className="mb-4 ml-1 text-[10px] font-bold uppercase tracking-widest text-gray-400"
+          className="mb-4 ml-1 text-xs font-bold uppercase tracking-widest text-gray-400"
           style={{ fontFamily: "Outfit_700Bold" }}
         >
           Sugerencias Rápidas
@@ -109,7 +109,9 @@ export const StepMedical = ({ data, setData }: Props) => {
                     isSelected ? "text-white" : "text-gray-600"
                   }`}
                   style={{
-                    fontFamily: isSelected ? "Outfit_700Bold" : "Outfit_400Regular",
+                    fontFamily: isSelected
+                      ? "Outfit_700Bold"
+                      : "Outfit_400Regular",
                   }}
                 >
                   {sug} {isSelected && " ✓"}
@@ -123,15 +125,20 @@ export const StepMedical = ({ data, setData }: Props) => {
       {/* Bloque 2: Input para otra condición */}
       <View className="mb-10">
         <Text
-          className="mb-4 ml-1 text-[10px] font-bold uppercase tracking-widest text-gray-400"
+          className="mb-4 ml-1 text-xs font-bold uppercase tracking-widest text-gray-400"
           style={{ fontFamily: "Outfit_700Bold" }}
         >
           Otra Condición
         </Text>
         <View className="flex-row items-center rounded-3xl border border-gray-100 bg-gray-50 px-5 py-2 shadow-sm">
           <TextInput
-            className="flex-1 py-3 text-base text-gray-900"
-            style={{ fontFamily: "Outfit_400Regular" }}
+            className="flex-1 py-3"
+            style={{
+              fontFamily: "Outfit_400Regular",
+              fontSize: 16,
+              color: "#0f172a",
+              fontWeight: "normal",
+            }}
             placeholder="Ej: Intolerancia al gluten"
             placeholderTextColor="#cbd5e1"
             value={customCondicion}
@@ -151,7 +158,7 @@ export const StepMedical = ({ data, setData }: Props) => {
       {data.informacion_medica.length > 0 && (
         <View className="mb-10">
           <Text
-            className="mb-4 ml-1 text-[10px] font-bold uppercase tracking-widest text-gray-400"
+            className="mb-4 ml-1 text-xs font-bold uppercase tracking-widest text-gray-400"
             style={{ fontFamily: "Outfit_700Bold" }}
           >
             Detalles de tus condiciones
@@ -173,8 +180,13 @@ export const StepMedical = ({ data, setData }: Props) => {
                 </TouchableOpacity>
               </View>
               <TextInput
-                className="rounded-2xl border border-orange-100 bg-white px-5 py-4 text-gray-800"
-                style={{ fontFamily: "Outfit_400Regular" }}
+                className="rounded-2xl border border-orange-100 bg-white px-5 py-4"
+                style={{
+                  fontFamily: "Outfit_400Regular",
+                  fontSize: 15,
+                  color: "#1f2937",
+                  fontWeight: "normal",
+                }}
                 placeholder={`Más detalles sobre esto...`}
                 placeholderTextColor="#cbd5e1"
                 multiline

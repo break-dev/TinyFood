@@ -4,6 +4,7 @@ interface Condicion {
 }
 
 export interface REQ_ActualizarPerfil {
+  nombre?: string;
   peso?: number;
   talla?: number;
   nivel_actividad?: number;

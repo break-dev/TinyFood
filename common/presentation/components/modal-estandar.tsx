@@ -1,7 +1,12 @@
 import React from "react";
 import { View, Text, TouchableOpacity, Modal, Pressable } from "react-native";
 import { MotiView, AnimatePresence } from "moti";
-import { LucideIcon, AlertCircle, CheckCircle2, Info } from "lucide-react-native";
+import {
+  LucideIcon,
+  AlertCircle,
+  CheckCircle2,
+  Info,
+} from "lucide-react-native";
 
 interface Props {
   visible: boolean;
@@ -15,7 +20,7 @@ interface Props {
   icon?: LucideIcon;
 }
 
-export const ElegantModal = ({
+export const ModalEstandar = ({
   visible,
   onClose,
   onConfirm,
@@ -39,15 +44,26 @@ export const ElegantModal = ({
     }
   };
 
-  const Icon = CustomIcon || (type === "success" ? CheckCircle2 : type === "warning" || type === "danger" ? AlertCircle : Info);
+  const Icon =
+    CustomIcon ||
+    (type === "success"
+      ? CheckCircle2
+      : type === "warning" || type === "danger"
+        ? AlertCircle
+        : Info);
 
   return (
-    <Modal transparent visible={visible} animationType="none" onRequestClose={onClose}>
+    <Modal
+      transparent
+      visible={visible}
+      animationType="none"
+      onRequestClose={onClose}
+    >
       <AnimatePresence>
         {visible && (
           <View className="flex-1 items-center justify-center bg-black/40 px-6">
             <Pressable className="absolute inset-0" onPress={onClose} />
-            
+
             <MotiView
               from={{ opacity: 0, scale: 0.9, translateY: 20 }}
               animate={{ opacity: 1, scale: 1, translateY: 0 }}
@@ -56,34 +72,34 @@ export const ElegantModal = ({
               className="w-full rounded-[40px] bg-white p-8 shadow-2xl"
             >
               <View className="items-center">
-                <View 
+                <View
                   style={{ backgroundColor: `${getColor()}15` }}
                   className="h-20 w-20 items-center justify-center rounded-3xl mb-6"
                 >
                   <Icon size={36} color={getColor()} strokeWidth={2.5} />
                 </View>
-                
-                <Text 
+
+                <Text
                   className="mb-3 text-center text-2xl text-gray-900"
                   style={{ fontFamily: "Outfit_900Black" }}
                 >
                   {title}
                 </Text>
-                
-                <Text 
+
+                <Text
                   className="mb-8 text-center text-base leading-6 text-gray-500"
                   style={{ fontFamily: "Outfit_400Regular" }}
                 >
                   {description}
                 </Text>
-                
+
                 <View className="w-full flex-row gap-3">
                   {onConfirm && (
                     <TouchableOpacity
                       onPress={onClose}
                       className="flex-1 items-center justify-center rounded-2xl bg-gray-100 py-4"
                     >
-                      <Text 
+                      <Text
                         className="text-gray-600 font-bold"
                         style={{ fontFamily: "Outfit_700Bold" }}
                       >
@@ -91,7 +107,7 @@ export const ElegantModal = ({
                       </Text>
                     </TouchableOpacity>
                   )}
-                  
+
                   <TouchableOpacity
                     onPress={() => {
                       if (onConfirm) onConfirm();
@@ -100,7 +116,7 @@ export const ElegantModal = ({
                     style={{ backgroundColor: getColor() }}
                     className="flex-1 items-center justify-center rounded-2xl py-4 shadow-lg shadow-black/10"
                   >
-                    <Text 
+                    <Text
                       className="text-white font-bold"
                       style={{ fontFamily: "Outfit_700Bold" }}
                     >

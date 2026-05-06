@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo } from "react";
 import {
   View,
-  Text as RNText,
+  Text as Text,
   TextInput,
   TouchableOpacity,
   Platform,
@@ -106,37 +106,23 @@ export const RegistroComida = React.forwardRef<BottomSheetModal, Props>(
               paddingBottom: 10,
             }}
           >
-            {/* Imagen decorativa de fondo */}
-            <Image
-              source={require("@/assets/images/onboarding/tiny-cocinando.png")}
-              style={{
-                position: "absolute",
-                bottom: 80,
-                right: 16,
-                width: 160,
-                height: 160,
-                opacity: 0.12,
-              }}
-              resizeMode="contain"
-            />
-
             {/* Header */}
             <View className="flex-row items-center justify-between mb-8">
               <View>
-                <RNText
+                <Text
                   className="text-3xl text-gray-900 tracking-tighter"
                   style={{ fontFamily: "Outfit_900Black" }}
                 >
                   {comidaParaEditar ? "Editar Item" : "Nuevo Item"}
-                </RNText>
-                <RNText
+                </Text>
+                <Text
                   className="text-gray-400 text-sm"
                   style={{ fontFamily: "Outfit_400Regular" }}
                 >
                   {comidaParaEditar
                     ? "Ajusta los detalles de tu alimento"
                     : "Agrégalo a tu inventario inteligente"}
-                </RNText>
+                </Text>
               </View>
               <TouchableOpacity
                 onPress={handleDismiss}
@@ -147,6 +133,7 @@ export const RegistroComida = React.forwardRef<BottomSheetModal, Props>(
             </View>
 
             {/* Inputs */}
+            {/* Inputs */}
             <BottomSheetScrollView
               showsVerticalScrollIndicator={false}
               style={{ flex: 1 }}
@@ -154,17 +141,13 @@ export const RegistroComida = React.forwardRef<BottomSheetModal, Props>(
               contentContainerStyle={{ gap: 20, paddingBottom: 16 }}
             >
               {/* Input Nombre */}
-              <MotiView
-                from={{ opacity: 0, translateY: 20 }}
-                animate={{ opacity: 1, translateY: 0 }}
-                transition={{ delay: 100 }}
-              >
-                <RNText
+              <View>
+                <Text
                   className="text-[10px] text-gray-400 uppercase tracking-widest mb-1.5 ml-1"
                   style={{ fontFamily: "Outfit_700Bold" }}
                 >
                   ¿Qué alimento es?
-                </RNText>
+                </Text>
                 <View className="bg-gray-50 flex-row items-center px-5 rounded-[24px] border border-gray-100">
                   <UtensilsCrossed size={20} color="#9ca3af" strokeWidth={2} />
                   <TextInput
@@ -173,24 +156,27 @@ export const RegistroComida = React.forwardRef<BottomSheetModal, Props>(
                     placeholderTextColor="#9ca3af"
                     value={nombre}
                     onChangeText={setNombre}
-                    className="flex-1 p-5 text-gray-900 text-base"
-                    style={{ fontFamily: "Outfit_700Bold" }}
+                    className="flex-1"
+                    style={{
+                      fontFamily: "Outfit_700Bold",
+                      fontSize: 16,
+                      color: "#111827",
+                      fontWeight: "normal",
+                      paddingHorizontal: 20,
+                      paddingVertical: 18,
+                    }}
                   />
                 </View>
-              </MotiView>
+              </View>
 
               {/* Input Cantidad */}
-              <MotiView
-                from={{ opacity: 0, translateY: 20 }}
-                animate={{ opacity: 1, translateY: 0 }}
-                transition={{ delay: 200 }}
-              >
-                <RNText
+              <View>
+                <Text
                   className="text-[10px] text-gray-400 uppercase tracking-widest mb-1.5 ml-1"
                   style={{ fontFamily: "Outfit_700Bold" }}
                 >
-                  Cantidad o Unidad
-                </RNText>
+                  Cantidad
+                </Text>
                 <View className="bg-gray-50 flex-row items-center px-5 rounded-[24px] border border-gray-100">
                   <Hash size={20} color="#9ca3af" strokeWidth={2} />
                   <TextInput
@@ -198,31 +184,34 @@ export const RegistroComida = React.forwardRef<BottomSheetModal, Props>(
                     placeholderTextColor="#9ca3af"
                     value={cantidad}
                     onChangeText={setCantidad}
-                    className="flex-1 p-5 text-gray-900 text-base"
-                    style={{ fontFamily: "Outfit_700Bold" }}
+                    className="flex-1"
+                    style={{
+                      fontFamily: "Outfit_700Bold",
+                      fontSize: 16,
+                      color: "#111827",
+                      fontWeight: "normal",
+                      paddingHorizontal: 20,
+                      paddingVertical: 18,
+                    }}
                   />
                 </View>
-              </MotiView>
+              </View>
 
               {/* Input Fecha Vencimiento */}
-              <MotiView
-                from={{ opacity: 0, translateY: 20 }}
-                animate={{ opacity: 1, translateY: 0 }}
-                transition={{ delay: 300 }}
-              >
-                <RNText
+              <View>
+                <Text
                   className="text-[10px] text-gray-400 uppercase tracking-widest mb-1.5 ml-1"
                   style={{ fontFamily: "Outfit_700Bold" }}
                 >
                   Vencimiento Estimado
-                </RNText>
+                </Text>
                 <TouchableOpacity
                   onPress={() => setShowDatePicker(true)}
                   activeOpacity={0.7}
                   className="bg-gray-50 flex-row items-center px-5 py-5 rounded-[24px] border border-gray-100"
                 >
                   <CalendarIcon size={20} color="#9ca3af" strokeWidth={2} />
-                  <RNText
+                  <Text
                     className={`flex-1 ml-4 text-base ${fechaVencimiento ? "text-gray-900" : "text-gray-400"}`}
                     style={{ fontFamily: "Outfit_700Bold" }}
                   >
@@ -231,7 +220,7 @@ export const RegistroComida = React.forwardRef<BottomSheetModal, Props>(
                           dateStyle: "long",
                         })
                       : "Seleccionar fecha"}
-                  </RNText>
+                  </Text>
                   <View className="bg-white p-1 rounded-lg border border-gray-100">
                     <ChevronRight size={16} color="#9ca3af" strokeWidth={2.5} />
                   </View>
@@ -268,20 +257,16 @@ export const RegistroComida = React.forwardRef<BottomSheetModal, Props>(
                     </MotiView>
                   </View>
                 </Modal>
-              </MotiView>
+              </View>
 
               {/* Input Descripción */}
-              <MotiView
-                from={{ opacity: 0, translateY: 20 }}
-                animate={{ opacity: 1, translateY: 0 }}
-                transition={{ delay: 400 }}
-              >
-                <RNText
+              <View>
+                <Text
                   className="text-[10px] text-gray-400 uppercase tracking-widest mb-1.5 ml-1"
                   style={{ fontFamily: "Outfit_700Bold" }}
                 >
                   Notas Adicionales
-                </RNText>
+                </Text>
                 <View className="bg-gray-50 flex-row px-5 pt-4 pb-2 rounded-[24px] border border-gray-100 items-start">
                   <View className="mt-1 mr-3">
                     <FileText size={20} color="#9ca3af" strokeWidth={2} />
@@ -293,14 +278,20 @@ export const RegistroComida = React.forwardRef<BottomSheetModal, Props>(
                     onChangeText={setDescripcion}
                     multiline
                     numberOfLines={3}
-                    className="flex-1 py-1 text-gray-900 text-base h-24"
+                    className="flex-1"
                     style={{
                       fontFamily: "Outfit_700Bold",
+                      fontSize: 16,
+                      color: "#111827",
+                      fontWeight: "normal",
+                      paddingHorizontal: 20,
+                      paddingVertical: 12,
                       textAlignVertical: "top",
+                      minHeight: 80,
                     }}
                   />
                 </View>
-              </MotiView>
+              </View>
             </BottomSheetScrollView>
 
             {/* Botón Guardar (sticky al fondo) */}
@@ -321,7 +312,7 @@ export const RegistroComida = React.forwardRef<BottomSheetModal, Props>(
                 }`}
               >
                 <View className="flex-row items-center">
-                  <RNText
+                  <Text
                     className="text-white text-xl mr-2"
                     style={{ fontFamily: "Outfit_900Black" }}
                   >
@@ -330,13 +321,27 @@ export const RegistroComida = React.forwardRef<BottomSheetModal, Props>(
                       : comidaParaEditar
                         ? "Guardar Cambios"
                         : "Guardar en Despensa"}
-                  </RNText>
+                  </Text>
                   {!isSubmitting && (
                     <Plus size={24} color="white" strokeWidth={3} />
                   )}
                 </View>
               </TouchableOpacity>
             </MotiView>
+
+            {/* Imagen decorativa de fondo */}
+            <Image
+              source={require("@/assets/images/onboarding/tiny-cocinando.png")}
+              style={{
+                position: "absolute",
+                bottom: -250,
+                right: 60,
+                width: 300,
+                height: 300,
+                opacity: 0.6,
+              }}
+              resizeMode="contain"
+            />
           </BottomSheetView>
         </KeyboardAvoidingView>
       </BottomSheetModal>

@@ -8,9 +8,11 @@ export const useAuthState = () => {
   const usuario = useAuthStore((state) => state.usuario);
   const token = useAuthStore((state) => state.token);
   const isInitialized = useAuthStore((state) => state.isInitialized);
+  const isRegistering = useAuthStore((state) => state.isRegistering);
   const setUser = useAuthStore((state) => state.setUser);
   const logout = useAuthStore((state) => state.logout);
   const setInitialized = useAuthStore((state) => state.setInitialized);
+  const setRegistering = useAuthStore((state) => state.setRegistering);
 
   /**
    * Permite obtener el estado actual fuera del ciclo de renderizado (útil para callbacks)
@@ -21,9 +23,11 @@ export const useAuthState = () => {
     usuario,
     token,
     isInitialized,
+    isRegistering,
     setUser,
     logout,
     setInitialized,
+    setRegistering,
     getUsuario,
   };
 };

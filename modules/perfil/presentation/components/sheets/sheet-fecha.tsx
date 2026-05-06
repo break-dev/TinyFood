@@ -23,23 +23,32 @@ export const SheetFecha = ({ data, setData }: Props) => {
 
   return (
     <View className="gap-4">
-      <Text className="text-xl font-bold text-gray-900">
+      <Text
+        className="text-3xl text-gray-900 tracking-tighter"
+        style={{ fontFamily: "Outfit_900Black" }}
+      >
         Fecha de nacimiento
       </Text>
-      <Text className="text-gray-400 text-sm -mt-2">
-        Selecciona tu fecha de nacimiento.
+      <Text
+        className="text-gray-400 text-sm -mt-2 mb-4"
+        style={{ fontFamily: "Outfit_400Regular" }}
+      >
+        Selecciona tu fecha de nacimiento para ajustar tus metas.
       </Text>
 
       {/* Botón para abrir el picker */}
       <TouchableOpacity
         onPress={() => setMostrarPicker(true)}
-        className="flex-row items-center rounded-2xl bg-gray-100 px-4 py-4 border border-gray-200"
+        className="flex-row items-center rounded-3xl bg-gray-50 px-5 py-5 border border-gray-100 shadow-sm"
       >
-        <Ionicons name="calendar-outline" size={20} color="#6b7280" />
-        <Text className="ml-3 flex-1 text-lg text-gray-700">
+        <Ionicons name="calendar-outline" size={22} color="#9ca3af" />
+        <Text
+          className="ml-4 flex-1 text-lg text-gray-900"
+          style={{ fontFamily: "Outfit_700Bold" }}
+        >
           {data.fecha_nacimiento || "Seleccionar fecha"}
         </Text>
-        <Ionicons name="chevron-forward" size={18} color="#d1d5db" />
+        <Ionicons name="chevron-forward" size={18} color="#9ca3af" />
       </TouchableOpacity>
 
       {/* Picker — solo se muestra al presionar */}
@@ -50,10 +59,10 @@ export const SheetFecha = ({ data, setData }: Props) => {
         onRequestClose={() => setMostrarPicker(false)}
       >
         <View className="flex-1 items-center justify-center bg-black/40 px-6">
-          <TouchableOpacity 
-            activeOpacity={1} 
+          <TouchableOpacity
+            activeOpacity={1}
             onPress={() => setMostrarPicker(false)}
-            className="absolute inset-0" 
+            className="absolute inset-0"
           />
           <MotiView
             from={{ opacity: 0, scale: 0.9, translateY: 20 }}

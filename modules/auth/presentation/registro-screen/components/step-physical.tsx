@@ -1,11 +1,10 @@
 import React, { useState } from "react";
 import {
   View,
-  Text as RNText,
+  Text as Text,
   TextInput,
   Image,
   TouchableOpacity,
-  Platform,
   Modal,
 } from "react-native";
 import Animated, { FadeInRight, FadeOutLeft } from "react-native-reanimated";
@@ -29,23 +28,6 @@ export const StepPhysical = ({ data, setData }: Props) => {
     return `${day}/${month}/${year}`;
   };
 
-  // Función para convertir de string DD/MM/YYYY a Date (para que el picker abra en la fecha correcta)
-  const parseDate = () => {
-    if (data.fecha_nacimiento && data.fecha_nacimiento.length === 10) {
-      const [d, m, y] = data.fecha_nacimiento.split("/").map(Number);
-      return new Date(y, m - 1, d);
-    }
-    return new Date(2000, 0, 1); // Fecha sugerida por defecto
-  };
-
-  const onChangeDate = (event: any, selectedDate?: Date) => {
-    if (Platform.OS === "android") setShowPicker(false);
-
-    if (selectedDate) {
-      setData({ ...data, fecha_nacimiento: formatDate(selectedDate) });
-    }
-  };
-
   return (
     <Animated.View
       entering={FadeInRight}
@@ -54,35 +36,70 @@ export const StepPhysical = ({ data, setData }: Props) => {
     >
       {/* Header: Title */}
       <View className="mb-10">
-        <RNText
+        <Text
           className="mb-3 text-4xl text-gray-900 tracking-tighter"
           style={{ fontFamily: "Outfit_900Black" }}
         >
           Sobre ti
-        </RNText>
-        <RNText
+        </Text>
+        <Text
           className="text-lg text-gray-500 leading-6"
           style={{ fontFamily: "Outfit_400Regular" }}
         >
           Necesitamos estos datos para calcular tus necesidades nutricionales de
           forma precisa.
-        </RNText>
+        </Text>
+      </View>
+
+      {/* Input: Nombre */}
+      <View className="mb-8">
+        <View className="flex-row items-center justify-between mb-3 ml-1">
+          <Text
+            className="text-sm font-bold uppercase tracking-widest text-gray-400"
+            style={{ fontFamily: "Outfit_700Bold" }}
+          >
+            ¿Cómo te llamas?
+          </Text>
+        </View>
+        <View className="flex-row items-center rounded-3xl border border-gray-100 bg-gray-50 px-5 py-2 shadow-sm">
+          <Ionicons name="person-outline" size={20} color="#9ca3af" />
+          <TextInput
+            className="ml-3 flex-1"
+            style={{
+              fontFamily: "Outfit_700Bold",
+              fontSize: 17,
+              color: "#111827",
+              fontWeight: "normal",
+              paddingVertical: 15,
+            }}
+            placeholder="Tu nombre completo"
+            placeholderTextColor="#cbd5e1"
+            value={data.nombre}
+            onChangeText={(text) => setData({ ...data, nombre: text })}
+          />
+        </View>
       </View>
 
       {/* Fila: Peso y Talla */}
       <View className="mb-8 flex-row gap-5">
         <View className="flex-1">
-          <RNText
-            className="mb-3 ml-1 text-[10px] font-bold uppercase tracking-widest text-gray-400"
+          <Text
+            className="mb-3 ml-1 text-sm font-bold uppercase tracking-widest text-gray-400"
             style={{ fontFamily: "Outfit_700Bold" }}
           >
             Peso (kg)
-          </RNText>
-          <View className="flex-row items-center rounded-3xl border border-gray-100 bg-gray-50 px-5 py-5 shadow-sm">
+          </Text>
+          <View className="flex-row items-center rounded-3xl border border-gray-100 bg-gray-50 px-5 py-2 shadow-sm">
             <Ionicons name="fitness-outline" size={20} color="#9ca3af" />
             <TextInput
-              className="ml-3 flex-1 text-xl text-gray-900"
-              style={{ fontFamily: "Outfit_700Bold" }}
+              className="ml-3 flex-1"
+              style={{
+                fontFamily: "Outfit_700Bold",
+                fontSize: 17,
+                color: "#111827",
+                fontWeight: "normal",
+                paddingVertical: 15,
+              }}
               placeholder="Ej: 70"
               placeholderTextColor="#cbd5e1"
               keyboardType="numeric"
@@ -93,17 +110,23 @@ export const StepPhysical = ({ data, setData }: Props) => {
         </View>
 
         <View className="flex-1">
-          <RNText
-            className="mb-3 ml-1 text-[10px] font-bold uppercase tracking-widest text-gray-400"
+          <Text
+            className="mb-3 ml-1 text-sm font-bold uppercase tracking-widest text-gray-400"
             style={{ fontFamily: "Outfit_700Bold" }}
           >
             Talla (cm)
-          </RNText>
-          <View className="flex-row items-center rounded-3xl border border-gray-100 bg-gray-50 px-5 py-5 shadow-sm">
+          </Text>
+          <View className="flex-row items-center rounded-3xl border border-gray-100 bg-gray-50 px-5 py-2 shadow-sm">
             <Ionicons name="resize-outline" size={20} color="#9ca3af" />
             <TextInput
-              className="ml-3 flex-1 text-xl text-gray-900"
-              style={{ fontFamily: "Outfit_700Bold" }}
+              className="ml-3 flex-1"
+              style={{
+                fontFamily: "Outfit_700Bold",
+                fontSize: 17,
+                color: "#111827",
+                fontWeight: "normal",
+                paddingVertical: 15,
+              }}
               placeholder="Ej: 175"
               placeholderTextColor="#cbd5e1"
               keyboardType="numeric"
@@ -116,26 +139,29 @@ export const StepPhysical = ({ data, setData }: Props) => {
 
       {/* Fecha Nacimiento */}
       <View className="mb-10">
-        <RNText
-          className="mb-3 ml-1 text-[10px] font-bold uppercase tracking-widest text-gray-400"
+        <Text
+          className="mb-3 ml-1 text-sm font-bold uppercase tracking-widest text-gray-400"
           style={{ fontFamily: "Outfit_700Bold" }}
         >
-          Fecha Nacimiento
-        </RNText>
+          Fecha de Nacimiento
+        </Text>
         <TouchableOpacity
           onPress={() => setShowPicker(true)}
           activeOpacity={0.8}
-          className="flex-row items-center rounded-3xl border border-gray-100 bg-gray-50 px-6 py-6 shadow-sm"
+          className="flex-row items-center rounded-3xl border border-gray-100 bg-gray-50 px-6 py-5 shadow-sm"
         >
           <Ionicons name="calendar-outline" size={22} color="#9ca3af" />
-          <RNText
-            className={`ml-4 flex-1 text-xl ${
+          <Text
+            className={`ml-4 flex-1 ${
               data.fecha_nacimiento ? "text-gray-900" : "text-gray-300"
             }`}
-            style={{ fontFamily: "Outfit_700Bold" }}
+            style={{
+              fontFamily: "Outfit_700Bold",
+              fontSize: data.fecha_nacimiento ? 16 : 14,
+            }}
           >
             {data.fecha_nacimiento || "DD / MM / YYYY"}
-          </RNText>
+          </Text>
           <View className="rounded-xl bg-white p-2 shadow-sm border border-gray-50">
             <Ionicons name="chevron-forward" size={18} color="#9ca3af" />
           </View>
@@ -148,10 +174,10 @@ export const StepPhysical = ({ data, setData }: Props) => {
           onRequestClose={() => setShowPicker(false)}
         >
           <View className="flex-1 items-center justify-center bg-black/40 px-6">
-            <TouchableOpacity 
-              activeOpacity={1} 
+            <TouchableOpacity
+              activeOpacity={1}
               onPress={() => setShowPicker(false)}
-              className="absolute inset-0" 
+              className="absolute inset-0"
             />
             <MotiView
               from={{ opacity: 0, scale: 0.9, translateY: 20 }}

@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text as RNText } from "react-native";
+import { View, Text as Text } from "react-native";
 import { PackageSearch } from "lucide-react-native";
 import { MotiView } from "moti";
 
@@ -13,19 +13,19 @@ export const FallbackListadoVacio = () => {
       <View className="h-32 w-32 bg-orange-50 rounded-full items-center justify-center mb-6 shadow-sm">
         <PackageSearch size={48} color="#f97316" strokeWidth={1.5} />
       </View>
-      <RNText
+      <Text
         className="text-gray-900 text-2xl text-center px-10"
         style={{ fontFamily: "Outfit_900Black" }}
       >
         Tu despensa está lista para ser llenada
-      </RNText>
-      <RNText
+      </Text>
+      <Text
         className="text-gray-400 text-center mt-2 px-12 text-base"
         style={{ fontFamily: "Outfit_400Regular" }}
       >
         Agrega tus alimentos para que TinyFood pueda ayudarte a evitar el
         desperdicio.
-      </RNText>
+      </Text>
     </MotiView>
   );
 };

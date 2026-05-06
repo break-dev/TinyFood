@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text as RNText, TouchableOpacity } from "react-native";
+import { View, Text as Text, TouchableOpacity } from "react-native";
 import { Trash2, Calendar } from "lucide-react-native";
 import { MotiView } from "moti";
 import { RES_Comida } from "../../../service/despensa.responses";
@@ -42,36 +42,36 @@ export const ItemComida = ({ item, index, onDelete, onEdit }: Props) => {
 
         <View className="flex-1 ml-4">
           <View className="flex-row items-center justify-between">
-            <RNText
+            <Text
               className="text-gray-900 text-lg flex-1"
               style={{ fontFamily: "Outfit_700Bold" }}
               numberOfLines={1}
             >
               {item.nombre}
-            </RNText>
+            </Text>
             <View
               className={`${estado_vencimiento.color} px-3 py-1 rounded-full`}
             >
-              <RNText
+              <Text
                 className="text-white text-[10px] uppercase tracking-widest"
                 style={{ fontFamily: "Outfit_900Black" }}
               >
                 {estado_vencimiento.label}
-              </RNText>
+              </Text>
             </View>
           </View>
 
-          <RNText
+          <Text
             className="text-gray-400 text-sm mt-0.5"
             style={{ fontFamily: "Outfit_700Bold" }}
           >
             {item.cantidad}
-          </RNText>
+          </Text>
 
           {item.fecha_vencimiento && (
             <View className="flex-row items-center mt-3 bg-gray-50 self-start px-3 py-1.5 rounded-xl border border-gray-100">
               <Calendar size={12} color="#9ca3af" strokeWidth={2.5} />
-              <RNText
+              <Text
                 className="text-[10px] text-gray-500 ml-1.5"
                 style={{ fontFamily: "Outfit_700Bold" }}
               >
@@ -79,7 +79,7 @@ export const ItemComida = ({ item, index, onDelete, onEdit }: Props) => {
                   day: "numeric",
                   month: "short",
                 })}
-              </RNText>
+              </Text>
             </View>
           )}
         </View>

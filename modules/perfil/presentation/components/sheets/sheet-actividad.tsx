@@ -18,7 +18,10 @@ const levels = [
 
 export const SheetActividad = ({ data, setData }: Props) => (
   <View>
-    <Text className="text-xl font-bold text-gray-900 mb-4">
+    <Text
+      className="text-3xl text-gray-900 tracking-tighter mb-4"
+      style={{ fontFamily: "Outfit_900Black" }}
+    >
       Nivel de actividad
     </Text>
     {levels.map((level) => (

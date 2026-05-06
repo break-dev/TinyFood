@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text as RNText, TouchableOpacity } from "react-native";
+import { View, Text as Text, TouchableOpacity } from "react-native";
 import { LucideIcon, ChevronRight } from "lucide-react-native";
 import { MotiView } from "moti";
 
@@ -29,19 +29,19 @@ export const ProfileCard = ({
         <Icon size={22} color="#f97316" strokeWidth={2.5} />
       </View>
       <View className="flex-1">
-        <RNText
-          className="text-[10px] text-gray-400 uppercase tracking-widest mb-1"
+        <Text
+          className="text-xs text-gray-400 uppercase tracking-widest mb-1"
           style={{ fontFamily: "Outfit_700Bold" }}
         >
           {title}
-        </RNText>
-        <RNText
+        </Text>
+        <Text
           className="text-gray-800 text-base"
           style={{ fontFamily: "Outfit_700Bold" }}
           numberOfLines={1}
         >
           {subtitle || "Sin datos"}
-        </RNText>
+        </Text>
       </View>
       <View className="h-8 w-8 items-center justify-center rounded-xl bg-gray-50">
         <ChevronRight size={16} color="#d1d5db" strokeWidth={2.5} />

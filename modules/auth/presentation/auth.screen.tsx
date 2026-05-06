@@ -1,7 +1,7 @@
 import React from "react";
 import {
   View,
-  Text as RNText,
+  Text as Text,
   TouchableOpacity,
   ActivityIndicator,
 } from "react-native";
@@ -55,20 +55,20 @@ export const AuthScreen = () => {
           transition={{ delay: 300 }}
           className="mb-10 items-center"
         >
-          <RNText
+          <Text
             className="text-6xl text-gray-900 tracking-tighter"
             style={{ fontFamily: "Outfit_900Black" }}
           >
             TinyFood
-          </RNText>
+          </Text>
           <View className="mt-2 mb-5 h-1.5 w-20 rounded-full bg-orange-400" />
-          <RNText
+          <Text
             className="text-center text-xl text-gray-500 leading-7"
             style={{ fontFamily: "Outfit_400Regular" }}
           >
             Tu asistente inteligente para una{"\n"}vida saludable y sin
             desperdicio
-          </RNText>
+          </Text>
         </MotiView>
 
         {/* Feature Pills */}
@@ -112,12 +112,12 @@ export const AuthScreen = () => {
                       : "#3b82f6"
                 }
               />
-              <RNText
+              <Text
                 className={`ml-2 text-sm font-bold ${item.color}`}
                 style={{ fontFamily: "Outfit_700Bold" }}
               >
                 {item.label}
-              </RNText>
+              </Text>
             </View>
           ))}
         </MotiView>
@@ -141,31 +141,31 @@ export const AuthScreen = () => {
               <ActivityIndicator color="white" />
             ) : (
               <View className="flex-row items-center">
-                <RNText
+                <Text
                   className="text-xl text-white mr-2"
                   style={{ fontFamily: "Outfit_900Black" }}
                 >
                   Continuar con Google
-                </RNText>
+                </Text>
                 <ChevronRight size={24} color="white" strokeWidth={3} />
               </View>
             )}
           </TouchableOpacity>
 
-          <RNText
+          <Text
             className="mt-8 text-center text-xs text-gray-400 px-6 leading-5"
             style={{ fontFamily: "Outfit_400Regular" }}
           >
             Al continuar, aceptas nuestros{" "}
-            <RNText className="text-gray-600 font-bold">
+            <Text className="text-gray-600 font-bold">
               Términos de Servicio
-            </RNText>{" "}
+            </Text>{" "}
             y{" "}
-            <RNText className="text-gray-600 font-bold">
+            <Text className="text-gray-600 font-bold">
               Política de Privacidad
-            </RNText>
+            </Text>
             .
-          </RNText>
+          </Text>
         </MotiView>
       </View>
 

@@ -1,5 +1,5 @@
-import React, { useRef, useCallback, useState, useMemo } from "react";
-import { View, Text as RNText, TouchableOpacity, Image } from "react-native";
+import React, { useRef, useCallback, useState } from "react";
+import { View, Text as Text, TouchableOpacity, Image } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import {
   LogOut,
@@ -30,7 +30,7 @@ import { SheetActividad } from "./components/sheets/sheet-actividad";
 import { SheetAlimentacion } from "./components/sheets/sheet-alimentacion";
 import { SheetSalud } from "./components/sheets/sheet-salud";
 import { SheetFecha } from "./components/sheets/sheet-fecha";
-import { ElegantModal } from "@/common/presentation/components/elegant-modal";
+import { ModalEstandar } from "@/common/presentation/components/modal-estandar";
 
 type SheetType = "fisica" | "actividad" | "alimentacion" | "salud" | "fecha";
 
@@ -95,12 +95,12 @@ export const PerfilScreen = () => {
     <View style={{ flex: 1, backgroundColor: "white", paddingTop: insets.top }}>
       {/* ── Custom Header Bar ── */}
       <View className="flex-row items-center justify-between px-6 py-6 border-b border-gray-50">
-        <RNText
+        <Text
           className="text-2xl text-gray-900"
           style={{ fontFamily: "Outfit_900Black" }}
         >
           Mi Perfil
-        </RNText>
+        </Text>
         <TouchableOpacity
           onPress={handleLogout}
           className="h-12 w-12 items-center justify-center rounded-2xl bg-red-50 border border-red-100"
@@ -131,18 +131,26 @@ export const PerfilScreen = () => {
               </View>
             )}
           </View>
-          <RNText
-            className="text-3xl text-gray-900"
-            style={{ fontFamily: "Outfit_900Black" }}
-          >
-            {usuario?.nombre}
-          </RNText>
-          <RNText
+          <View className="flex-row items-center">
+            <Text
+              className="text-3xl text-gray-900"
+              style={{ fontFamily: "Outfit_900Black" }}
+            >
+              {usuario?.nombre}
+            </Text>
+            <TouchableOpacity
+              onPress={() => openSheet("fisica")}
+              className="ml-3 bg-orange-100 p-2 rounded-xl"
+            >
+              <User size={16} color="#f97316" strokeWidth={3} />
+            </TouchableOpacity>
+          </View>
+          <Text
             className="text-gray-400 text-sm mt-1"
             style={{ fontFamily: "Outfit_400Regular" }}
           >
             Toca una sección para editar tu perfil
-          </RNText>
+          </Text>
         </MotiView>
 
         {/* ── Grid peso / talla ── */}
@@ -158,18 +166,18 @@ export const PerfilScreen = () => {
             className="flex-1 bg-blue-50 rounded-[32px] p-6 border border-blue-100 shadow-sm"
           >
             <Dumbbell size={24} color="#3b82f6" strokeWidth={2.5} />
-            <RNText
+            <Text
               className="text-3xl text-gray-900 mt-4"
               style={{ fontFamily: "Outfit_900Black" }}
             >
               {usuario?.peso ?? "--"}
-            </RNText>
-            <RNText
-              className="text-blue-500 text-[10px] uppercase tracking-widest font-black"
+            </Text>
+            <Text
+              className="text-blue-500 text-xs uppercase tracking-widest font-black"
               style={{ fontFamily: "Outfit_900Black" }}
             >
               kg · Peso
-            </RNText>
+            </Text>
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -178,18 +186,18 @@ export const PerfilScreen = () => {
             className="flex-1 bg-emerald-50 rounded-[32px] p-6 border border-emerald-100 shadow-sm"
           >
             <Maximize size={24} color="#10b981" strokeWidth={2.5} />
-            <RNText
+            <Text
               className="text-3xl text-gray-900 mt-4"
               style={{ fontFamily: "Outfit_900Black" }}
             >
               {usuario?.talla ?? "--"}
-            </RNText>
-            <RNText
-              className="text-emerald-500 text-[10px] uppercase tracking-widest font-black"
+            </Text>
+            <Text
+              className="text-emerald-500 text-xs uppercase tracking-widest font-black"
               style={{ fontFamily: "Outfit_900Black" }}
             >
               cm · Talla
-            </RNText>
+            </Text>
           </TouchableOpacity>
         </MotiView>
 
@@ -306,19 +314,19 @@ export const PerfilScreen = () => {
                 ) : (
                   <Check size={24} color="white" strokeWidth={3} />
                 )}
-                <RNText
+                <Text
                   className="ml-3 text-xl text-white"
                   style={{ fontFamily: "Outfit_900Black" }}
                 >
                   {isLoading ? "Guardando..." : "Guardar Cambios"}
-                </RNText>
+                </Text>
               </TouchableOpacity>
             </MotiView>
           </BottomSheetScrollView>
         </BottomSheetView>
       </BottomSheetModal>
       {/* Logout Confirmation Modal */}
-      <ElegantModal
+      <ModalEstandar
         visible={showLogoutModal}
         onClose={() => setShowLogoutModal(false)}
         onConfirm={logoutFn}

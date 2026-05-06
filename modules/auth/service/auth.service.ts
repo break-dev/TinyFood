@@ -127,6 +127,6 @@ export class AuthService {
    */
   static async logout(): Promise<void> {
     await supabase.auth.signOut();
-    socket.disconnect();
+    SocketService.disconnect();
   }
 }

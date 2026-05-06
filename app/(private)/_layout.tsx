@@ -1,5 +1,5 @@
 import { Tabs, Redirect } from "expo-router";
-import { View, TouchableOpacity, Text as RNText } from "react-native";
+import { View, TouchableOpacity, Text as Text } from "react-native";
 import { useAuthState } from "../../common/logic/use-auth-state";
 import { routes } from "../../common/utils/variables/routes";
 import { Ionicons } from "@expo/vector-icons";
@@ -12,35 +12,36 @@ import Svg, { Path } from "react-native-svg";
 function CustomTabBar({ state, descriptors, navigation }: any) {
   const insets = useSafeAreaInsets();
   const { width } = useWindowDimensions();
-  const TAB_BAR_WIDTH = width - 48; 
+  const TAB_BAR_WIDTH = width - 48;
   const TAB_WIDTH = TAB_BAR_WIDTH / state.routes.length;
-  
+
   return (
-    <View 
+    <View
       className="flex-row bg-white absolute bottom-6 left-6 right-6 rounded-[36px] border border-gray-100 shadow-2xl items-center justify-around h-20"
-      style={{ paddingBottom: 0, overflow: 'hidden' }}
+      style={{ paddingBottom: 0, overflow: "hidden" }}
     >
       {/* Curved Indicator at the bottom */}
       <MotiView
         animate={{
-          translateX: (state.index * TAB_WIDTH) - (TAB_BAR_WIDTH / 2) + (TAB_WIDTH / 2),
+          translateX:
+            state.index * TAB_WIDTH - TAB_BAR_WIDTH / 2 + TAB_WIDTH / 2,
         }}
-        transition={{ 
-          type: "timing", 
+        transition={{
+          type: "timing",
           duration: 350,
         }}
         className="absolute bottom-0 h-4 items-center justify-center"
         style={{ width: TAB_WIDTH }}
       >
         <Svg width={60} height={16} viewBox="0 0 60 16" fill="none">
-          <Path 
-            d="M0 16C15 16 15 0 30 0C45 0 45 16 60 16H0Z" 
-            fill="#f97316" 
+          <Path
+            d="M0 16C15 16 15 0 30 0C45 0 45 16 60 16H0Z"
+            fill="#f97316"
             opacity={0.15}
           />
-          <Path 
-            d="M15 16C22.5 16 22.5 8 30 8C37.5 8 37.5 16 45 16H15Z" 
-            fill="#f97316" 
+          <Path
+            d="M15 16C22.5 16 22.5 8 30 8C37.5 8 37.5 16 45 16H15Z"
+            fill="#f97316"
           />
         </Svg>
       </MotiView>
@@ -62,7 +63,10 @@ function CustomTabBar({ state, descriptors, navigation }: any) {
 
         const getIcon = () => {
           const name = route.name;
-          if (name === "about") return isFocused ? "information-circle" : "information-circle-outline";
+          if (name === "about")
+            return isFocused
+              ? "information-circle"
+              : "information-circle-outline";
           if (name === "despensa") return isFocused ? "home" : "home-outline";
           if (name === "perfil") return isFocused ? "person" : "person-outline";
           return "help";
@@ -111,7 +115,7 @@ export default function PrivateLayout() {
       tabBar={(props) => <CustomTabBar {...props} />}
       screenOptions={{
         headerShown: false,
-        animation: "shift", 
+        animation: "shift",
       }}
     >
       <Tabs.Screen name="about" />

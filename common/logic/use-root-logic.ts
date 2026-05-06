@@ -1,7 +1,10 @@
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import * as Linking from "expo-linking";
+import { useSegments } from "expo-router";
 import { supabase } from "../config/supabase.config";
 import { useAuthState } from "./use-auth-state";
+import { AuthService } from "../../modules/auth/service/auth.service";
+import { SocketService } from "../service/socket.service";
 
 /**
  * Hook para orquestar la lógica inicial de la aplicación.
@@ -9,55 +12,77 @@ import { useAuthState } from "./use-auth-state";
  */
 export const useRootLogic = () => {
   const url = Linking.useLinkingURL();
-  const { setUser, logout, isInitialized, setInitialized, getUsuario } =
-    useAuthState();
+  const segments = useSegments();
+  const {
+    setUser,
+    logout,
+    isInitialized,
+    setInitialized,
+    getUsuario,
+    isRegistering,
+    setRegistering,
+  } = useAuthState();
+
+  const isChecking = React.useRef(false);
 
   useEffect(() => {
-    // 1. Intentar cargar sesión inicial al montar
-    supabase.auth.getSession().then(async ({ data: { session } }) => {
-      if (session) {
-        // Evitar petición si ya está cargado (por si el listener fue más rápido)
-        if (getUsuario()) return;
-
-        const { AuthService } = await import(
-          "../../modules/auth/service/auth.service"
-        );
-        AuthService.configure();
-        const res = await AuthService.autenticar();
-        if (res.success) {
-          setUser(res.data, session.access_token);
-          return;
-        }
+    const checkSession = async (session: any) => {
+      // Si estamos en una ruta pública, NUNCA intentamos autenticar con la API de forma automática.
+      // Esto evita el spam de conexiones WebSocket si el usuario ya está en el flujo de auth.
+      const isInPublicRoute = segments[0] === "(public)";
+      if (isInPublicRoute) {
+        setInitialized(true);
+        return;
       }
-      setInitialized(true);
-    });
 
-    // 2. Escuchar cambios de sesión posteriores
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      if (isChecking.current) return;
+      isChecking.current = true;
+
       try {
         if (session) {
-          // Si ya tenemos el usuario, no hace falta pedirlo de nuevo
-          if (getUsuario()) {
-            setInitialized(true);
+          // Si ya tenemos el usuario en el store o estamos registrándonos, no hacemos nada
+          if (getUsuario() || isRegistering) return;
+
+          AuthService.configure();
+
+          // Intentar autenticar con la API
+          const res = await AuthService.autenticar();
+
+          if (res.success) {
+            setUser(res.data, session.access_token);
             return;
           }
 
-          const { AuthService } = await import(
-            "../../modules/auth/service/auth.service"
-          );
-          AuthService.configure();
-          const res = await AuthService.autenticar();
-          if (res.success) {
-            setUser(res.data, session.access_token);
+          // Si el usuario no existe en la API, desconectamos el socket para evitar spam
+          if (res.message === "USER_NOT_FOUND") {
+            setRegistering(true);
+            SocketService.disconnect();
           }
         } else {
           logout();
         }
       } catch (error) {
-        console.error("[RootLogic] Auth State Change Error:", error);
+        console.error("[RootLogic] Session Check Error:", error);
+      } finally {
+        isChecking.current = false;
         setInitialized(true);
+      }
+    };
+
+    // 1. Carga inicial
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      checkSession(session);
+    });
+
+    // 2. Listener de cambios
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (_event === "SIGNED_OUT") {
+        logout();
+        SocketService.disconnect();
+      } else if (_event === "SIGNED_IN" || _event === "TOKEN_REFRESHED") {
+        checkSession(session);
       }
     });
 
@@ -67,12 +92,8 @@ export const useRootLogic = () => {
   // 3. Manejar Deep Links
   useEffect(() => {
     if (url) {
-      import("../../modules/auth/service/auth.service")
-        .then(({ AuthService }) => {
-          AuthService.configure();
-          AuthService.crearSupabaseSessionFromUrl(url);
-        })
-        .catch((err) => console.error("[RootLogic] Deep Link Error:", err));
+      AuthService.configure();
+      AuthService.crearSupabaseSessionFromUrl(url);
     }
   }, [url]);
 

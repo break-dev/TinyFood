@@ -100,7 +100,7 @@ export const StepFood = ({ data, setData }: Props) => {
       {/* SECCIÓN 1: ALERGIAS */}
       <View className="mb-10">
         <Text
-          className="mb-4 ml-1 text-[10px] font-bold uppercase tracking-widest text-gray-400"
+          className="mb-4 ml-1 text-xs font-bold uppercase tracking-widest text-gray-400"
           style={{ fontFamily: "Outfit_700Bold" }}
         >
           Alergias / Prohibidos
@@ -125,7 +125,11 @@ export const StepFood = ({ data, setData }: Props) => {
                   className={`text-sm ${
                     isSelected ? "text-white" : "text-gray-600"
                   }`}
-                  style={{ fontFamily: isSelected ? "Outfit_700Bold" : "Outfit_400Regular" }}
+                  style={{
+                    fontFamily: isSelected
+                      ? "Outfit_700Bold"
+                      : "Outfit_400Regular",
+                  }}
                 >
                   {alergia} {isSelected && " ✓"}
                 </Text>
@@ -137,8 +141,13 @@ export const StepFood = ({ data, setData }: Props) => {
         {/* Input Libre Alergias */}
         <View className="flex-row items-center rounded-3xl border border-gray-100 bg-gray-50 px-5 py-2 mb-4 shadow-sm">
           <TextInput
-            className="flex-1 py-3 text-base text-gray-900"
-            style={{ fontFamily: "Outfit_400Regular" }}
+            className="flex-1 py-3"
+            style={{
+              fontFamily: "Outfit_400Regular",
+              fontSize: 16,
+              color: "#0f172a",
+              fontWeight: "normal",
+            }}
             placeholder="Otro (Ej: Fresas)"
             placeholderTextColor="#cbd5e1"
             value={customAlergia}
@@ -160,7 +169,7 @@ export const StepFood = ({ data, setData }: Props) => {
                 onPress={() => toggleAlergia(item)}
                 className="rounded-xl px-4 py-2 bg-orange-100/50 border border-orange-200 flex-row items-center"
               >
-                <Text 
+                <Text
                   className="text-orange-700 mr-2"
                   style={{ fontFamily: "Outfit_700Bold" }}
                 >
@@ -175,7 +184,7 @@ export const StepFood = ({ data, setData }: Props) => {
       {/* SECCIÓN 2: DIETAS */}
       <View className="mb-10">
         <Text
-          className="mb-4 ml-1 text-[10px] font-bold uppercase tracking-widest text-gray-400"
+          className="mb-4 ml-1 text-xs font-bold uppercase tracking-widest text-gray-400"
           style={{ fontFamily: "Outfit_700Bold" }}
         >
           Preferencias o Dietas
@@ -200,7 +209,11 @@ export const StepFood = ({ data, setData }: Props) => {
                   className={`text-sm ${
                     isSelected ? "text-white" : "text-gray-600"
                   }`}
-                  style={{ fontFamily: isSelected ? "Outfit_700Bold" : "Outfit_400Regular" }}
+                  style={{
+                    fontFamily: isSelected
+                      ? "Outfit_700Bold"
+                      : "Outfit_400Regular",
+                  }}
                 >
                   {dieta} {isSelected && " ✓"}
                 </Text>
@@ -212,8 +225,13 @@ export const StepFood = ({ data, setData }: Props) => {
         {/* Input Libre Dietas */}
         <View className="flex-row items-center rounded-3xl border border-gray-100 bg-gray-50 px-5 py-2 mb-4 shadow-sm">
           <TextInput
-            className="flex-1 py-3 text-base text-gray-900"
-            style={{ fontFamily: "Outfit_400Regular" }}
+            className="flex-1 py-3"
+            style={{
+              fontFamily: "Outfit_400Regular",
+              fontSize: 16,
+              color: "#0f172a",
+              fontWeight: "normal",
+            }}
             placeholder="Otra (Ej: Dieta Mediterránea)"
             placeholderTextColor="#cbd5e1"
             value={customDieta}
@@ -235,7 +253,7 @@ export const StepFood = ({ data, setData }: Props) => {
                 onPress={() => toggleDieta(item)}
                 className="rounded-xl px-4 py-2 bg-emerald-100/50 border border-emerald-200 flex-row items-center"
               >
-                <Text 
+                <Text
                   className="text-emerald-700 mr-2"
                   style={{ fontFamily: "Outfit_700Bold" }}
                 >
