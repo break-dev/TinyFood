@@ -26,22 +26,25 @@ export const useRootLogic = () => {
   const isChecking = React.useRef(false);
 
   useEffect(() => {
-    const checkSession = async (session: any) => {
-      // Si estamos en una ruta pública, NUNCA intentamos autenticar con la API de forma automática.
-      // Esto evita el spam de conexiones WebSocket si el usuario ya está en el flujo de auth.
-      const isInPublicRoute = segments[0] === "(public)";
-      if (isInPublicRoute) {
-        setInitialized(true);
-        return;
-      }
-
-      if (isChecking.current) return;
+    const checkSession = async (session: any, force = false) => {
+      if (isChecking.current && !force) return;
       isChecking.current = true;
 
       try {
         if (session) {
-          // Si ya tenemos el usuario en el store o estamos registrándonos, no hacemos nada
-          if (getUsuario() || isRegistering) return;
+          // Si estamos en una ruta pública y no es un login forzado, saltamos
+          const isInPublicRoute = segments[0] === "(public)";
+          if (isInPublicRoute && !force) {
+            console.log("[RootLogic] Saltando check automático en ruta pública");
+            setInitialized(true);
+            return;
+          }
+
+          // Si ya tenemos el usuario en el store o ya sabemos que es registro, saltamos
+          if (getUsuario() || (isRegistering && !force)) {
+            setInitialized(true);
+            return;
+          }
 
           AuthService.configure();
 
@@ -50,13 +53,12 @@ export const useRootLogic = () => {
 
           if (res.success) {
             setUser(res.data, session.access_token);
-            return;
-          }
-
-          // Si el usuario no existe en la API, desconectamos el socket para evitar spam
-          if (res.message === "USER_NOT_FOUND") {
-            setRegistering(true);
-            SocketService.disconnect();
+            setRegistering(false);
+          } else {
+            // Si el usuario no existe en la API, marcamos que está en registro
+            if (res.message === "USER_NOT_FOUND") {
+              setRegistering(true);
+            }
           }
         } else {
           logout();
@@ -69,19 +71,25 @@ export const useRootLogic = () => {
       }
     };
 
-    // 1. Carga inicial
+    // 1. Carga inicial: Intentamos solo una vez
     supabase.auth.getSession().then(({ data: { session } }) => {
-      checkSession(session);
+      if (session) checkSession(session);
+      else setInitialized(true);
     });
 
-    // 2. Listener de cambios
+    // 2. Listener de cambios: Solo actuamos ante eventos reales
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (_event === "SIGNED_OUT") {
+    } = supabase.auth.onAuthStateChange((event, session) => {
+      console.log(`[RootLogic] Auth Event: ${event}`);
+      
+      if (event === "SIGNED_OUT") {
         logout();
         SocketService.disconnect();
-      } else if (_event === "SIGNED_IN" || _event === "TOKEN_REFRESHED") {
+      } else if (event === "SIGNED_IN") {
+        // En SIGNED_IN forzamos la verificación porque es un login explícito
+        checkSession(session, true);
+      } else if (event === "TOKEN_REFRESHED") {
         checkSession(session);
       }
     });

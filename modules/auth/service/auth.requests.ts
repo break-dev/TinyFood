@@ -1,10 +1,6 @@
-export interface RES_Auth {
-  id: number;
-  id_supabase: string;
-  //
+export interface REQ_RegistrarUsuario {
   nombre: string;
   fecha_nacimiento?: string | null;
-  url_foto?: string | null;
   //
   peso?: number | null;
   talla?: number | null;
@@ -13,6 +9,4 @@ export interface RES_Auth {
   informacion_medica?: { nombre: string; descripcion?: string }[] | null;
   alimentos_prohibidos?: string[] | null;
   preferencias?: string[] | null;
-  //
-  created_at?: Date | string;
 }

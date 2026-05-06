@@ -12,6 +12,7 @@ import {
 } from "@/common/utils/functions/make-api-response";
 import { SocketService } from "@/common/service/socket.service";
 import { socket } from "@/common/config/socket.config";
+import { REQ_RegistrarUsuario } from "./auth.requests";
 
 export class AuthService {
   /**
@@ -118,15 +119,9 @@ export class AuthService {
   /**
    * Registrar nuevo usuario con datos de perfil
    */
-  static async registrar(perfil: any): Promise<ApiResponse<RES_Auth>> {
+  static async registrar(
+    perfil: REQ_RegistrarUsuario,
+  ): Promise<ApiResponse<RES_Auth>> {
     return SocketService.emit("auth:registrar", perfil);
-  }
-
-  /**
-   * Cerrar sesión
-   */
-  static async logout(): Promise<void> {
-    await supabase.auth.signOut();
-    SocketService.disconnect();
   }
 }

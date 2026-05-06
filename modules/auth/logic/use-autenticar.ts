@@ -1,9 +1,6 @@
 import { useState, useEffect } from "react";
 import { AuthService } from "../service/auth.service";
-import { useAuthStore } from "@/common/stores/auth.store";
 import { useRouter } from "@/common/logic/use-router";
-import { supabase } from "@/common/config/supabase.config";
-import { routes } from "@/common/utils/variables/routes";
 import {
   useSharedValue,
   withRepeat,
@@ -12,6 +9,7 @@ import {
   useAnimatedStyle,
 } from "react-native-reanimated";
 import * as Haptics from "expo-haptics";
+import { useAuthState } from "@/common/logic/use-auth-state";
 
 /**
  * Hook para el Paso 1: Autenticación con Google/Supabase
@@ -19,7 +17,7 @@ import * as Haptics from "expo-haptics";
  */
 export const useAutenticar = () => {
   const [loading, setLoading] = useState(false);
-  const { setUser } = useAuthStore();
+  const { setUser, isRegistering } = useAuthState();
   const router = useRouter();
 
   // Animaciones
@@ -42,6 +40,15 @@ export const useAutenticar = () => {
     };
   });
 
+  // Escuchar si el usuario debe registrarse (determinado por el RootLogic)
+  useEffect(() => {
+    if (isRegistering && loading) {
+      console.log("[useAutenticar] Detectado isRegistering, navegando...");
+      router.navigate("/(public)/register" as any);
+      setLoading(false);
+    }
+  }, [isRegistering, loading]);
+
   /**
    * Acción principal de login
    */
@@ -50,41 +57,22 @@ export const useAutenticar = () => {
     try {
       console.log("[useAutenticar] Iniciando authWithGoogle...");
       // 1. Login nativo con Google + Supabase Auth
+      // Al completarse, Supabase disparará el evento SIGNED_IN
+      // que useRootLogic capturará para hacer la verificación con la API.
       const googleRes = await AuthService.authWithGoogle();
       console.log("[useAutenticar] Resultado googleRes:", googleRes);
 
       if (!googleRes.success) {
-        if (googleRes.message === "CANCELLED") {
-          return; // No hacemos nada, el usuario solo dio atrás
-        }
+        setLoading(false);
+        if (googleRes.message === "CANCELLED") return;
         throw new Error(googleRes.message as string);
       }
 
-      console.log("[useAutenticar] Solicitando autenticar a la API...");
-      // 2. Preguntar a la API si el usuario ya tiene perfil (Paso 1 del diagrama)
-      const apiRes = await AuthService.autenticar();
-      console.log("[useAutenticar] Resultado apiRes:", apiRes);
-
-      if (apiRes.success) {
-        // CASO: Usuario YA EXISTE
-        console.log("[useAutenticar] Usuario existe, guardando en store...");
-        const { data } = await supabase.auth.getSession();
-        setUser(apiRes.data, data.session?.access_token || null);
-        // NO hacemos router.replace aquí.
-        // El PublicLayout detectará el 'usuario' y hará el Redirect solo.
-      } else if (apiRes.message === "USER_NOT_FOUND") {
-        // CASO: Usuario NO EXISTE
-        console.log(
-          "[useAutenticar] Usuario NO existe, navegando a register...",
-        );
-        router.navigate("/(public)/register" as any); // Esta sí es necesaria manual
-      } else {
-        throw new Error(apiRes.message as string);
-      }
+      // NO llamamos a AuthService.autenticar() aquí.
+      // Dejamos que useRootLogic haga el trabajo pesado para evitar duplicados.
+      // El useEffect de arriba se encargará de la navegación si es necesario.
     } catch (error: any) {
       console.error("[useAutenticar] Error:", error.message);
-    } finally {
-      console.log("[useAutenticar] Terminando loading...");
       setLoading(false);
     }
   };

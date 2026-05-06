@@ -160,7 +160,9 @@ export const StepPhysical = ({ data, setData }: Props) => {
               fontSize: data.fecha_nacimiento ? 16 : 14,
             }}
           >
-            {data.fecha_nacimiento || "DD / MM / YYYY"}
+            {data.fecha_nacimiento 
+              ? formatDate(new Date(data.fecha_nacimiento)) 
+              : "DD / MM / YYYY"}
           </Text>
           <View className="rounded-xl bg-white p-2 shadow-sm border border-gray-50">
             <Ionicons name="chevron-forward" size={18} color="#9ca3af" />

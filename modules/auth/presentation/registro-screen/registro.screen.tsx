@@ -6,6 +6,7 @@ import {
   ScrollView,
   KeyboardAvoidingView,
   Platform,
+  ActivityIndicator,
 } from "react-native";
 import { useRegistrar } from "../../logic/use-registrar";
 import { Ionicons } from "@expo/vector-icons";
@@ -24,7 +25,7 @@ export const RegistroScreen = () => {
     loading,
     nextStep,
     prevStep,
-    handleSkip,
+    handleFinish,
   } = useRegistrar();
 
   const insets = useSafeAreaInsets();
@@ -77,13 +78,22 @@ export const RegistroScreen = () => {
               ))}
             </View>
 
-            <TouchableOpacity onPress={handleSkip} activeOpacity={0.7}>
-              <Text 
-                className="text-orange-500 text-sm"
-                style={{ fontFamily: "Outfit_700Bold" }}
-              >
-                Omitir
-              </Text>
+            <TouchableOpacity
+              onPress={handleFinish}
+              activeOpacity={0.7}
+              disabled={loading}
+              className="min-w-[50px] items-end"
+            >
+              {loading ? (
+                <ActivityIndicator size="small" color="#f97316" />
+              ) : (
+                <Text
+                  className="text-orange-500 text-sm"
+                  style={{ fontFamily: "Outfit_700Bold" }}
+                >
+                  Omitir
+                </Text>
+              )}
             </TouchableOpacity>
           </View>
 
@@ -109,13 +119,26 @@ export const RegistroScreen = () => {
               activeOpacity={0.9}
               className="flex-row items-center justify-center rounded-[32px] bg-gray-900 py-6 shadow-2xl shadow-black/20"
             >
-              <Text 
-                className="mr-3 text-xl text-white"
-                style={{ fontFamily: "Outfit_900Black" }}
-              >
-                {step === totalSteps ? "Finalizar Registro" : "Siguiente Paso"}
-              </Text>
-              <Ionicons name="arrow-forward" size={22} color="white" strokeWidth={3} />
+              {loading ? (
+                <ActivityIndicator color="white" />
+              ) : (
+                <>
+                  <Text
+                    className="mr-3 text-xl text-white"
+                    style={{ fontFamily: "Outfit_900Black" }}
+                  >
+                    {step === totalSteps
+                      ? "Finalizar Registro"
+                      : "Siguiente Paso"}
+                  </Text>
+                  <Ionicons
+                    name="arrow-forward"
+                    size={22}
+                    color="white"
+                    strokeWidth={3}
+                  />
+                </>
+              )}
             </TouchableOpacity>
           </View>
         </ScrollView>
