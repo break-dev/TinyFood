@@ -1,0 +1,96 @@
+import React from "react";
+import { View, Text as RNText, TouchableOpacity } from "react-native";
+import { Trash2, Calendar } from "lucide-react-native";
+import { MotiView } from "moti";
+import { RES_Comida } from "../../../service/despensa.responses";
+import { getEstadoVencimiento } from "./get-estado-vencimiento";
+
+interface Props {
+  item: RES_Comida;
+  index: number;
+  onDelete: (id: number) => void;
+  onEdit: (comida: RES_Comida) => void;
+}
+
+export const ItemComida = ({ item, index, onDelete, onEdit }: Props) => {
+  const estado_vencimiento = getEstadoVencimiento(item.fecha_vencimiento);
+  return (
+    <TouchableOpacity activeOpacity={0.7} onPress={() => onEdit(item)}>
+      <MotiView
+        from={{ opacity: 0, translateX: -20 }}
+        animate={{ opacity: 1, translateX: 0 }}
+        transition={{ type: "timing", duration: 400, delay: index * 50 }}
+        className="mb-4 bg-white p-5 rounded-[32px] shadow-sm border border-gray-100 flex-row items-center"
+      >
+        <View
+          className={`h-16 w-16 rounded-[24px] items-center justify-center ${estado_vencimiento.color}10`}
+        >
+          <estado_vencimiento.Icon
+            size={28}
+            color={
+              estado_vencimiento.color === "bg-emerald-500"
+                ? "#10b981"
+                : estado_vencimiento.color === "bg-orange-500"
+                  ? "#f97316"
+                  : estado_vencimiento.color === "bg-red-500"
+                    ? "#ef4444"
+                    : "#3b82f6"
+            }
+            strokeWidth={2}
+          />
+        </View>
+
+        <View className="flex-1 ml-4">
+          <View className="flex-row items-center justify-between">
+            <RNText
+              className="text-gray-900 text-lg flex-1"
+              style={{ fontFamily: "Outfit_700Bold" }}
+              numberOfLines={1}
+            >
+              {item.nombre}
+            </RNText>
+            <View
+              className={`${estado_vencimiento.color} px-3 py-1 rounded-full`}
+            >
+              <RNText
+                className="text-white text-[10px] uppercase tracking-widest"
+                style={{ fontFamily: "Outfit_900Black" }}
+              >
+                {estado_vencimiento.label}
+              </RNText>
+            </View>
+          </View>
+
+          <RNText
+            className="text-gray-400 text-sm mt-0.5"
+            style={{ fontFamily: "Outfit_700Bold" }}
+          >
+            {item.cantidad}
+          </RNText>
+
+          {item.fecha_vencimiento && (
+            <View className="flex-row items-center mt-3 bg-gray-50 self-start px-3 py-1.5 rounded-xl border border-gray-100">
+              <Calendar size={12} color="#9ca3af" strokeWidth={2.5} />
+              <RNText
+                className="text-[10px] text-gray-500 ml-1.5"
+                style={{ fontFamily: "Outfit_700Bold" }}
+              >
+                {new Date(item.fecha_vencimiento).toLocaleDateString("es-ES", {
+                  day: "numeric",
+                  month: "short",
+                })}
+              </RNText>
+            </View>
+          )}
+        </View>
+
+        <TouchableOpacity
+          onPress={() => onDelete(item.id)}
+          className="h-12 w-12 items-center justify-center rounded-2xl bg-red-50 ml-2"
+        >
+          <Trash2 size={20} color="#ef4444" strokeWidth={2} />
+        </TouchableOpacity>
+      </MotiView>
+    </TouchableOpacity>
+  );
+};

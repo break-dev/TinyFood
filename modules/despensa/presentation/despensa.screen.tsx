@@ -17,10 +17,10 @@ import {
   AlertCircle,
 } from "lucide-react-native";
 import { MotiView } from "moti";
-import { useDespensa } from "../logic/use-despensa";
-import { ListadoComida } from "./components/listado-comida";
-import { RegistroComida } from "./components/registro-comida";
-import { BottomSheetModal, BottomSheetBackdrop } from "@gorhom/bottom-sheet";
+import { useDespensa } from "../logic/_use-despensa";
+import { ListadoComida } from "./listado-comida/listado-comida";
+import { RegistroComida } from "./registro-comida/registro-comida";
+import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { RES_Comida } from "../service/despensa.responses";
 import { ElegantModal } from "@/common/presentation/components/elegant-modal";
 
@@ -30,6 +30,8 @@ export const DespensaScreen = () => {
   const { usuario } = useAuthState();
   const {
     comidas,
+    totalItems,
+    proximosVencimientos,
     isLoading,
     isRefreshing,
     onRefresh,
@@ -56,24 +58,6 @@ export const DespensaScreen = () => {
     setComidaParaEditar(comida);
     bottomSheetModalRef.current?.present();
   };
-
-  const renderBackdrop = useCallback(
-    (props: any) => (
-      <BottomSheetBackdrop
-        {...props}
-        disappearsOnIndex={-1}
-        appearsOnIndex={0}
-        opacity={0.5}
-      />
-    ),
-    [],
-  );
-
-  const proximosVencimientos = comidas.filter((c) => {
-    if (!c.fecha_vencimiento) return false;
-    const diff = new Date(c.fecha_vencimiento).getTime() - new Date().getTime();
-    return diff > 0 && diff <= 1000 * 60 * 60 * 24 * 3; // 3 días
-  }).length;
 
   return (
     <View
@@ -127,7 +111,7 @@ export const DespensaScreen = () => {
               className="text-3xl text-gray-900"
               style={{ fontFamily: "Outfit_900Black" }}
             >
-              {comidas.length}
+              {totalItems}
             </Text>
           </View>
 

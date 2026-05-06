@@ -294,7 +294,10 @@ export const RegistroComida = React.forwardRef<BottomSheetModal, Props>(
                     multiline
                     numberOfLines={3}
                     className="flex-1 py-1 text-gray-900 text-base h-24"
-                    style={{ fontFamily: "Outfit_700Bold", textAlignVertical: "top" }}
+                    style={{
+                      fontFamily: "Outfit_700Bold",
+                      textAlignVertical: "top",
+                    }}
                   />
                 </View>
               </MotiView>
