@@ -147,8 +147,9 @@ El archivo `google-services.json` es **requerido por el plugin `@react-native-go
 ## 7. Ejecución y Desarrollo 🛠️
 
 1.  **Instalar:** `npm install`
-2.  **Configurar:** Crear `.env` basado en `env.example`.
-3.  **Correr:** `npx expo start --dev-client`
+2.  **SKILLS:** `npx skills install`
+3.  **Configurar:** Crear `.env` basado en `env.example`.
+4.  **Correr:** `npx expo start --dev-client`
     - _Nota:_ Al usar librerías nativas, **debes** usar un Development Build o el APK generado para probar todas las funciones (especialmente Auth y Haptics).
 
 ---
