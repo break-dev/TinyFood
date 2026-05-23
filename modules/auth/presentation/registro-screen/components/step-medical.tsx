@@ -15,24 +15,40 @@ interface Props {
 }
 
 export const StepMedical = ({ data, setData }: Props) => {
-  const [customCondicion, setCustomCondicion] = useState("");
+  const [customNombre, setCustomNombre] = useState("");
 
   // Manejar el agregado de una nueva condición
-  const addCondicion = (nombre: string) => {
-    if (!nombre.trim()) return;
+  const addCondicion = () => {
+    const nombre = customNombre.trim();
+    if (!nombre) return;
     const existe = data.informacion_medica.find(
-      (c: Condicion) => c.nombre.toLowerCase() === nombre.trim().toLowerCase(),
+      (c: Condicion) => c.nombre.toLowerCase() === nombre.toLowerCase(),
     );
     if (!existe) {
       setData({
         ...data,
         informacion_medica: [
           ...data.informacion_medica,
-          { nombre: nombre.trim(), descripcion: "" },
+          { nombre: nombre, descripcion: "" },
         ],
       });
     }
-    setCustomCondicion(""); // Limpiar el input
+    setCustomNombre("");
+  };
+
+  const addCondicionFromSug = (nombre: string) => {
+    const existe = data.informacion_medica.find(
+      (c: Condicion) => c.nombre.toLowerCase() === nombre.toLowerCase(),
+    );
+    if (!existe) {
+      setData({
+        ...data,
+        informacion_medica: [
+          ...data.informacion_medica,
+          { nombre: nombre, descripcion: "" },
+        ],
+      });
+    }
   };
 
   // Remover condición de la lista
@@ -45,14 +61,14 @@ export const StepMedical = ({ data, setData }: Props) => {
     });
   };
 
-  // Actualizar la descripción de una condición específica
-  const updateDescripcion = (nombre: string, descripcion: string) => {
-    setData({
-      ...data,
-      informacion_medica: data.informacion_medica.map((c: Condicion) =>
-        c.nombre === nombre ? { ...c, descripcion } : c,
-      ),
-    });
+  // Actualizar la descripción de una condición específica sin causar re-renders
+  const handleDescChange = (nombre: string, text: string) => {
+    const condicion = data.informacion_medica.find(
+      (c: Condicion) => c.nombre === nombre,
+    );
+    if (condicion) {
+      condicion.descripcion = text;
+    }
   };
 
   return (
@@ -95,7 +111,7 @@ export const StepMedical = ({ data, setData }: Props) => {
               <TouchableOpacity
                 key={sug}
                 onPress={() =>
-                  isSelected ? removeCondicion(sug) : addCondicion(sug)
+                  isSelected ? removeCondicion(sug) : addCondicionFromSug(sug)
                 }
                 activeOpacity={0.8}
                 className={`rounded-2xl px-5 py-3 border shadow-sm ${
@@ -141,14 +157,11 @@ export const StepMedical = ({ data, setData }: Props) => {
             }}
             placeholder="Ej: Intolerancia al gluten"
             placeholderTextColor="#cbd5e1"
-            value={customCondicion}
-            onChangeText={setCustomCondicion}
-            onSubmitEditing={() => addCondicion(customCondicion)}
+            value={customNombre}
+            onChangeText={setCustomNombre}
+            onSubmitEditing={addCondicion}
           />
-          <TouchableOpacity
-            onPress={() => addCondicion(customCondicion)}
-            className="ml-2"
-          >
+          <TouchableOpacity onPress={addCondicion} className="ml-2">
             <Ionicons name="add-circle" size={36} color="#f97316" />
           </TouchableOpacity>
         </View>
@@ -191,8 +204,8 @@ export const StepMedical = ({ data, setData }: Props) => {
                 placeholderTextColor="#cbd5e1"
                 multiline
                 numberOfLines={2}
-                value={cond.descripcion}
-                onChangeText={(text) => updateDescripcion(cond.nombre, text)}
+                defaultValue={cond.descripcion}
+                onChangeText={(text) => handleDescChange(cond.nombre, text)}
               />
             </View>
           ))}

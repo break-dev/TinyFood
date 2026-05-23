@@ -3,6 +3,8 @@ import { useAuthState } from "@/common/logic/use-auth-state";
 import { PerfilService } from "../service/perfil.service";
 import * as Haptics from "expo-haptics";
 import { RES_Auth } from "@/modules/auth/service/auth.responses";
+import { Genero } from "@/common/utils/enums/genero";
+import { ObjetivoFisico } from "@/common/utils/enums/objetivo-fisico";
 
 interface Condicion {
   nombre: string;
@@ -18,6 +20,10 @@ interface FormData {
   informacion_medica: Condicion[];
   alimentos_prohibidos: string;
   preferencias: string;
+  url_foto: string | null;
+  localUri?: string;
+  genero: Genero;
+  objetivo_fisico: ObjetivoFisico;
 }
 
 const buildInitialForm = (usuario: any): FormData => ({
@@ -41,6 +47,9 @@ const buildInitialForm = (usuario: any): FormData => ({
   preferencias: Array.isArray(usuario?.preferencias)
     ? usuario.preferencias.join(", ")
     : "",
+  url_foto: usuario?.url_foto ?? null,
+  genero: usuario?.genero ?? Genero.Masculino,
+  objetivo_fisico: usuario?.objetivo_fisico ?? ObjetivoFisico.Mantener,
 });
 
 export function useUpdatePerfil() {
@@ -64,6 +73,13 @@ export function useUpdatePerfil() {
   const handleSave = async () => {
     setIsLoading(true);
     try {
+      const foto =
+        formData.url_foto === null
+          ? null
+          : formData.url_foto && !formData.url_foto.startsWith("http")
+            ? formData.url_foto
+            : undefined;
+
       const res = await PerfilService.actualizarPerfil({
         nombre: formData.nombre || undefined,
         peso: parseFloat(formData.peso) || undefined,
@@ -77,6 +93,9 @@ export function useUpdatePerfil() {
           ? formData.preferencias.split(",").map((s) => s.trim())
           : [],
         fecha_nacimiento: formData.fecha_nacimiento || undefined,
+        genero: formData.genero,
+        objetivo_fisico: formData.objetivo_fisico,
+        foto_b64: foto,
       });
 
       if (res.success && res.data) {

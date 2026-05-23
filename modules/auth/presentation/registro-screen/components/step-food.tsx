@@ -33,16 +33,11 @@ export const StepFood = ({ data, setData }: Props) => {
   };
 
   const addCustomAlergia = () => {
-    if (
-      customAlergia.trim() &&
-      !data.alimentos_prohibidos.includes(customAlergia.trim())
-    ) {
+    const val = customAlergia.trim();
+    if (val && !data.alimentos_prohibidos.includes(val)) {
       setData({
         ...data,
-        alimentos_prohibidos: [
-          ...data.alimentos_prohibidos,
-          customAlergia.trim(),
-        ],
+        alimentos_prohibidos: [...data.alimentos_prohibidos, val],
       });
     }
     setCustomAlergia("");
@@ -65,10 +60,11 @@ export const StepFood = ({ data, setData }: Props) => {
   };
 
   const addCustomDieta = () => {
-    if (customDieta.trim() && !data.preferencias.includes(customDieta.trim())) {
+    const val = customDieta.trim();
+    if (val && !data.preferencias.includes(val)) {
       setData({
         ...data,
-        preferencias: [...data.preferencias, customDieta.trim()],
+        preferencias: [...data.preferencias, val],
       });
     }
     setCustomDieta("");

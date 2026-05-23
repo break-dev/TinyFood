@@ -11,19 +11,38 @@ import {
 import * as Haptics from "expo-haptics";
 import { useAuthState } from "@/common/logic/use-auth-state";
 
+import { supabase } from "@/common/config/supabase.config";
+
 /**
  * Hook para el Paso 1: Autenticación con Google/Supabase
  * y verificación de existencia de perfil en la API.
  */
 export const useAutenticar = () => {
   const [loading, setLoading] = useState(false);
-  const { setUser, isRegistering } = useAuthState();
+  const { setUser, isRegistering, setRegistering } = useAuthState();
   const router = useRouter();
 
   // Animaciones
   const rotation = useSharedValue(0);
 
   useEffect(() => {
+    // Resetear el estado de registro al montar la pantalla para evitar redirecciones previas
+    setRegistering(false);
+
+    // Destruir cualquier sesión de Supabase/JWT remanente al estar en el inicio
+    const clearStaleSession = async () => {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session) {
+          console.log("[useAutenticar] Destruyendo sesión JWT remanente en inicio...");
+          await supabase.auth.signOut();
+        }
+      } catch (err) {
+        console.error("[useAutenticar] Error al destruir sesión remanente:", err);
+      }
+    };
+    clearStaleSession();
+
     rotation.value = withRepeat(
       withTiming(360, {
         duration: 20000,
@@ -53,6 +72,7 @@ export const useAutenticar = () => {
    * Acción principal de login
    */
   const handleAuth = async () => {
+    setRegistering(false); // Limpiar bandera de registro para evitar redirecciones prematuras
     setLoading(true);
     try {
       console.log("[useAutenticar] Iniciando authWithGoogle...");

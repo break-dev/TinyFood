@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, Image } from "react-native";
 import Animated, { FadeInRight, FadeOutLeft } from "react-native-reanimated";
 import { Ionicons } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
+import { ObjetivoFisico } from "@/common/utils/enums/objetivo-fisico";
 
 interface Props {
   data: any;
@@ -18,6 +19,20 @@ export const StepActivity = ({ data, setData }: Props) => {
     { id: 5, label: "Muy Activo", desc: "Atleta o trabajo físico" },
   ];
 
+  const goals = [
+    { id: ObjetivoFisico.Mantener, label: "Mantener", desc: "Mantener peso" },
+    {
+      id: ObjetivoFisico.PerderPeso,
+      label: "Perder Peso",
+      desc: "Reducir grasa",
+    },
+    {
+      id: ObjetivoFisico.GanarPeso,
+      label: "Ganar Peso",
+      desc: "Aumentar masa",
+    },
+  ];
+
   return (
     <Animated.View
       entering={FadeInRight}
@@ -25,22 +40,82 @@ export const StepActivity = ({ data, setData }: Props) => {
       className="flex-1"
     >
       {/* Header: Title */}
-      <View className="mb-10">
+      <View className="mb-8">
         <Text
           className="mb-3 text-4xl text-gray-900 tracking-tighter"
           style={{ fontFamily: "Outfit_900Black" }}
         >
-          Actividad
+          Objetivo & Actividad
         </Text>
         <Text
           className="text-lg text-gray-500 leading-6"
           style={{ fontFamily: "Outfit_400Regular" }}
         >
-          ¿Qué tan activo eres en tu día a día? Esto nos ayuda a ajustar tu quema
-          calórica.
+          Configura tu meta física y tu ritmo diario para ajustar tus
+          necesidades calóricas.
         </Text>
       </View>
 
+      {/* Objetivo Físico */}
+      <Text
+        className="text-xs text-gray-400 uppercase tracking-widest mb-3 ml-1 font-bold"
+        style={{ fontFamily: "Outfit_700Bold" }}
+      >
+        Objetivo Físico
+      </Text>
+      <View className="flex-row gap-2 mb-8">
+        {goals.map((g) => {
+          const isSelected = data.objetivo_fisico === g.id;
+          return (
+            <TouchableOpacity
+              key={g.id}
+              activeOpacity={0.8}
+              onPress={() => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                setData({ ...data, objetivo_fisico: g.id });
+              }}
+              className="flex-1 py-4 px-1 rounded-[20px] items-center justify-center border"
+              style={
+                isSelected
+                  ? {
+                      backgroundColor: "#f97316",
+                      borderColor: "#f97316",
+                      shadowColor: "#f97316",
+                      shadowOffset: { width: 0, height: 4 },
+                      shadowOpacity: 0.25,
+                      shadowRadius: 6,
+                      elevation: 3,
+                    }
+                  : {
+                      backgroundColor: "#f9fafb",
+                      borderColor: "#f3f4f6",
+                    }
+              }
+            >
+              <Text
+                className={`text-xs text-center capitalize ${
+                  isSelected ? "text-white" : "text-gray-500"
+                }`}
+                style={{
+                  fontFamily: isSelected
+                    ? "Outfit_700Bold"
+                    : "Outfit_400Regular",
+                }}
+              >
+                {g.label}
+              </Text>
+            </TouchableOpacity>
+          );
+        })}
+      </View>
+
+      {/* Nivel de Actividad */}
+      <Text
+        className="text-xs text-gray-400 uppercase tracking-widest mb-3 ml-1 font-bold"
+        style={{ fontFamily: "Outfit_700Bold" }}
+      >
+        Nivel de Actividad
+      </Text>
       <View className="space-y-4">
         {levels.map((level) => (
           <TouchableOpacity

@@ -42,7 +42,6 @@ export const useAuthStore = create<IAuthStore>()(
       name: "tinyfood-auth-storage",
       storage: createJSONStorage(() => AsyncStorage),
       partialize: (state) => ({
-        isRegistering: state.isRegistering,
         usuario: state.usuario,
         token: state.token,
       }),

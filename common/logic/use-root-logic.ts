@@ -72,6 +72,7 @@ export const useRootLogic = () => {
     };
 
     // 1. Carga inicial: Intentamos solo una vez
+    setRegistering(false); // Limpiar estado transitorio de registro al iniciar para evitar bucles de redirección
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) checkSession(session);
       else setInitialized(true);

@@ -5,6 +5,9 @@ import { useRouter } from "@/common/logic/use-router";
 import { supabase } from "@/common/config/supabase.config";
 import * as Haptics from "expo-haptics";
 
+import { Genero } from "@/common/utils/enums/genero";
+import { ObjetivoFisico } from "@/common/utils/enums/objetivo-fisico";
+
 /**
  * Hook para gestionar el flujo de registro multi-paso.
  */
@@ -19,6 +22,10 @@ export const useRegistrar = () => {
     talla: "",
     fecha_nacimiento: "",
     nivel_actividad: 2,
+    genero: Genero.Masculino,
+    objetivo_fisico: ObjetivoFisico.Mantener,
+    foto_b64: "",
+    localUri: "",
     alimentos_prohibidos: [] as string[],
     preferencias: [] as string[],
     informacion_medica: [] as { nombre: string; descripcion: string }[],
@@ -37,6 +44,7 @@ export const useRegistrar = () => {
             user.user_metadata?.full_name ||
             user.user_metadata?.name ||
             prev.nombre,
+          localUri: user.user_metadata?.avatar_url || prev.localUri,
           // Si el proveedor social diera la fecha de nacimiento (raro pero posible)
           fecha_nacimiento:
             user.user_metadata?.birthdate || prev.fecha_nacimiento,
@@ -96,6 +104,9 @@ export const useRegistrar = () => {
       talla: parseFloat(formData.talla) || undefined,
       fecha_nacimiento: fechaNac,
       nivel_actividad: formData.nivel_actividad,
+      genero: formData.genero,
+      objetivo_fisico: formData.objetivo_fisico,
+      foto_b64: formData.foto_b64 || undefined,
       informacion_medica: formData.informacion_medica,
       alimentos_prohibidos: formData.alimentos_prohibidos,
       preferencias: formData.preferencias,

@@ -12,42 +12,20 @@ import Svg, { Path } from "react-native-svg";
 function CustomTabBar({ state, descriptors, navigation }: any) {
   const insets = useSafeAreaInsets();
   const { width } = useWindowDimensions();
-  const TAB_BAR_WIDTH = width - 48;
+  const TAB_BAR_WIDTH = width;
   const TAB_WIDTH = TAB_BAR_WIDTH / state.routes.length;
 
   return (
     <View
-      className="flex-row bg-white absolute bottom-6 left-6 right-6 rounded-[36px] border border-gray-100 shadow-2xl items-center justify-around h-20"
-      style={{ paddingBottom: 0, overflow: "hidden" }}
+      className="flex-row bg-white border-t border-gray-100 shadow-2xl items-center justify-around"
+      style={{
+        height: 64 + insets.bottom,
+        paddingBottom: insets.bottom,
+      }}
     >
-      {/* Curved Indicator at the bottom */}
-      <MotiView
-        animate={{
-          translateX:
-            state.index * TAB_WIDTH - TAB_BAR_WIDTH / 2 + TAB_WIDTH / 2,
-        }}
-        transition={{
-          type: "timing",
-          duration: 350,
-        }}
-        className="absolute bottom-0 h-4 items-center justify-center"
-        style={{ width: TAB_WIDTH }}
-      >
-        <Svg width={60} height={16} viewBox="0 0 60 16" fill="none">
-          <Path
-            d="M0 16C15 16 15 0 30 0C45 0 45 16 60 16H0Z"
-            fill="#f97316"
-            opacity={0.15}
-          />
-          <Path
-            d="M15 16C22.5 16 22.5 8 30 8C37.5 8 37.5 16 45 16H15Z"
-            fill="#f97316"
-          />
-        </Svg>
-      </MotiView>
-
       {state.routes.map((route: any, index: number) => {
         const isFocused = state.index === index;
+        const isCenter = route.name === "despensa";
 
         const onPress = () => {
           const event = navigation.emit({
@@ -67,30 +45,99 @@ function CustomTabBar({ state, descriptors, navigation }: any) {
             return isFocused
               ? "information-circle"
               : "information-circle-outline";
-          if (name === "despensa") return isFocused ? "home" : "home-outline";
+          if (name === "despensa") return "home";
           if (name === "perfil") return isFocused ? "person" : "person-outline";
           return "help";
         };
+
+        if (isCenter) {
+          return (
+            <TouchableOpacity
+              key={route.key}
+              onPress={onPress}
+              activeOpacity={0.9}
+              className="items-center justify-center"
+              style={{ width: TAB_WIDTH, height: "100%", position: "relative" }}
+            >
+              <MotiView
+                animate={{
+                  scale: isFocused ? 1.1 : 1,
+                  translateY: isFocused ? -22 : -16,
+                }}
+                transition={{
+                  type: "spring",
+                  damping: 15,
+                  mass: 0.8,
+                }}
+                className="w-16 h-16 rounded-full items-center justify-center bg-orange-500 border-4 border-white shadow-xl shadow-orange-500/40"
+                style={{
+                  shadowColor: "#f97316",
+                  shadowOffset: { width: 0, height: 4 },
+                  shadowOpacity: 0.3,
+                  shadowRadius: 8,
+                  elevation: 8,
+                }}
+              >
+                <Ionicons name="home" size={28} color="white" />
+              </MotiView>
+              <Text
+                className="text-[10px]"
+                style={{
+                  fontFamily: isFocused
+                    ? "Outfit_700Bold"
+                    : "Outfit_400Regular",
+                  color: isFocused ? "#f97316" : "#9ca3af",
+                  position: "absolute",
+                  bottom: 6,
+                }}
+              >
+                Inventario
+              </Text>
+            </TouchableOpacity>
+          );
+        }
 
         return (
           <TouchableOpacity
             key={route.key}
             onPress={onPress}
             activeOpacity={0.7}
-            className="flex-1 items-center justify-center h-full"
+            className="flex-1 items-center justify-center h-full relative"
           >
+            {/* Top Indicator Line */}
             <MotiView
               animate={{
-                scale: isFocused ? 1.15 : 1,
-                translateY: isFocused ? -4 : 0,
+                scaleX: isFocused ? 1 : 0,
+                opacity: isFocused ? 1 : 0,
               }}
-              transition={{ type: "timing", duration: 300 }}
+              transition={{ type: "timing", duration: 250 }}
+              className="w-8 h-1 bg-orange-500 rounded-full absolute top-0"
+            />
+
+            <MotiView
+              animate={{
+                scale: isFocused ? 1.05 : 1,
+                translateY: isFocused ? -2 : 0,
+              }}
+              transition={{ type: "timing", duration: 200 }}
+              className="items-center"
             >
               <Ionicons
                 name={getIcon() as any}
-                size={26}
+                size={24}
                 color={isFocused ? "#f97316" : "#9ca3af"}
               />
+              <Text
+                className="mt-1 text-[10px]"
+                style={{
+                  fontFamily: isFocused
+                    ? "Outfit_700Bold"
+                    : "Outfit_400Regular",
+                  color: isFocused ? "#f97316" : "#9ca3af",
+                }}
+              >
+                {route.name === "about" ? "Acerca De" : "Mi Perfil"}
+              </Text>
             </MotiView>
           </TouchableOpacity>
         );

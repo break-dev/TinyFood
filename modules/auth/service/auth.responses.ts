@@ -1,3 +1,6 @@
+import { Genero } from "@/common/utils/enums/genero";
+import { ObjetivoFisico } from "@/common/utils/enums/objetivo-fisico";
+
 export interface RES_Auth {
   id: number;
   id_supabase: string;
@@ -5,6 +8,7 @@ export interface RES_Auth {
   nombre: string;
   fecha_nacimiento?: string | null;
   url_foto?: string | null;
+  genero?: Genero;
   //
   peso?: number | null;
   talla?: number | null;
@@ -13,6 +17,7 @@ export interface RES_Auth {
   informacion_medica?: { nombre: string; descripcion?: string }[] | null;
   alimentos_prohibidos?: string[] | null;
   preferencias?: string[] | null;
+  objetivo_fisico?: ObjetivoFisico | null;
   //
   created_at?: Date | string;
 }

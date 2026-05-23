@@ -164,7 +164,7 @@ export const DespensaScreen = () => {
       </View>
 
       {/* Botón flotante para añadir comida */}
-      <View className="absolute bottom-32 right-6">
+      <View className="absolute bottom-12 right-6">
         <TouchableOpacity
           onPress={openModal}
           activeOpacity={0.8}
@@ -180,6 +180,7 @@ export const DespensaScreen = () => {
         onRegister={registrarComida}
         onUpdate={actualizarComida}
         comidaParaEditar={comidaParaEditar}
+        onDismiss={() => setComidaParaEditar(null)}
       />
 
       {/* Logout Confirmation Modal */}

@@ -15,8 +15,10 @@ import { StepActivity } from "./components/step-activity";
 import { StepFood } from "./components/step-food";
 import { StepMedical } from "./components/step-medical";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useLogout } from "@/common/logic/use-logout";
 
 export const RegistroScreen = () => {
+  const { handleLogout: cancelFn, isLoading: isLoggingOut } = useLogout();
   const {
     step,
     totalSteps,
@@ -64,7 +66,23 @@ export const RegistroScreen = () => {
                 <Ionicons name="chevron-back" size={24} color="#374151" />
               </TouchableOpacity>
             ) : (
-              <View className="h-10 w-10" />
+              <TouchableOpacity
+                onPress={cancelFn}
+                activeOpacity={0.7}
+                disabled={loading || isLoggingOut}
+                className="min-w-[70px] justify-center"
+              >
+                {isLoggingOut ? (
+                  <ActivityIndicator size="small" color="#9ca3af" />
+                ) : (
+                  <Text
+                    className="text-gray-500 text-sm"
+                    style={{ fontFamily: "Outfit_700Bold" }}
+                  >
+                    Cancelar
+                  </Text>
+                )}
+              </TouchableOpacity>
             )}
 
             <View className="flex-row items-center gap-2">
@@ -112,7 +130,7 @@ export const RegistroScreen = () => {
           </View>
 
           {/* Footer — Solo Continuar/Finalizar */}
-          <View className="mt-10" style={{ paddingBottom: insets.bottom + 10 }}>
+          <View className="-mt-3" style={{ paddingBottom: insets.bottom + 10 }}>
             <TouchableOpacity
               onPress={nextStep}
               disabled={loading}

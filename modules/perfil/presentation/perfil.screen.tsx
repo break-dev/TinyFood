@@ -1,5 +1,11 @@
 import React, { useRef, useCallback, useState } from "react";
-import { View, Text as Text, TouchableOpacity, Image } from "react-native";
+import {
+  View,
+  Text as Text,
+  TouchableOpacity,
+  Image,
+  ActivityIndicator,
+} from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import {
   LogOut,
@@ -12,27 +18,27 @@ import {
   Utensils,
   Check,
   RefreshCw,
+  Camera,
+  Target,
 } from "lucide-react-native";
 import { MotiView, MotiScrollView } from "moti";
-import {
-  BottomSheetModal,
-  BottomSheetView,
-  BottomSheetBackdrop,
-  BottomSheetScrollView,
-} from "@gorhom/bottom-sheet";
+import { BottomSheetModal } from "@gorhom/bottom-sheet";
+import { ModalSheet } from "@/common/presentation/components/modal-sheet";
+import { Easing } from "react-native-reanimated";
 import * as Haptics from "expo-haptics";
+import * as ImagePicker from "expo-image-picker";
 import { useAuthState } from "@/common/logic/use-auth-state";
 import { useLogout } from "@/common/logic/use-logout";
 import { useUpdatePerfil } from "../logic/use-update-perfil";
+import { PerfilService } from "../service/perfil.service";
 import { ProfileCard } from "./components/profile-card";
 import { SheetFisica } from "./components/sheets/sheet-fisica";
 import { SheetActividad } from "./components/sheets/sheet-actividad";
 import { SheetAlimentacion } from "./components/sheets/sheet-alimentacion";
 import { SheetSalud } from "./components/sheets/sheet-salud";
-import { SheetFecha } from "./components/sheets/sheet-fecha";
 import { ModalEstandar } from "@/common/presentation/components/modal-estandar";
 
-type SheetType = "fisica" | "actividad" | "alimentacion" | "salud" | "fecha";
+type SheetType = "fisica" | "actividad" | "alimentacion" | "salud";
 
 const activityLabels: Record<number, string> = {
   1: "Sedentario",
@@ -44,7 +50,7 @@ const activityLabels: Record<number, string> = {
 
 export const PerfilScreen = () => {
   const insets = useSafeAreaInsets();
-  const { usuario } = useAuthState();
+  const { usuario, token, setUser } = useAuthState();
   const { handleLogout: logoutFn } = useLogout();
   const { formData, setFormData, handleSave, isLoading, resetForm } =
     useUpdatePerfil();
@@ -52,6 +58,7 @@ export const PerfilScreen = () => {
   const bottomSheetRef = useRef<BottomSheetModal>(null);
   const [activeSheet, setActiveSheet] = useState<SheetType | null>(null);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
 
   const handleLogout = () => {
     setShowLogoutModal(true);
@@ -73,23 +80,42 @@ export const PerfilScreen = () => {
     }
   };
 
-  const renderBackdrop = useCallback(
-    (props: any) => (
-      <BottomSheetBackdrop
-        {...props}
-        disappearsOnIndex={-1}
-        appearsOnIndex={0}
-      />
-    ),
-    [],
-  );
+  const handlePickImage = async () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    try {
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 0.8,
+        base64: true,
+      });
 
-  const snapPoints =
-    activeSheet === "actividad"
-      ? ["70%"]
-      : activeSheet === "fecha"
-        ? ["75%"]
-        : ["60%", "90%"];
+      if (!result.canceled && result.assets && result.assets[0]) {
+        const asset = result.assets[0];
+        if (!asset.base64) {
+          throw new Error("No se devolvieron datos en base64 de la imagen");
+        }
+
+        setIsUploadingPhoto(true);
+        const res = await PerfilService.actualizarPerfil({
+          foto_b64: asset.base64,
+        });
+
+        if (res.success && res.data) {
+          await setUser(res.data as any, token);
+          Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+        } else {
+          Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+        }
+      }
+    } catch (error) {
+      console.error("[PerfilScreen] Error al seleccionar/subir imagen:", error);
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+    } finally {
+      setIsUploadingPhoto(false);
+    }
+  };
 
   return (
     <View style={{ flex: 1, backgroundColor: "white", paddingTop: insets.top }}>
@@ -119,18 +145,38 @@ export const PerfilScreen = () => {
           animate={{ opacity: 1, scale: 1 }}
           className="items-center mt-4 mb-10"
         >
-          <View className="w-32 h-32 rounded-[48px] overflow-hidden border-4 border-orange-500/10 shadow-2xl mb-5">
-            {usuario?.url_foto ? (
-              <Image
-                source={{ uri: usuario.url_foto }}
-                className="w-full h-full"
-              />
-            ) : (
-              <View className="flex-1 bg-orange-100 items-center justify-center">
-                <User size={64} color="#f97316" strokeWidth={1.5} />
-              </View>
+          {/* Avatar Editable */}
+          <View className="relative mb-5">
+            <TouchableOpacity
+              activeOpacity={0.9}
+              onPress={handlePickImage}
+              disabled={isUploadingPhoto}
+              className="w-32 h-32 rounded-[48px] overflow-hidden border-4 border-orange-500/10 shadow-2xl items-center justify-center bg-gray-50"
+            >
+              {isUploadingPhoto ? (
+                <ActivityIndicator size="large" color="#f97316" />
+              ) : usuario?.url_foto ? (
+                <Image
+                  source={{ uri: usuario.url_foto }}
+                  className="w-full h-full"
+                />
+              ) : (
+                <View className="flex-1 bg-orange-100 items-center justify-center w-full h-full">
+                  <User size={64} color="#f97316" strokeWidth={1.5} />
+                </View>
+              )}
+            </TouchableOpacity>
+            {!isUploadingPhoto && (
+              <TouchableOpacity
+                activeOpacity={0.8}
+                onPress={handlePickImage}
+                className="absolute bottom-0 right-0 h-10 w-10 bg-orange-500 rounded-full items-center justify-center border-2 border-white shadow-lg"
+              >
+                <Camera size={18} color="white" strokeWidth={2.5} />
+              </TouchableOpacity>
             )}
           </View>
+
           <View className="flex-row items-center">
             <Text
               className="text-3xl text-gray-900"
@@ -146,7 +192,13 @@ export const PerfilScreen = () => {
             </TouchableOpacity>
           </View>
           <Text
-            className="text-gray-400 text-sm mt-1"
+            className="text-gray-400 text-sm mt-1 capitalize"
+            style={{ fontFamily: "Outfit_400Regular" }}
+          >
+            {usuario?.genero || "Género no especificado"}
+          </Text>
+          <Text
+            className="text-gray-400 text-[11px] mt-2"
             style={{ fontFamily: "Outfit_400Regular" }}
           >
             Toca una sección para editar tu perfil
@@ -204,15 +256,16 @@ export const PerfilScreen = () => {
         {/* ── Cards ── */}
         <View className="space-y-4">
           <ProfileCard
-            Icon={Calendar}
-            title="Fecha de nacimiento"
+            Icon={Target}
+            title="Objetivo físico"
             subtitle={
-              usuario?.fecha_nacimiento
-                ? usuario.fecha_nacimiento.toString().split("T")[0]
+              usuario?.objetivo_fisico
+                ? usuario.objetivo_fisico.charAt(0).toUpperCase() +
+                  usuario.objetivo_fisico.slice(1)
                 : "Sin datos"
             }
-            onPress={() => openSheet("fecha")}
-            delay={400}
+            onPress={() => openSheet("actividad")}
+            delay={450}
           />
           <ProfileCard
             Icon={Activity}
@@ -256,75 +309,56 @@ export const PerfilScreen = () => {
       </MotiScrollView>
 
       {/* ── Bottom Sheet ── */}
-      <BottomSheetModal
+      <ModalSheet
         ref={bottomSheetRef}
-        snapPoints={snapPoints}
-        backdropComponent={renderBackdrop}
-        enablePanDownToClose={!isLoading} // Protege contra cierre mientras guarda
-        onChange={(index) => {
-          if (index === -1) {
-            setActiveSheet(null);
-          }
-        }}
+        snapPoints={["94%"]}
+        enablePanDownToClose={!isLoading}
+        onDismiss={() => setActiveSheet(null)}
       >
-        <BottomSheetView style={{ flex: 1 }}>
-          <BottomSheetScrollView
-            contentContainerStyle={{ padding: 24, paddingBottom: 40 }}
-            keyboardShouldPersistTaps="handled" // <-- Importante para los TextInputs
-          >
-            {/* Contenido según sheet activo */}
-            {activeSheet === "fecha" && (
-              <SheetFecha data={formData} setData={setFormData} />
-            )}
-            {activeSheet === "fisica" && (
-              <SheetFisica data={formData} setData={setFormData} />
-            )}
-            {activeSheet === "actividad" && (
-              <SheetActividad data={formData} setData={setFormData} />
-            )}
-            {activeSheet === "alimentacion" && (
-              <SheetAlimentacion data={formData} setData={setFormData} />
-            )}
-            {activeSheet === "salud" && (
-              <SheetSalud data={formData} setData={setFormData} />
-            )}
+        {/* Contenido según sheet activo */}
+        {activeSheet === "fisica" && (
+          <SheetFisica data={formData} setData={setFormData} />
+        )}
+        {activeSheet === "actividad" && (
+          <SheetActividad data={formData} setData={setFormData} />
+        )}
+        {activeSheet === "alimentacion" && (
+          <SheetAlimentacion data={formData} setData={setFormData} />
+        )}
+        {activeSheet === "salud" && (
+          <SheetSalud data={formData} setData={setFormData} />
+        )}
 
-            {/* Botón guardar */}
-            <MotiView
-              from={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="mt-8"
-            >
-              <TouchableOpacity
-                onPress={handleGuardar}
-                disabled={isLoading}
-                activeOpacity={0.9}
-                className={`h-20 flex-row items-center justify-center rounded-[32px] shadow-2xl ${
-                  isLoading
-                    ? "bg-gray-200"
-                    : "bg-orange-500 shadow-orange-500/40"
-                }`}
-              >
-                {isLoading ? (
-                  <RefreshCw
-                    size={24}
-                    color="#9ca3af"
-                    className="animate-spin"
-                  />
-                ) : (
-                  <Check size={24} color="white" strokeWidth={3} />
-                )}
+        {/* Botón guardar */}
+        <MotiView
+          from={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="mt-8"
+        >
+          <TouchableOpacity
+            onPress={handleGuardar}
+            disabled={isLoading}
+            activeOpacity={0.9}
+            className={`h-20 flex-row items-center justify-center rounded-[32px] shadow-2xl ${
+              isLoading ? "bg-gray-200" : "bg-orange-500 shadow-orange-500/40"
+            }`}
+          >
+            {isLoading ? (
+              <ActivityIndicator color="#f97316" />
+            ) : (
+              <>
+                <Check size={24} color="white" strokeWidth={3} />
                 <Text
                   className="ml-3 text-xl text-white"
                   style={{ fontFamily: "Outfit_900Black" }}
                 >
-                  {isLoading ? "Guardando..." : "Guardar Cambios"}
+                  Guardar Cambios
                 </Text>
-              </TouchableOpacity>
-            </MotiView>
-          </BottomSheetScrollView>
-        </BottomSheetView>
-      </BottomSheetModal>
+              </>
+            )}
+          </TouchableOpacity>
+        </MotiView>
+      </ModalSheet>
       {/* Logout Confirmation Modal */}
       <ModalEstandar
         visible={showLogoutModal}

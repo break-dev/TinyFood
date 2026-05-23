@@ -6,14 +6,10 @@ import {
   Platform,
   Modal,
   Image,
+  TextInput,
 } from "react-native";
-import {
-  BottomSheetModal,
-  BottomSheetView,
-  BottomSheetScrollView,
-  BottomSheetBackdrop,
-  BottomSheetTextInput,
-} from "@gorhom/bottom-sheet";
+import { BottomSheetModal, BottomSheetScrollView } from "@gorhom/bottom-sheet";
+import { ModalSheet } from "@/common/presentation/components/modal-sheet";
 import {
   X,
   Plus,
@@ -36,6 +32,7 @@ interface Props {
   onRegister: (data: REQ_RegistrarComida) => Promise<boolean>;
   onUpdate: (data: REQ_ActualizarComida) => Promise<boolean>;
   comidaParaEditar?: RES_Comida | null;
+  onDismiss?: () => void;
 }
 
 // Componentes internos memoizados para evitar re-renders innecesarios al escribir
@@ -85,6 +82,27 @@ const Footer = memo(
     onSave: () => void;
   }) => (
     <>
+      <View
+        pointerEvents="none"
+        style={{
+          position: "absolute",
+          bottom: -250,
+          right: 60,
+          width: 300,
+          height: 300,
+        }}
+      >
+        <Image
+          source={require("@/assets/images/onboarding/tiny-cocinando.png")}
+          style={{
+            width: "100%",
+            height: "100%",
+            opacity: 0.6,
+          }}
+          resizeMode="contain"
+        />
+      </View>
+
       <MotiView
         from={{ opacity: 0, translateY: 20 }}
         animate={{ opacity: 1, translateY: 0 }}
@@ -114,32 +132,13 @@ const Footer = memo(
           </View>
         </TouchableOpacity>
       </MotiView>
-
-      <Image
-        source={require("@/assets/images/onboarding/tiny-cocinando.png")}
-        style={{
-          position: "absolute",
-          bottom: -250,
-          right: 60,
-          width: 300,
-          height: 300,
-          opacity: 0.6,
-        }}
-        resizeMode="contain"
-      />
     </>
   ),
 );
 
 export const RegistroComida = React.forwardRef<BottomSheetModal, Props>(
-  ({ onRegister, onUpdate, comidaParaEditar }, ref) => {
+  ({ onRegister, onUpdate, comidaParaEditar, onDismiss }, ref) => {
     const {
-      nombre,
-      setNombre,
-      cantidad,
-      setCantidad,
-      descripcion,
-      setDescripcion,
       fechaVencimiento,
       setFechaVencimiento,
       showDatePicker,
@@ -147,50 +146,26 @@ export const RegistroComida = React.forwardRef<BottomSheetModal, Props>(
       isSubmitting,
       handleDismiss,
       handleSave,
+      nombreInputRef,
+      cantidadInputRef,
+      descripcionInputRef,
+      handleNombreChange,
+      handleCantidadChange,
+      handleDescripcionChange,
     } = useRegistroComida({
       ref: ref as React.RefObject<BottomSheetModal>,
       onRegister,
       onUpdate,
       comidaParaEditar,
     });
-
-    const snapPoints = useMemo(() => ["94%"], []);
-
-    const renderBackdrop = useCallback(
-      (props: any) => (
-        <BottomSheetBackdrop
-          {...props}
-          disappearsOnIndex={-1}
-          appearsOnIndex={0}
-          opacity={0.6}
-        />
-      ),
-      [],
-    );
-
     return (
-      <BottomSheetModal
-        ref={ref}
-        index={0}
-        snapPoints={snapPoints}
-        enablePanDownToClose={true}
-        enableDynamicSizing={false}
-        keyboardBehavior="fillParent"
-        keyboardBlurBehavior="restore"
-        backdropComponent={renderBackdrop}
-        handleIndicatorStyle={{
-          backgroundColor: "#D1D5DB",
-          width: 48,
-          height: 5,
-        }}
-        backgroundStyle={{ borderRadius: 40 }}
-      >
-        <BottomSheetView
+      <ModalSheet ref={ref} scrollable={false} onDismiss={onDismiss}>
+        <View
           style={{
             flex: 1,
-            paddingHorizontal: 32,
-            paddingTop: 16,
-            paddingBottom: 10,
+            paddingHorizontal: 8,
+            paddingTop: 0,
+            paddingBottom: 0,
           }}
         >
           <Header
@@ -215,12 +190,13 @@ export const RegistroComida = React.forwardRef<BottomSheetModal, Props>(
               </Text>
               <View className="bg-gray-50 flex-row items-center px-5 rounded-[24px] border border-gray-100">
                 <UtensilsCrossed size={20} color="#9ca3af" strokeWidth={2} />
-                <BottomSheetTextInput
+                <TextInput
+                  ref={nombreInputRef}
                   autoFocus={true}
                   placeholder="Ej. Arándanos frescos"
                   placeholderTextColor="#9ca3af"
-                  value={nombre}
-                  onChangeText={setNombre}
+                  defaultValue={comidaParaEditar?.nombre || ""}
+                  onChangeText={handleNombreChange}
                   autoCorrect={false}
                   spellCheck={false}
                   disableFullscreenUI={true}
@@ -228,10 +204,10 @@ export const RegistroComida = React.forwardRef<BottomSheetModal, Props>(
                   cursorColor="#f97316"
                   className="flex-1"
                   style={{
-                    fontFamily: "Outfit_700Bold",
+                    fontFamily: "Outfit_400Regular",
                     fontSize: 16,
                     color: "#111827",
-                    fontWeight: "700",
+                    fontWeight: "normal",
                     paddingHorizontal: 20,
                     paddingVertical: 18,
                   }}
@@ -249,11 +225,12 @@ export const RegistroComida = React.forwardRef<BottomSheetModal, Props>(
               </Text>
               <View className="bg-gray-50 flex-row items-center px-5 rounded-[24px] border border-gray-100">
                 <Hash size={20} color="#9ca3af" strokeWidth={2} />
-                <BottomSheetTextInput
+                <TextInput
+                  ref={cantidadInputRef}
                   placeholder="Ej. 500g o 1 pack"
                   placeholderTextColor="#9ca3af"
-                  value={cantidad}
-                  onChangeText={setCantidad}
+                  defaultValue={comidaParaEditar?.cantidad || ""}
+                  onChangeText={handleCantidadChange}
                   autoCorrect={false}
                   spellCheck={false}
                   disableFullscreenUI={true}
@@ -261,10 +238,10 @@ export const RegistroComida = React.forwardRef<BottomSheetModal, Props>(
                   cursorColor="#f97316"
                   className="flex-1"
                   style={{
-                    fontFamily: "Outfit_700Bold",
+                    fontFamily: "Outfit_400Regular",
                     fontSize: 16,
                     color: "#111827",
-                    fontWeight: "700",
+                    fontWeight: "normal",
                     paddingHorizontal: 20,
                     paddingVertical: 18,
                   }}
@@ -346,11 +323,12 @@ export const RegistroComida = React.forwardRef<BottomSheetModal, Props>(
                 <View className="mt-2 mr-3">
                   <FileText size={20} color="#9ca3af" strokeWidth={2} />
                 </View>
-                <BottomSheetTextInput
+                <TextInput
+                  ref={descripcionInputRef}
                   placeholder="Alguna nota o instrucción especial..."
                   placeholderTextColor="#9ca3af"
-                  value={descripcion}
-                  onChangeText={setDescripcion}
+                  defaultValue={comidaParaEditar?.descripcion || ""}
+                  onChangeText={handleDescripcionChange}
                   multiline
                   numberOfLines={3}
                   autoCorrect={false}
@@ -360,10 +338,10 @@ export const RegistroComida = React.forwardRef<BottomSheetModal, Props>(
                   cursorColor="#f97316"
                   className="flex-1"
                   style={{
-                    fontFamily: "Outfit_700Bold",
+                    fontFamily: "Outfit_400Regular",
                     fontSize: 16,
                     color: "#111827",
-                    fontWeight: "700",
+                    fontWeight: "normal",
                     textAlignVertical: "top",
                     minHeight: 80,
                   }}
@@ -377,8 +355,8 @@ export const RegistroComida = React.forwardRef<BottomSheetModal, Props>(
             comidaParaEditar={comidaParaEditar}
             onSave={handleSave}
           />
-        </BottomSheetView>
-      </BottomSheetModal>
+        </View>
+      </ModalSheet>
     );
   },
 );

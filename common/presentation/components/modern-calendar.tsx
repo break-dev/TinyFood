@@ -56,7 +56,7 @@ export const ModernCalendar = ({ value, onChange }: Props) => {
             className="text-gray-900 mr-2"
             style={{ fontFamily: "Outfit_700Bold" }}
           >
-            Mes: {months[viewingMonth - 1]}
+            {months[viewingMonth - 1]}
           </Text>
           {showMonthPicker ? (
             <ChevronUp size={16} color="#f97316" />
@@ -73,7 +73,7 @@ export const ModernCalendar = ({ value, onChange }: Props) => {
             className="text-gray-900 mr-2"
             style={{ fontFamily: "Outfit_700Bold" }}
           >
-            Año: {viewingYear}
+            {viewingYear}
           </Text>
           {showYearPicker ? (
             <ChevronUp size={16} color="#f97316" />

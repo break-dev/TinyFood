@@ -19,17 +19,16 @@ export const SheetSalud = ({ data, setData }: Props) => {
   const condiciones: Condicion[] = data.informacion_medica ?? [];
 
   const agregarCondicion = () => {
-    if (!nuevaNombre.trim()) return;
+    const n = nuevaNombre.trim();
+    const d = nuevaDesc.trim();
+    if (!n) return;
     const existe = condiciones.some(
-      (c) => c.nombre.toLowerCase() === nuevaNombre.trim().toLowerCase(),
+      (c) => c.nombre.toLowerCase() === n.toLowerCase(),
     );
     if (!existe) {
       setData({
         ...data,
-        informacion_medica: [
-          ...condiciones,
-          { nombre: nuevaNombre.trim(), descripcion: nuevaDesc.trim() },
-        ],
+        informacion_medica: [...condiciones, { nombre: n, descripcion: d }],
       });
     }
     setNuevaNombre("");
@@ -43,13 +42,11 @@ export const SheetSalud = ({ data, setData }: Props) => {
     });
   };
 
-  const actualizarDescripcion = (nombre: string, descripcion: string) => {
-    setData({
-      ...data,
-      informacion_medica: condiciones.map((c) =>
-        c.nombre === nombre ? { ...c, descripcion } : c,
-      ),
-    });
+  const handleDescEdit = (nombre: string, text: string) => {
+    const condicion = condiciones.find((c) => c.nombre === nombre);
+    if (condicion) {
+      condicion.descripcion = text;
+    }
   };
 
   return (
@@ -92,8 +89,8 @@ export const SheetSalud = ({ data, setData }: Props) => {
             placeholder={`Detalles de tu ${cond.nombre.toLowerCase()}...`}
             multiline
             numberOfLines={2}
-            value={cond.descripcion}
-            onChangeText={(text) => actualizarDescripcion(cond.nombre, text)}
+            defaultValue={cond.descripcion}
+            onChangeText={(text) => handleDescEdit(cond.nombre, text)}
           />
         </View>
       ))}
