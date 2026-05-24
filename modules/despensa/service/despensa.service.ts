@@ -2,7 +2,12 @@ import { SocketService } from "@/common/service/socket.service";
 import { ApiResponse } from "@/common/service/common.responses";
 import { EstadoComida } from "@/common/utils/enums/estado-comida.enum";
 import { RES_Comida } from "./despensa.responses";
-import { REQ_ActualizarComida, REQ_RegistrarComida } from "./despensa.requests";
+import {
+  REQ_ActualizarComida,
+  REQ_RegistrarComida,
+  REQ_AnalizarImagen,
+  RES_AnalizarImagen,
+} from "./despensa.requests";
 
 export class DespensaService {
   static async listarComida(): Promise<ApiResponse<RES_Comida[]>> {
@@ -23,5 +28,10 @@ export class DespensaService {
 
   static async eliminarComida(id: number): Promise<ApiResponse<null>> {
     return SocketService.emit("despensa:eliminar_comida", { id });
+  }
+  static async analizarImagen(
+    data: REQ_AnalizarImagen,
+  ): Promise<ApiResponse<RES_AnalizarImagen>> {
+    return SocketService.emit("despensa:analizar_imagen", data);
   }
 }

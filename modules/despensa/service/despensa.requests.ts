@@ -16,3 +16,18 @@ export interface REQ_RegistrarComida {
 export interface REQ_ActualizarComida extends Partial<REQ_RegistrarComida> {
   id: number;
 }
+export interface REQ_AnalizarImagen {
+  foto_b64: string;    // base64 de la imagen
+  mime_type?: string;  // por defecto 'image/jpeg'
+}
+ 
+export interface RES_AnalizarImagen {
+  nombre: string;
+  cantidad: string;
+  categoria: string;
+  tags: string;
+  descripcion: string;
+  dias_duracion_estimados: number;
+  fecha_vencimiento?: string; // ISO string
+  confianza: 'alta' | 'media' | 'baja';
+}
