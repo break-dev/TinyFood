@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { useAppTheme } from "@/common/logic/use-app-theme";
 
 interface Props {
   data: any;
@@ -23,6 +24,7 @@ export const TagInput = ({
   onChange,
 }: TagInputProps) => {
   const [inputText, setInputText] = useState("");
+  const { isDark } = useAppTheme();
 
   // Obtener la lista de tags
   const tags = value
@@ -65,26 +67,26 @@ export const TagInput = ({
   return (
     <View className="mb-6">
       <Text
-        className="mb-3 ml-1 text-xs font-bold uppercase tracking-widest text-gray-400"
+        className="mb-3 ml-1 text-xs font-bold uppercase tracking-widest text-gray-400 dark:text-neutral-500"
         style={{ fontFamily: "Outfit_700Bold" }}
       >
         {label}
       </Text>
 
       {/* Input container */}
-      <View className="flex-row items-center rounded-2xl bg-gray-50 border border-gray-100 px-4 py-2 mb-3">
-        <Ionicons name={iconName} size={20} color="#9ca3af" />
+      <View className="flex-row items-center rounded-2xl bg-gray-50 dark:bg-neutral-950 border border-gray-100 dark:border-neutral-900 px-4 py-2 mb-3">
+        <Ionicons name={iconName} size={20} color={isDark ? "#737373" : "#9ca3af"} />
         <TextInput
           className="ml-3 flex-1"
           style={{
             fontFamily: "Outfit_400Regular",
             fontSize: 17,
-            color: "#111827",
+            color: isDark ? "#ffffff" : "#111827",
             fontWeight: "normal",
             paddingVertical: 12,
           }}
           placeholder={placeholder}
-          placeholderTextColor="#cbd5e1"
+          placeholderTextColor={isDark ? "#525252" : "#cbd5e1"}
           value={inputText}
           onChangeText={handleTextChange}
           onSubmitEditing={() => addTag(inputText)}
@@ -103,10 +105,10 @@ export const TagInput = ({
         {tags.map((tag, idx) => (
           <View
             key={`${tag}-${idx}`}
-            className="flex-row items-center bg-orange-50 border border-orange-100 px-3 py-1.5 rounded-full"
+            className="flex-row items-center bg-orange-50 dark:bg-orange-950/20 border border-orange-100 dark:border-orange-900/30 px-3 py-1.5 rounded-full"
           >
             <Text
-              className="text-orange-600 text-sm mr-1.5"
+              className="text-orange-600 dark:text-orange-400 text-sm mr-1.5"
               style={{ fontFamily: "Outfit_400Regular" }}
             >
               {tag}
@@ -118,7 +120,7 @@ export const TagInput = ({
         ))}
         {tags.length === 0 && (
           <Text
-            className="text-gray-400 text-sm italic ml-1"
+            className="text-gray-400 dark:text-neutral-500 text-sm italic ml-1"
             style={{ fontFamily: "Outfit_400Regular" }}
           >
             Ninguno agregado aún.
@@ -129,29 +131,32 @@ export const TagInput = ({
   );
 };
 
-export const SheetAlimentacion = ({ data, setData }: Props) => (
-  <View className="gap-4">
-    <Text
-      className="text-3xl text-gray-900 tracking-tighter mb-4"
-      style={{ fontFamily: "Outfit_900Black" }}
-    >
-      Alimentación
-    </Text>
+export const SheetAlimentacion = ({ data, setData }: Props) => {
+  const { isDark } = useAppTheme();
+  return (
+    <View className="gap-4">
+      <Text
+        className="text-3xl text-gray-900 dark:text-white tracking-tighter mb-4"
+        style={{ fontFamily: "Outfit_900Black" }}
+      >
+        Alimentación
+      </Text>
 
-    <TagInput
-      label="Alergias / Prohibidos"
-      placeholder="Escribe y presiona coma (,) o listo..."
-      iconName="medkit-outline"
-      value={data.alimentos_prohibidos}
-      onChange={(val) => setData({ ...data, alimentos_prohibidos: val })}
-    />
+      <TagInput
+        label="Alergias / Prohibidos"
+        placeholder="Escribe y presiona coma (,) o listo..."
+        iconName="medkit-outline"
+        value={data.alimentos_prohibidos}
+        onChange={(val) => setData({ ...data, alimentos_prohibidos: val })}
+      />
 
-    <TagInput
-      label="Preferencias / Dietas"
-      placeholder="Escribe y presiona coma (,) o listo..."
-      iconName="nutrition-outline"
-      value={data.preferencias}
-      onChange={(val) => setData({ ...data, preferencias: val })}
-    />
-  </View>
-);
+      <TagInput
+        label="Preferencias / Dietas"
+        placeholder="Escribe y presiona coma (,) o listo..."
+        iconName="nutrition-outline"
+        value={data.preferencias}
+        onChange={(val) => setData({ ...data, preferencias: val })}
+      />
+    </View>
+  );
+};

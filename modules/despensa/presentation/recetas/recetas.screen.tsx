@@ -22,11 +22,13 @@ import {
 } from 'lucide-react-native';
 import { useRecetas } from '../../logic/use-recetas';
 import { RES_Receta } from '../../service/despensa.responses';
+import { useAppTheme } from '@/common/logic/use-app-theme';
 
 // ── Card de receta ─────────────────────────────────────────────────────────
 
 const CardReceta = ({ receta, index }: { receta: RES_Receta; index: number }) => {
   const [expandida, setExpandida] = useState(false);
+  const { isDark } = useAppTheme();
 
   const colorDificultad: Record<string, string> = {
     fácil: '#16a34a',
@@ -34,9 +36,9 @@ const CardReceta = ({ receta, index }: { receta: RES_Receta; index: number }) =>
     difícil: '#ef4444',
   };
   const bgDificultad: Record<string, string> = {
-    fácil: '#f0fdf4',
-    media: '#fff7ed',
-    difícil: '#fef2f2',
+    fácil: isDark ? '#052e16' : '#f0fdf4',
+    media: isDark ? '#431407' : '#fff7ed',
+    difícil: isDark ? '#450a0a' : '#fef2f2',
   };
 
   const abrirEnGoogle = () => {
@@ -49,8 +51,10 @@ const CardReceta = ({ receta, index }: { receta: RES_Receta; index: number }) =>
       from={{ opacity: 0, translateY: 20 }}
       animate={{ opacity: 1, translateY: 0 }}
       transition={{ type: 'timing', duration: 400, delay: index * 120 }}
-      className="bg-white rounded-[28px] border border-gray-100 mb-4 overflow-hidden"
-      style={{ shadowColor: '#000', shadowOpacity: 0.04, shadowRadius: 8, elevation: 2 }}
+      className={`rounded-[28px] border mb-4 overflow-hidden ${
+        isDark ? 'bg-neutral-900 border-neutral-800' : 'bg-white border-gray-100'
+      }`}
+      style={{ shadowColor: '#000', shadowOpacity: isDark ? 0.3 : 0.04, shadowRadius: 8, elevation: 2 }}
     >
       {/* ── Header ── */}
       <TouchableOpacity
@@ -62,13 +66,13 @@ const CardReceta = ({ receta, index }: { receta: RES_Receta; index: number }) =>
           <Text style={{ fontSize: 40, lineHeight: 48 }}>{receta.emoji}</Text>
           <View className="flex-1">
             <Text
-              className="text-lg text-gray-900 leading-snug"
+              className={`text-lg leading-snug ${isDark ? 'text-white' : 'text-gray-900'}`}
               style={{ fontFamily: 'Outfit_900Black' }}
             >
               {receta.nombre}
             </Text>
             <Text
-              className="text-sm text-gray-400 mt-1 leading-relaxed"
+              className={`text-sm mt-1 leading-relaxed ${isDark ? 'text-neutral-400' : 'text-gray-400'}`}
               style={{ fontFamily: 'Outfit_400Regular' }}
             >
               {receta.descripcion}
@@ -77,26 +81,26 @@ const CardReceta = ({ receta, index }: { receta: RES_Receta; index: number }) =>
             {/* Stats row */}
             <View className="flex-row flex-wrap gap-3 mt-3">
               <View className="flex-row items-center gap-1">
-                <Clock size={13} color="#9ca3af" strokeWidth={2} />
-                <Text className="text-xs text-gray-400" style={{ fontFamily: 'Outfit_700Bold' }}>
+                <Clock size={13} color={isDark ? "#a3a3a3" : "#9ca3af"} strokeWidth={2} />
+                <Text className={`text-xs ${isDark ? 'text-neutral-400' : 'text-gray-400'}`} style={{ fontFamily: 'Outfit_700Bold' }}>
                   {receta.tiempo_minutos} min
                 </Text>
               </View>
               <View className="flex-row items-center gap-1">
-                <Users size={13} color="#9ca3af" strokeWidth={2} />
-                <Text className="text-xs text-gray-400" style={{ fontFamily: 'Outfit_700Bold' }}>
+                <Users size={13} color={isDark ? "#a3a3a3" : "#9ca3af"} strokeWidth={2} />
+                <Text className={`text-xs ${isDark ? 'text-neutral-400' : 'text-gray-400'}`} style={{ fontFamily: 'Outfit_700Bold' }}>
                   {receta.porciones} {receta.porciones === 1 ? 'porción' : 'porciones'}
                 </Text>
               </View>
               <View className="flex-row items-center gap-1">
-                <Flame size={13} color="#9ca3af" strokeWidth={2} />
-                <Text className="text-xs text-gray-400" style={{ fontFamily: 'Outfit_700Bold' }}>
+                <Flame size={13} color={isDark ? "#a3a3a3" : "#9ca3af"} strokeWidth={2} />
+                <Text className={`text-xs ${isDark ? 'text-neutral-400' : 'text-gray-400'}`} style={{ fontFamily: 'Outfit_700Bold' }}>
                   ~{receta.calorias_aprox} kcal/porc.
                 </Text>
               </View>
               <View
                 className="px-2 py-0.5 rounded-full"
-                style={{ backgroundColor: bgDificultad[receta.dificultad] ?? '#f9fafb' }}
+                style={{ backgroundColor: bgDificultad[receta.dificultad] ?? (isDark ? '#262626' : '#f9fafb') }}
               >
                 <Text
                   className="text-xs"
@@ -113,8 +117,8 @@ const CardReceta = ({ receta, index }: { receta: RES_Receta; index: number }) =>
 
           <View className="mt-1">
             {expandida
-              ? <ChevronUp size={20} color="#9ca3af" strokeWidth={2} />
-              : <ChevronDown size={20} color="#9ca3af" strokeWidth={2} />
+              ? <ChevronUp size={20} color={isDark ? "#a3a3a3" : "#9ca3af"} strokeWidth={2} />
+              : <ChevronDown size={20} color={isDark ? "#a3a3a3" : "#9ca3af"} strokeWidth={2} />
             }
           </View>
         </View>
@@ -126,12 +130,12 @@ const CardReceta = ({ receta, index }: { receta: RES_Receta; index: number }) =>
           from={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ type: 'timing', duration: 250 }}
-          className="border-t border-gray-50"
+          className={`border-t ${isDark ? 'border-neutral-800' : 'border-gray-50'}`}
         >
           {/* Ingredientes de la despensa */}
           <View className="px-5 pt-4">
             <Text
-              className="text-[10px] text-emerald-600 uppercase tracking-widest mb-2"
+              className={`text-[10px] uppercase tracking-widest mb-2 ${isDark ? 'text-emerald-400' : 'text-emerald-600'}`}
               style={{ fontFamily: 'Outfit_700Bold' }}
             >
               ✅ De tu despensa
@@ -141,7 +145,7 @@ const CardReceta = ({ receta, index }: { receta: RES_Receta; index: number }) =>
                 <View key={i} className="flex-row items-center gap-2">
                   <CheckCircle size={14} color="#16a34a" strokeWidth={2} />
                   <Text
-                    className="text-sm text-gray-700"
+                    className={`text-sm ${isDark ? 'text-neutral-300' : 'text-gray-700'}`}
                     style={{ fontFamily: 'Outfit_400Regular' }}
                   >
                     {ing}
@@ -157,7 +161,7 @@ const CardReceta = ({ receta, index }: { receta: RES_Receta; index: number }) =>
               <View className="flex-row items-center gap-1.5 mb-2">
                 <ShoppingCart size={12} color="#f97316" strokeWidth={2} />
                 <Text
-                  className="text-[10px] text-orange-500 uppercase tracking-widest"
+                  className={`text-[10px] uppercase tracking-widest ${isDark ? 'text-orange-400' : 'text-orange-500'}`}
                   style={{ fontFamily: 'Outfit_700Bold' }}
                 >
                   Necesitas comprar
@@ -167,7 +171,7 @@ const CardReceta = ({ receta, index }: { receta: RES_Receta; index: number }) =>
                 {receta.ingredientes_extra.map((ing, i) => (
                   <Text
                     key={i}
-                    className="text-sm text-gray-400"
+                    className={`text-sm ${isDark ? 'text-neutral-400' : 'text-gray-400'}`}
                     style={{ fontFamily: 'Outfit_400Regular' }}
                   >
                     · {ing}
@@ -180,7 +184,7 @@ const CardReceta = ({ receta, index }: { receta: RES_Receta; index: number }) =>
           {/* Pasos */}
           <View className="px-5 pt-4">
             <Text
-              className="text-[10px] text-gray-400 uppercase tracking-widest mb-3"
+              className={`text-[10px] uppercase tracking-widest mb-3 ${isDark ? 'text-neutral-500' : 'text-gray-400'}`}
               style={{ fontFamily: 'Outfit_700Bold' }}
             >
               Preparación
@@ -194,7 +198,7 @@ const CardReceta = ({ receta, index }: { receta: RES_Receta; index: number }) =>
                     </Text>
                   </View>
                   <Text
-                    className="flex-1 text-sm text-gray-600 leading-relaxed"
+                    className={`flex-1 text-sm leading-relaxed ${isDark ? 'text-neutral-300' : 'text-gray-600'}`}
                     style={{ fontFamily: 'Outfit_400Regular' }}
                   >
                     {paso.replace(/^Paso \d+:\s*/i, '')}
@@ -209,11 +213,13 @@ const CardReceta = ({ receta, index }: { receta: RES_Receta; index: number }) =>
             <TouchableOpacity
               onPress={abrirEnGoogle}
               activeOpacity={0.8}
-              className="flex-row items-center justify-center gap-2 py-3 rounded-[20px] bg-gray-50 border border-gray-100"
+              className={`flex-row items-center justify-center gap-2 py-3 rounded-[20px] border ${
+                isDark ? 'bg-neutral-850 border-neutral-800' : 'bg-gray-50 border-gray-100'
+              }`}
             >
-              <ExternalLink size={15} color="#6b7280" strokeWidth={2} />
+              <ExternalLink size={15} color={isDark ? "#a3a3a3" : "#6b7280"} strokeWidth={2} />
               <Text
-                className="text-gray-500 text-sm"
+                className={`text-sm ${isDark ? 'text-neutral-300' : 'text-gray-500'}`}
                 style={{ fontFamily: 'Outfit_700Bold' }}
               >
                 Ver receta completa en Google
@@ -231,15 +237,25 @@ const CardReceta = ({ receta, index }: { receta: RES_Receta; index: number }) =>
 export const RecetasScreen = () => {
   const insets = useSafeAreaInsets();
   const { recetas, cargando, yaGeneradas, generarRecetas, limpiarRecetas } = useRecetas();
+  const { isDark } = useAppTheme();
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#f9fafb', paddingTop: insets.top }}>
+    <View
+      className={`flex-1 ${isDark ? 'bg-neutral-950' : 'bg-zinc-50'}`}
+      style={{ paddingTop: insets.top }}
+    >
       {/* Header */}
       <View className="px-6 py-6">
-        <Text className="text-3xl text-gray-900 tracking-tighter" style={{ fontFamily: 'Outfit_900Black' }}>
+        <Text
+          className={`text-3xl tracking-tighter ${isDark ? 'text-white' : 'text-gray-900'}`}
+          style={{ fontFamily: 'Outfit_900Black' }}
+        >
           Recetas IA 🍳
         </Text>
-        <Text className="text-gray-400 text-sm mt-1" style={{ fontFamily: 'Outfit_400Regular' }}>
+        <Text
+          className={`text-sm mt-1 ${isDark ? 'text-neutral-400' : 'text-gray-400'}`}
+          style={{ fontFamily: 'Outfit_400Regular' }}
+        >
           Basadas en lo que tienes en tu despensa
         </Text>
       </View>
@@ -259,13 +275,13 @@ export const RecetasScreen = () => {
           >
             <Text style={{ fontSize: 64 }}>🧑‍🍳</Text>
             <Text
-              className="text-xl text-gray-800 mt-4 text-center"
+              className={`text-xl mt-4 text-center ${isDark ? 'text-white' : 'text-gray-800'}`}
               style={{ fontFamily: 'Outfit_900Black' }}
             >
               ¿Qué cocinamos hoy?
             </Text>
             <Text
-              className="text-gray-400 text-center mt-2 mb-8 px-4"
+              className={`text-center mt-2 mb-8 px-4 ${isDark ? 'text-neutral-450' : 'text-gray-400'}`}
               style={{ fontFamily: 'Outfit_400Regular' }}
             >
               La IA analizará tu despensa y sugerirá recetas usando lo que ya tienes,
@@ -290,7 +306,7 @@ export const RecetasScreen = () => {
           <View className="items-center py-16 gap-4">
             <ActivityIndicator size="large" color="#f97316" />
             <Text
-              className="text-gray-400 text-sm text-center"
+              className={`text-sm text-center ${isDark ? 'text-neutral-550' : 'text-gray-400'}`}
               style={{ fontFamily: 'Outfit_400Regular' }}
             >
               Analizando tu despensa...{'\n'}esto puede tomar unos segundos
@@ -302,15 +318,17 @@ export const RecetasScreen = () => {
         {yaGeneradas && !cargando && (
           <>
             <View className="flex-row items-center justify-between mb-5">
-              <Text className="text-base text-gray-500" style={{ fontFamily: 'Outfit_400Regular' }}>
+              <Text className={`text-base ${isDark ? 'text-neutral-400' : 'text-gray-500'}`} style={{ fontFamily: 'Outfit_400Regular' }}>
                 {recetas.length} recetas para ti
               </Text>
               <TouchableOpacity
                 onPress={() => { limpiarRecetas(); generarRecetas(3); }}
-                className="flex-row items-center gap-1.5 px-4 py-2 rounded-2xl bg-gray-100"
+                className={`flex-row items-center gap-1.5 px-4 py-2 rounded-2xl ${
+                  isDark ? 'bg-neutral-850' : 'bg-gray-100'
+                }`}
               >
-                <Sparkles size={14} color="#6b7280" strokeWidth={2} />
-                <Text className="text-gray-600 text-sm" style={{ fontFamily: 'Outfit_700Bold' }}>
+                <Sparkles size={14} color={isDark ? "#a3a3a3" : "#6b7280"} strokeWidth={2} />
+                <Text className={`text-sm ${isDark ? 'text-neutral-300' : 'text-gray-600'}`} style={{ fontFamily: 'Outfit_700Bold' }}>
                   Regenerar
                 </Text>
               </TouchableOpacity>

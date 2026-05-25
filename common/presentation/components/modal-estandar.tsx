@@ -69,7 +69,7 @@ export const ModalEstandar = ({
               animate={{ opacity: 1, scale: 1, translateY: 0 }}
               exit={{ opacity: 0, scale: 0.9, translateY: 20 }}
               transition={{ type: "timing", duration: 300 }}
-              className="w-full rounded-[40px] bg-white p-8 shadow-2xl"
+              className="w-full rounded-[40px] bg-white dark:bg-neutral-900 p-8 shadow-2xl"
             >
               <View className="items-center">
                 <View
@@ -78,36 +78,36 @@ export const ModalEstandar = ({
                 >
                   <Icon size={36} color={getColor()} strokeWidth={2.5} />
                 </View>
-
+ 
                 <Text
-                  className="mb-3 text-center text-2xl text-gray-900"
+                  className="mb-3 text-center text-2xl text-gray-900 dark:text-white"
                   style={{ fontFamily: "Outfit_900Black" }}
                 >
                   {title}
                 </Text>
-
+ 
                 <Text
-                  className="mb-8 text-center text-base leading-6 text-gray-500"
+                  className="mb-8 text-center text-base leading-6 text-gray-500 dark:text-neutral-400"
                   style={{ fontFamily: "Outfit_400Regular" }}
                 >
                   {description}
                 </Text>
-
+ 
                 <View className="w-full flex-row gap-3">
                   {onConfirm && (
                     <TouchableOpacity
                       onPress={onClose}
-                      className="flex-1 items-center justify-center rounded-2xl bg-gray-100 py-4"
+                      className="flex-1 items-center justify-center rounded-2xl bg-gray-100 dark:bg-neutral-800 py-4"
                     >
                       <Text
-                        className="text-gray-600 font-bold"
+                        className="text-gray-600 dark:text-neutral-300 font-bold"
                         style={{ fontFamily: "Outfit_700Bold" }}
                       >
                         {cancelText}
                       </Text>
                     </TouchableOpacity>
                   )}
-
+ 
                   <TouchableOpacity
                     onPress={() => {
                       if (onConfirm) onConfirm();

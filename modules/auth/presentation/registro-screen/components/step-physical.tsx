@@ -11,6 +11,7 @@ import Animated, { FadeInRight, FadeOutLeft } from "react-native-reanimated";
 import { Ionicons } from "@expo/vector-icons";
 import { MotiView } from "moti";
 import { ModernCalendar } from "@/common/presentation/components/modern-calendar";
+import { useAppTheme } from "@/common/logic/use-app-theme";
 
 import * as Haptics from "expo-haptics";
 import { Genero } from "@/common/utils/enums/genero";
@@ -24,6 +25,7 @@ interface Props {
 
 export const StepPhysical = ({ data, setData }: Props) => {
   const [showPicker, setShowPicker] = useState(false);
+  const { isDark } = useAppTheme();
 
   // Función para convertir de Date a string DD/MM/YYYY
   const formatDate = (date: Date) => {
@@ -68,13 +70,13 @@ export const StepPhysical = ({ data, setData }: Props) => {
       {/* Header: Title */}
       <View className="mb-10">
         <Text
-          className="mb-3 text-4xl text-gray-900 tracking-tighter"
+          className="mb-3 text-4xl text-gray-900 dark:text-white tracking-tighter"
           style={{ fontFamily: "Outfit_900Black" }}
         >
           Sobre ti
         </Text>
         <Text
-          className="text-lg text-gray-500 leading-6"
+          className="text-lg text-gray-500 dark:text-neutral-400 leading-6"
           style={{ fontFamily: "Outfit_400Regular" }}
         >
           Necesitamos estos datos para calcular tus necesidades nutricionales de
@@ -88,13 +90,13 @@ export const StepPhysical = ({ data, setData }: Props) => {
           <TouchableOpacity
             activeOpacity={0.9}
             onPress={handlePickImage}
-            className="w-28 h-28 rounded-[40px] overflow-hidden items-center justify-center bg-gray-50"
+            className="w-28 h-28 rounded-[40px] overflow-hidden items-center justify-center bg-gray-50 dark:bg-neutral-900"
             style={{
               borderWidth: 4,
               borderColor: "rgba(249, 115, 22, 0.1)", // border-orange-500/10
               shadowColor: "#000000",
               shadowOffset: { width: 0, height: 4 },
-              shadowOpacity: 0.1,
+              shadowOpacity: isDark ? 0.3 : 0.1,
               shadowRadius: 6,
               elevation: 4,
             }}
@@ -105,7 +107,7 @@ export const StepPhysical = ({ data, setData }: Props) => {
                 className="w-full h-full"
               />
             ) : (
-              <View className="flex-1 bg-orange-100 items-center justify-center w-full h-full">
+              <View className="flex-1 bg-orange-100 dark:bg-orange-950/30 items-center justify-center w-full h-full">
                 <User size={56} color="#f97316" strokeWidth={1.5} />
               </View>
             )}
@@ -113,7 +115,7 @@ export const StepPhysical = ({ data, setData }: Props) => {
           <TouchableOpacity
             activeOpacity={0.8}
             onPress={handlePickImage}
-            className="absolute bottom-0 right-0 h-9 w-9 bg-orange-500 rounded-full items-center justify-center border-2 border-white"
+            className="absolute bottom-0 right-0 h-9 w-9 bg-orange-500 rounded-full items-center justify-center border-2 border-white dark:border-neutral-900"
             style={{
               shadowColor: "#000000",
               shadowOffset: { width: 0, height: 2 },
@@ -131,25 +133,25 @@ export const StepPhysical = ({ data, setData }: Props) => {
       <View className="mb-8">
         <View className="flex-row items-center justify-between mb-3 ml-1">
           <Text
-            className="text-sm font-bold uppercase tracking-widest text-gray-400"
+            className="text-sm font-bold uppercase tracking-widest text-gray-400 dark:text-neutral-500"
             style={{ fontFamily: "Outfit_700Bold" }}
           >
             ¿Cómo te llamas?
           </Text>
         </View>
-        <View className="flex-row items-center rounded-3xl border border-gray-100 bg-gray-50 px-5 py-2 shadow-sm">
-          <Ionicons name="person-outline" size={20} color="#9ca3af" />
+        <View className="flex-row items-center rounded-3xl border border-gray-100 dark:border-neutral-900 bg-gray-50 dark:bg-neutral-950 px-5 py-2 shadow-sm">
+          <Ionicons name="person-outline" size={20} color={isDark ? "#737373" : "#9ca3af"} />
           <TextInput
             className="ml-3 flex-1"
             style={{
               fontFamily: "Outfit_400Regular",
               fontSize: 17,
-              color: "#111827",
+              color: isDark ? "#ffffff" : "#111827",
               fontWeight: "normal",
               paddingVertical: 15,
             }}
             placeholder="Tu nombre completo"
-            placeholderTextColor="#cbd5e1"
+            placeholderTextColor={isDark ? "#525252" : "#cbd5e1"}
             defaultValue={data.nombre}
             onChangeText={(text) => {
               data.nombre = text;
@@ -162,24 +164,24 @@ export const StepPhysical = ({ data, setData }: Props) => {
       <View className="mb-8 flex-row gap-5">
         <View className="flex-1">
           <Text
-            className="mb-3 ml-1 text-sm font-bold uppercase tracking-widest text-gray-400"
+            className="mb-3 ml-1 text-sm font-bold uppercase tracking-widest text-gray-400 dark:text-neutral-500"
             style={{ fontFamily: "Outfit_700Bold" }}
           >
             Peso (kg)
           </Text>
-          <View className="flex-row items-center rounded-3xl border border-gray-100 bg-gray-50 px-5 py-2 shadow-sm">
-            <Ionicons name="fitness-outline" size={20} color="#9ca3af" />
+          <View className="flex-row items-center rounded-3xl border border-gray-100 dark:border-neutral-900 bg-gray-50 dark:bg-neutral-950 px-5 py-2 shadow-sm">
+            <Ionicons name="fitness-outline" size={20} color={isDark ? "#737373" : "#9ca3af"} />
             <TextInput
               className="ml-3 flex-1"
               style={{
                 fontFamily: "Outfit_400Regular",
                 fontSize: 17,
-                color: "#111827",
+                color: isDark ? "#ffffff" : "#111827",
                 fontWeight: "normal",
                 paddingVertical: 15,
               }}
               placeholder="Ej: 70"
-              placeholderTextColor="#cbd5e1"
+              placeholderTextColor={isDark ? "#525252" : "#cbd5e1"}
               keyboardType="numeric"
               defaultValue={data.peso}
               onChangeText={(text) => {
@@ -191,24 +193,24 @@ export const StepPhysical = ({ data, setData }: Props) => {
 
         <View className="flex-1">
           <Text
-            className="mb-3 ml-1 text-sm font-bold uppercase tracking-widest text-gray-400"
+            className="mb-3 ml-1 text-sm font-bold uppercase tracking-widest text-gray-400 dark:text-neutral-500"
             style={{ fontFamily: "Outfit_700Bold" }}
           >
             Talla (cm)
           </Text>
-          <View className="flex-row items-center rounded-3xl border border-gray-100 bg-gray-50 px-5 py-2 shadow-sm">
-            <Ionicons name="resize-outline" size={20} color="#9ca3af" />
+          <View className="flex-row items-center rounded-3xl border border-gray-100 dark:border-neutral-900 bg-gray-50 dark:bg-neutral-950 px-5 py-2 shadow-sm">
+            <Ionicons name="resize-outline" size={20} color={isDark ? "#737373" : "#9ca3af"} />
             <TextInput
               className="ml-3 flex-1"
               style={{
                 fontFamily: "Outfit_400Regular",
                 fontSize: 17,
-                color: "#111827",
+                color: isDark ? "#ffffff" : "#111827",
                 fontWeight: "normal",
                 paddingVertical: 15,
               }}
               placeholder="Ej: 175"
-              placeholderTextColor="#cbd5e1"
+              placeholderTextColor={isDark ? "#525252" : "#cbd5e1"}
               keyboardType="numeric"
               defaultValue={data.talla}
               onChangeText={(text) => {
@@ -222,7 +224,7 @@ export const StepPhysical = ({ data, setData }: Props) => {
       {/* Fecha Nacimiento */}
       <View className="mb-8">
         <Text
-          className="mb-3 ml-1 text-sm font-bold uppercase tracking-widest text-gray-400"
+          className="mb-3 ml-1 text-sm font-bold uppercase tracking-widest text-gray-400 dark:text-neutral-500"
           style={{ fontFamily: "Outfit_700Bold" }}
         >
           Fecha de Nacimiento
@@ -230,12 +232,14 @@ export const StepPhysical = ({ data, setData }: Props) => {
         <TouchableOpacity
           onPress={() => setShowPicker(true)}
           activeOpacity={0.8}
-          className="flex-row items-center rounded-3xl border border-gray-100 bg-gray-50 px-6 py-5 shadow-sm"
+          className="flex-row items-center rounded-3xl border border-gray-100 dark:border-neutral-900 bg-gray-50 dark:bg-neutral-950 px-6 py-5 shadow-sm"
         >
-          <Ionicons name="calendar-outline" size={22} color="#9ca3af" />
+          <Ionicons name="calendar-outline" size={22} color={isDark ? "#737373" : "#9ca3af"} />
           <Text
             className={`ml-4 flex-1 ${
-              data.fecha_nacimiento ? "text-gray-900" : "text-gray-300"
+              data.fecha_nacimiento
+                ? isDark ? "text-neutral-100" : "text-gray-900"
+                : "text-gray-300 dark:text-neutral-600"
             }`}
             style={{
               fontFamily: "Outfit_700Bold",
@@ -246,8 +250,8 @@ export const StepPhysical = ({ data, setData }: Props) => {
               ? formatDate(new Date(data.fecha_nacimiento))
               : "DD / MM / YYYY"}
           </Text>
-          <View className="rounded-xl bg-white p-2 shadow-sm border border-gray-50">
-            <Ionicons name="chevron-forward" size={18} color="#9ca3af" />
+          <View className="rounded-xl bg-white dark:bg-neutral-900 p-2 shadow-sm border border-gray-50 dark:border-neutral-800">
+            <Ionicons name="chevron-forward" size={18} color={isDark ? "#737373" : "#9ca3af"} />
           </View>
         </TouchableOpacity>
 
@@ -283,7 +287,7 @@ export const StepPhysical = ({ data, setData }: Props) => {
       {/* Género */}
       <View className="mb-10">
         <Text
-          className="mb-3 ml-1 text-sm font-bold uppercase tracking-widest text-gray-400"
+          className="mb-3 ml-1 text-sm font-bold uppercase tracking-widest text-gray-400 dark:text-neutral-500"
           style={{ fontFamily: "Outfit_700Bold" }}
         >
           Género
@@ -312,14 +316,14 @@ export const StepPhysical = ({ data, setData }: Props) => {
                         elevation: 6,
                       }
                     : {
-                        backgroundColor: "#f9fafb",
-                        borderColor: "#f3f4f6",
+                        backgroundColor: isDark ? "#0a0a0a" : "#f9fafb",
+                        borderColor: isDark ? "#262626" : "#f3f4f6",
                       }
                 }
               >
                 <Text
                   className={`text-base ${
-                    isSelected ? "text-white" : "text-gray-500"
+                    isSelected ? "text-white" : "text-gray-500 dark:text-neutral-400"
                   }`}
                   style={{
                     fontFamily: isSelected
@@ -339,7 +343,7 @@ export const StepPhysical = ({ data, setData }: Props) => {
       <View className="flex-1 items-center justify-center">
         <Image
           source={require("@/assets/images/onboarding/onboarding-physical.png")}
-          className="h-full w-full"
+          className="h-full w-full opacity-80"
           resizeMode="contain"
         />
       </View>

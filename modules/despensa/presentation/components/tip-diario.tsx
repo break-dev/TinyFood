@@ -11,28 +11,60 @@ import { MotiView } from "moti";
 import { Lightbulb, X, Sparkles } from "lucide-react-native";
 import * as Haptics from "expo-haptics";
 import { useTipDiario } from "../../logic/use-tip-diario";
+import { useAppTheme } from "@/common/logic/use-app-theme";
  
 // ── Colores por urgencia ──────────────────────────────────────────────────────
  
-const URGENCIA = {
-  alta: {
-    pill: { bg: "#fff1f2", border: "#fecdd3", text: "#e11d48", dot: "#f43f5e" },
-    modal: { bg: "#fff1f2", titulo: "#9f1239", consejo: "#be123c" },
-  },
-  media: {
-    pill: { bg: "#fff7ed", border: "#fed7aa", text: "#ea580c", dot: "#f97316" },
-    modal: { bg: "#fff7ed", titulo: "#9a3412", consejo: "#c2410c" },
-  },
-  baja: {
-    pill: { bg: "#f0fdf4", border: "#bbf7d0", text: "#16a34a", dot: "#22c55e" },
-    modal: { bg: "#f0fdf4", titulo: "#14532d", consejo: "#15803d" },
-  },
+const getColoresUrgencia = (urgencia: "alta" | "media" | "baja", isDark: boolean) => {
+  const map = {
+    alta: {
+      pill: {
+        bg: isDark ? "rgba(244, 63, 94, 0.15)" : "#fff1f2",
+        border: isDark ? "#f43f5e" : "#fecdd3",
+        text: isDark ? "#fda4af" : "#e11d48",
+        dot: "#f43f5e",
+      },
+      modal: {
+        bg: isDark ? "rgba(244, 63, 94, 0.1)" : "#fff1f2",
+        titulo: isDark ? "#fda4af" : "#9f1239",
+        consejo: isDark ? "#fecdd3" : "#be123c",
+      },
+    },
+    media: {
+      pill: {
+        bg: isDark ? "rgba(249, 115, 22, 0.15)" : "#fff7ed",
+        border: isDark ? "#f97316" : "#fed7aa",
+        text: isDark ? "#ffedd5" : "#ea580c",
+        dot: "#f97316",
+      },
+      modal: {
+        bg: isDark ? "rgba(249, 115, 22, 0.1)" : "#fff7ed",
+        titulo: isDark ? "#ffedd5" : "#9a3412",
+        consejo: isDark ? "#fed7aa" : "#c2410c",
+      },
+    },
+    baja: {
+      pill: {
+        bg: isDark ? "rgba(34, 197, 94, 0.15)" : "#f0fdf4",
+        border: isDark ? "#22c55e" : "#bbf7d0",
+        text: isDark ? "#d1fae5" : "#16a34a",
+        dot: "#22c55e",
+      },
+      modal: {
+        bg: isDark ? "rgba(34, 197, 94, 0.1)" : "#f0fdf4",
+        titulo: isDark ? "#d1fae5" : "#14532d",
+        consejo: isDark ? "#a7f3d0" : "#15803d",
+      },
+    },
+  };
+  return map[urgencia] || map.baja;
 };
  
 // ── Componente ────────────────────────────────────────────────────────────────
  
 export const TipDiario = ({ trigger }: { trigger?: number })=> {
   const { tip, cargando } = useTipDiario();
+  const { isDark } = useAppTheme();
   const sheetRef = useRef<BottomSheetModal>(null);
  
   const abrirTip = useCallback(async () => {
@@ -48,7 +80,7 @@ export const TipDiario = ({ trigger }: { trigger?: number })=> {
   // No renderizar nada si no hay tip o está cargando
   if (cargando || !tip) return null;
  
-  const colores = URGENCIA[tip.urgencia] ?? URGENCIA.baja;
+  const colores = getColoresUrgencia(tip.urgencia, isDark);
  
   return (
     <>
@@ -124,12 +156,12 @@ export const TipDiario = ({ trigger }: { trigger?: number })=> {
                 width: 36,
                 height: 36,
                 borderRadius: 18,
-                backgroundColor: "#f3f4f6",
+                backgroundColor: isDark ? "#262626" : "#f3f4f6",
                 alignItems: "center",
                 justifyContent: "center",
               }}
             >
-              <X size={18} color="#6b7280" strokeWidth={2.5} />
+              <X size={18} color={isDark ? "#d1d5db" : "#6b7280"} strokeWidth={2.5} />
             </TouchableOpacity>
           </View>
  
@@ -218,7 +250,7 @@ export const TipDiario = ({ trigger }: { trigger?: number })=> {
               activeOpacity={0.85}
               style={{
                 width: "100%",
-                backgroundColor: "#111827",
+                backgroundColor: isDark ? "#f97316" : "#111827",
                 paddingVertical: 18,
                 borderRadius: 28,
                 alignItems: "center",

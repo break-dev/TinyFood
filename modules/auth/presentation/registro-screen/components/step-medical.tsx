@@ -3,6 +3,7 @@ import { View, Text, TextInput, TouchableOpacity } from "react-native";
 import Animated, { FadeInRight, FadeOutLeft } from "react-native-reanimated";
 import { Ionicons } from "@expo/vector-icons";
 import { CONDICIONES_MEDICAS_SUGERIDAS } from "@/common/utils/variables/condiciones-medicas";
+import { useAppTheme } from "@/common/logic/use-app-theme";
 
 interface Condicion {
   nombre: string;
@@ -16,6 +17,7 @@ interface Props {
 
 export const StepMedical = ({ data, setData }: Props) => {
   const [customNombre, setCustomNombre] = useState("");
+  const { isDark } = useAppTheme();
 
   // Manejar el agregado de una nueva condición
   const addCondicion = () => {
@@ -80,13 +82,13 @@ export const StepMedical = ({ data, setData }: Props) => {
       {/* Header: Title */}
       <View className="mb-10">
         <Text
-          className="mb-3 text-4xl text-gray-900 tracking-tighter"
+          className="mb-3 text-4xl text-gray-900 dark:text-white tracking-tighter"
           style={{ fontFamily: "Outfit_900Black" }}
         >
           Salud
         </Text>
         <Text
-          className="text-lg text-gray-500 leading-6"
+          className="text-lg text-gray-500 dark:text-neutral-400 leading-6"
           style={{ fontFamily: "Outfit_400Regular" }}
         >
           Agrega tus condiciones médicas para que podamos darte recomendaciones
@@ -97,7 +99,7 @@ export const StepMedical = ({ data, setData }: Props) => {
       {/* Bloque 1: Sugerencias */}
       <View className="mb-10">
         <Text
-          className="mb-4 ml-1 text-xs font-bold uppercase tracking-widest text-gray-400"
+          className="mb-4 ml-1 text-xs font-bold uppercase tracking-widest text-gray-400 dark:text-neutral-500"
           style={{ fontFamily: "Outfit_700Bold" }}
         >
           Sugerencias Rápidas
@@ -117,12 +119,12 @@ export const StepMedical = ({ data, setData }: Props) => {
                 className={`rounded-2xl px-5 py-3 border shadow-sm ${
                   isSelected
                     ? "border-orange-500 bg-orange-500 shadow-orange-500/20"
-                    : "border-gray-50 bg-white shadow-black/5"
+                    : "border-gray-50 dark:border-neutral-900 bg-white dark:bg-neutral-950 shadow-black/5"
                 }`}
               >
                 <Text
                   className={`text-sm ${
-                    isSelected ? "text-white" : "text-gray-600"
+                    isSelected ? "text-white" : "text-gray-600 dark:text-neutral-300"
                   }`}
                   style={{
                     fontFamily: isSelected
@@ -141,22 +143,22 @@ export const StepMedical = ({ data, setData }: Props) => {
       {/* Bloque 2: Input para otra condición */}
       <View className="mb-10">
         <Text
-          className="mb-4 ml-1 text-xs font-bold uppercase tracking-widest text-gray-400"
+          className="mb-4 ml-1 text-xs font-bold uppercase tracking-widest text-gray-400 dark:text-neutral-500"
           style={{ fontFamily: "Outfit_700Bold" }}
         >
           Otra Condición
         </Text>
-        <View className="flex-row items-center rounded-3xl border border-gray-100 bg-gray-50 px-5 py-2 shadow-sm">
+        <View className="flex-row items-center rounded-3xl border border-gray-100 dark:border-neutral-900 bg-gray-50 dark:bg-neutral-950 px-5 py-2 shadow-sm">
           <TextInput
             className="flex-1 py-3"
             style={{
               fontFamily: "Outfit_400Regular",
               fontSize: 16,
-              color: "#0f172a",
+              color: isDark ? "#ffffff" : "#0f172a",
               fontWeight: "normal",
             }}
             placeholder="Ej: Intolerancia al gluten"
-            placeholderTextColor="#cbd5e1"
+            placeholderTextColor={isDark ? "#525252" : "#cbd5e1"}
             value={customNombre}
             onChangeText={setCustomNombre}
             onSubmitEditing={addCondicion}
@@ -171,7 +173,7 @@ export const StepMedical = ({ data, setData }: Props) => {
       {data.informacion_medica.length > 0 && (
         <View className="mb-10">
           <Text
-            className="mb-4 ml-1 text-xs font-bold uppercase tracking-widest text-gray-400"
+            className="mb-4 ml-1 text-xs font-bold uppercase tracking-widest text-gray-400 dark:text-neutral-500"
             style={{ fontFamily: "Outfit_700Bold" }}
           >
             Detalles de tus condiciones
@@ -179,11 +181,11 @@ export const StepMedical = ({ data, setData }: Props) => {
           {data.informacion_medica.map((cond: Condicion) => (
             <View
               key={cond.nombre}
-              className="mb-5 rounded-[32px] border border-orange-50 bg-orange-50/30 p-6 shadow-sm"
+              className="mb-5 rounded-[32px] border border-orange-50 dark:border-orange-900/30 bg-orange-50/30 dark:bg-orange-950/20 p-6 shadow-sm"
             >
               <View className="mb-4 flex-row items-center justify-between">
                 <Text
-                  className="text-xl text-orange-900"
+                  className="text-xl text-orange-900 dark:text-orange-300"
                   style={{ fontFamily: "Outfit_700Bold" }}
                 >
                   {cond.nombre}
@@ -193,15 +195,15 @@ export const StepMedical = ({ data, setData }: Props) => {
                 </TouchableOpacity>
               </View>
               <TextInput
-                className="rounded-2xl border border-orange-100 bg-white px-5 py-4"
+                className="rounded-2xl border border-orange-100 dark:border-orange-900/40 bg-white dark:bg-neutral-900 px-5 py-4"
                 style={{
                   fontFamily: "Outfit_400Regular",
                   fontSize: 15,
-                  color: "#1f2937",
+                  color: isDark ? "#ffffff" : "#1f2937",
                   fontWeight: "normal",
                 }}
                 placeholder={`Más detalles sobre esto...`}
-                placeholderTextColor="#cbd5e1"
+                placeholderTextColor={isDark ? "#525252" : "#cbd5e1"}
                 multiline
                 numberOfLines={2}
                 defaultValue={cond.descripcion}

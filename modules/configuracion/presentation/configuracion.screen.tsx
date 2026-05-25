@@ -6,6 +6,7 @@ import {
   ActivityIndicator,
   Platform,
   ScrollView,
+  TextInput,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import {
@@ -20,6 +21,7 @@ import {
   Cpu,
   ChefHat,
   Flame,
+  X,
 } from "lucide-react-native";
 import { MotiView } from "moti";
 import { useConfiguracion } from "../logic/use-configuracion";
@@ -29,7 +31,7 @@ import { useAppTheme } from "@/common/logic/use-app-theme";
 
 const ESTILOS_COMIDA = [
   "Peruana",
-  "China (Chifa)",
+  "China",
   "Italiana",
   "Mexicana",
   "Japonesa",
@@ -91,6 +93,25 @@ const CustomSwitch = ({
 export const ConfiguracionScreen = () => {
   const insets = useSafeAreaInsets();
   const { isDark, themeBg, themeText, themeCardBg, themeBorder, iconColor, dividerColor } = useAppTheme();
+
+  const [customEstilo, setCustomEstilo] = React.useState("");
+  const [customEquipamiento, setCustomEquipamiento] = React.useState("");
+
+  const handleAddCustomEstilo = () => {
+    const val = customEstilo.trim();
+    if (val && !estilosComida.includes(val)) {
+      toggleEstilo(val);
+    }
+    setCustomEstilo("");
+  };
+
+  const handleAddCustomEquipamiento = () => {
+    const val = customEquipamiento.trim();
+    if (val && !equipamiento.includes(val)) {
+      toggleEquipamiento(val);
+    }
+    setCustomEquipamiento("");
+  };
 
   const {
     localConfig,
@@ -191,7 +212,7 @@ export const ConfiguracionScreen = () => {
                   activeOpacity={0.8}
                   onPress={() => changeDificultad("rapido")}
                   className={`flex-1 py-4 rounded-[16px] items-center justify-center flex-row gap-2 ${
-                    dificultad === "rapido" ? "bg-white dark:bg-neutral-850" : ""
+                    dificultad === "rapido" ? "bg-white dark:bg-neutral-800" : ""
                   }`}
                   style={
                     dificultad === "rapido"
@@ -229,7 +250,7 @@ export const ConfiguracionScreen = () => {
                   activeOpacity={0.8}
                   onPress={() => changeDificultad("chef")}
                   className={`flex-1 py-4 rounded-[16px] items-center justify-center flex-row gap-2 ${
-                    dificultad === "chef" ? "bg-white dark:bg-neutral-855" : ""
+                    dificultad === "chef" ? "bg-white dark:bg-neutral-800" : ""
                   }`}
                   style={
                     dificultad === "chef"
@@ -273,7 +294,7 @@ export const ConfiguracionScreen = () => {
               >
                 Estilos Favoritos
               </Text>
-              <View className="flex-row flex-wrap gap-2">
+              <View className="flex-row flex-wrap gap-2 mb-3">
                 {ESTILOS_COMIDA.map((estilo) => {
                   const active = estilosComida.includes(estilo);
                   return (
@@ -303,6 +324,48 @@ export const ConfiguracionScreen = () => {
                   );
                 })}
               </View>
+
+              {/* Input libre para Estilos personalizados */}
+              <View className={`flex-row items-center rounded-2xl bg-white dark:bg-neutral-800 border ${themeBorder} px-4 py-1.5 mb-3 shadow-sm`}>
+                <TextInput
+                  className={`flex-1 py-1.5 text-sm ${themeText}`}
+                  style={{
+                    fontFamily: "Outfit_400Regular",
+                  }}
+                  placeholder="Agregar otro estilo (ej: Árabe, Keto)"
+                  placeholderTextColor={isDark ? "#525252" : "#9ca3af"}
+                  value={customEstilo}
+                  onChangeText={setCustomEstilo}
+                  onSubmitEditing={handleAddCustomEstilo}
+                />
+                <TouchableOpacity onPress={handleAddCustomEstilo} className="p-1">
+                  <Plus size={20} color="#f97316" strokeWidth={3} />
+                </TouchableOpacity>
+              </View>
+
+              {/* Lista de Estilos manuales agregados */}
+              {estilosComida.filter((e) => !ESTILOS_COMIDA.includes(e)).length > 0 && (
+                <View className="flex-row flex-wrap gap-2 mb-3">
+                  {estilosComida
+                    .filter((e) => !ESTILOS_COMIDA.includes(e))
+                    .map((item) => (
+                      <TouchableOpacity
+                        key={item}
+                        activeOpacity={0.8}
+                        onPress={() => toggleEstilo(item)}
+                        className="rounded-xl px-3 py-1.5 bg-orange-50 dark:bg-orange-950/20 border border-orange-100 dark:border-orange-900/30 flex-row items-center"
+                      >
+                        <Text
+                          className="text-orange-600 dark:text-orange-400 text-xs mr-2"
+                          style={{ fontFamily: "Outfit_700Bold" }}
+                        >
+                          {item}
+                        </Text>
+                        <X size={14} color="#f97316" strokeWidth={2.5} />
+                      </TouchableOpacity>
+                    ))}
+                </View>
+              )}
             </View>
 
             {/* Equipamiento disponible */}
@@ -313,7 +376,7 @@ export const ConfiguracionScreen = () => {
               >
                 Equipamiento Disponible
               </Text>
-              <View className="flex-row flex-wrap gap-2">
+              <View className="flex-row flex-wrap gap-2 mb-3">
                 {EQUIPAMIENTO.map((item) => {
                   const active = equipamiento.includes(item);
                   return (
@@ -343,6 +406,48 @@ export const ConfiguracionScreen = () => {
                   );
                 })}
               </View>
+
+              {/* Input libre para Equipamientos personalizados */}
+              <View className={`flex-row items-center rounded-2xl bg-white dark:bg-neutral-800 border ${themeBorder} px-4 py-1.5 mb-3 shadow-sm`}>
+                <TextInput
+                  className={`flex-1 py-1.5 text-sm ${themeText}`}
+                  style={{
+                    fontFamily: "Outfit_400Regular",
+                  }}
+                  placeholder="Agregar otro equipamiento (ej: Batidora, Grill)"
+                  placeholderTextColor={isDark ? "#525252" : "#9ca3af"}
+                  value={customEquipamiento}
+                  onChangeText={setCustomEquipamiento}
+                  onSubmitEditing={handleAddCustomEquipamiento}
+                />
+                <TouchableOpacity onPress={handleAddCustomEquipamiento} className="p-1">
+                  <Plus size={20} color="#f97316" strokeWidth={3} />
+                </TouchableOpacity>
+              </View>
+
+              {/* Lista de Equipamientos manuales agregados */}
+              {equipamiento.filter((eq) => !EQUIPAMIENTO.includes(eq)).length > 0 && (
+                <View className="flex-row flex-wrap gap-2 mb-3">
+                  {equipamiento
+                    .filter((eq) => !EQUIPAMIENTO.includes(eq))
+                    .map((item) => (
+                      <TouchableOpacity
+                        key={item}
+                        activeOpacity={0.8}
+                        onPress={() => toggleEquipamiento(item)}
+                        className="rounded-xl px-3 py-1.5 bg-orange-50 dark:bg-orange-950/20 border border-orange-100 dark:border-orange-900/30 flex-row items-center"
+                      >
+                        <Text
+                          className="text-orange-600 dark:text-orange-400 text-xs mr-2"
+                          style={{ fontFamily: "Outfit_700Bold" }}
+                        >
+                          {item}
+                        </Text>
+                        <X size={14} color="#f97316" strokeWidth={2.5} />
+                      </TouchableOpacity>
+                    ))}
+                </View>
+              )}
             </View>
 
             {/* Botón Guardar IA */}

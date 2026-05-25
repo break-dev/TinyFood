@@ -5,6 +5,7 @@ import { MotiView, AnimatePresence } from "moti";
 import { ChevronDown, ChevronUp } from "lucide-react-native";
 import { getMeses } from "@/common/utils/functions/get-meses";
 import { getDias } from "@/common/utils/functions/get-dias";
+import { useAppTheme } from "@/common/logic/use-app-theme";
 
 // Configuración en español
 LocaleConfig.locales["es"] = {
@@ -22,6 +23,7 @@ interface Props {
 }
 
 export const ModernCalendar = ({ value, onChange }: Props) => {
+  const { isDark } = useAppTheme();
   const [showYearPicker, setShowYearPicker] = useState(false);
   const [showMonthPicker, setShowMonthPicker] = useState(false);
 
@@ -46,14 +48,14 @@ export const ModernCalendar = ({ value, onChange }: Props) => {
   };
 
   return (
-    <View className="bg-white rounded-[40px] border border-gray-100 shadow-2xl overflow-hidden">
-      <View className="p-4 border-b border-gray-50 flex-row gap-2">
+    <View className="bg-white dark:bg-neutral-900 rounded-[40px] border border-gray-100 dark:border-neutral-800 shadow-2xl overflow-hidden">
+      <View className="p-4 border-b border-gray-50 dark:border-neutral-800 flex-row gap-2">
         <TouchableOpacity
           onPress={toggleMonthPicker}
-          className="flex-row items-center bg-gray-50 px-4 py-2 rounded-2xl border border-gray-100"
+          className="flex-row items-center bg-gray-50 dark:bg-neutral-850 px-4 py-2 rounded-2xl border border-gray-100 dark:border-neutral-800"
         >
           <Text
-            className="text-gray-900 mr-2"
+            className="text-gray-900 dark:text-neutral-100 mr-2"
             style={{ fontFamily: "Outfit_700Bold" }}
           >
             {months[viewingMonth - 1]}
@@ -64,13 +66,13 @@ export const ModernCalendar = ({ value, onChange }: Props) => {
             <ChevronDown size={16} color="#9ca3af" />
           )}
         </TouchableOpacity>
-
+ 
         <TouchableOpacity
           onPress={toggleYearPicker}
-          className="flex-row items-center bg-gray-50 px-4 py-2 rounded-2xl border border-gray-100"
+          className="flex-row items-center bg-gray-50 dark:bg-neutral-850 px-4 py-2 rounded-2xl border border-gray-100 dark:border-neutral-800"
         >
           <Text
-            className="text-gray-900 mr-2"
+            className="text-gray-900 dark:text-neutral-100 mr-2"
             style={{ fontFamily: "Outfit_700Bold" }}
           >
             {viewingYear}
@@ -81,14 +83,14 @@ export const ModernCalendar = ({ value, onChange }: Props) => {
             <ChevronDown size={16} color="#9ca3af" />
           )}
         </TouchableOpacity>
-
+ 
         <AnimatePresence>
           {(showYearPicker || showMonthPicker) && (
             <MotiView
               from={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="absolute top-[80px] left-4 right-4 bg-white z-50 rounded-[32px] shadow-xl border border-gray-100 p-2"
+              className="absolute top-[80px] left-4 right-4 bg-white dark:bg-neutral-900 z-50 rounded-[32px] shadow-xl border border-gray-100 dark:border-neutral-800 p-2"
               style={{ height: 280 }}
             >
               <ScrollView
@@ -104,12 +106,12 @@ export const ModernCalendar = ({ value, onChange }: Props) => {
                           setShowYearPicker(false);
                         }}
                         className={`mx-2 py-4 mb-2 items-center justify-center rounded-2xl ${
-                          viewingYear === y ? "bg-orange-500" : "bg-gray-50"
+                          viewingYear === y ? "bg-orange-500" : "bg-gray-50 dark:bg-neutral-800"
                         }`}
                       >
                         <Text
                           className={
-                            viewingYear === y ? "text-white" : "text-gray-900"
+                            viewingYear === y ? "text-white" : "text-gray-900 dark:text-neutral-100"
                           }
                           style={{
                             fontFamily:
@@ -133,14 +135,14 @@ export const ModernCalendar = ({ value, onChange }: Props) => {
                         className={`mx-2 py-4 mb-2 items-center justify-center rounded-2xl ${
                           viewingMonth === idx + 1
                             ? "bg-orange-500"
-                            : "bg-gray-50"
+                            : "bg-gray-50 dark:bg-neutral-800"
                         }`}
                       >
                         <Text
                           className={
                             viewingMonth === idx + 1
                               ? "text-white"
-                              : "text-gray-900"
+                              : "text-gray-900 dark:text-neutral-100"
                           }
                           style={{
                             fontFamily:
@@ -159,7 +161,7 @@ export const ModernCalendar = ({ value, onChange }: Props) => {
           )}
         </AnimatePresence>
       </View>
-
+ 
       <View className="relative min-h-[350px] pb-4">
         <Calendar
           key={`calendar-${viewingYear}-${viewingMonth}`}
@@ -171,19 +173,19 @@ export const ModernCalendar = ({ value, onChange }: Props) => {
             [value]: { selected: true, disableTouchEvent: true },
           }}
           theme={{
-            backgroundColor: "#ffffff",
-            calendarBackground: "#ffffff",
+            backgroundColor: isDark ? "#171717" : "#ffffff",
+            calendarBackground: isDark ? "#171717" : "#ffffff",
             textSectionTitleColor: "#9ca3af",
             selectedDayBackgroundColor: "#f97316",
             selectedDayTextColor: "#ffffff",
             todayTextColor: "#f97316",
-            dayTextColor: "#374151",
-            textDisabledColor: "#d1d5db",
+            dayTextColor: isDark ? "#ffffff" : "#374151",
+            textDisabledColor: isDark ? "#3f3f46" : "#d1d5db",
             dotColor: "#f97316",
             selectedDotColor: "#ffffff",
             arrowColor: "#f97316",
-            disabledArrowColor: "#d1d5db",
-            monthTextColor: "#111827",
+            disabledArrowColor: isDark ? "#3f3f46" : "#d1d5db",
+            monthTextColor: isDark ? "#ffffff" : "#111827",
             indicatorColor: "#f97316",
             textDayFontFamily: "Outfit_400Regular",
             textMonthFontFamily: "Outfit_900Black",

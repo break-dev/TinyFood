@@ -14,7 +14,7 @@ export function useTipDiario(trigger?: number) {
     try {
       setCargando(true);
       const res = await DespensaService.tipDiario();
-      if (res.success && res.data) {
+      if (res && res.success && res.data) {
         setTip(res.data);
       } else {
         setTip(null);

@@ -4,6 +4,7 @@ import Animated, { FadeInRight, FadeOutLeft } from "react-native-reanimated";
 import { Ionicons } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
 import { ObjetivoFisico } from "@/common/utils/enums/objetivo-fisico";
+import { useAppTheme } from "@/common/logic/use-app-theme";
 
 interface Props {
   data: any;
@@ -11,6 +12,8 @@ interface Props {
 }
 
 export const StepActivity = ({ data, setData }: Props) => {
+  const { isDark } = useAppTheme();
+
   const levels = [
     { id: 1, label: "Sedentario", desc: "Poca o ninguna actividad" },
     { id: 2, label: "Ligero", desc: "Ejercicio 1-3 días/semana" },
@@ -42,13 +45,13 @@ export const StepActivity = ({ data, setData }: Props) => {
       {/* Header: Title */}
       <View className="mb-8">
         <Text
-          className="mb-3 text-4xl text-gray-900 tracking-tighter"
+          className="mb-3 text-4xl text-gray-900 dark:text-white tracking-tighter"
           style={{ fontFamily: "Outfit_900Black" }}
         >
           Objetivo & Actividad
         </Text>
         <Text
-          className="text-lg text-gray-500 leading-6"
+          className="text-lg text-gray-500 dark:text-neutral-400 leading-6"
           style={{ fontFamily: "Outfit_400Regular" }}
         >
           Configura tu meta física y tu ritmo diario para ajustar tus
@@ -58,7 +61,7 @@ export const StepActivity = ({ data, setData }: Props) => {
 
       {/* Objetivo Físico */}
       <Text
-        className="text-xs text-gray-400 uppercase tracking-widest mb-3 ml-1 font-bold"
+        className="text-xs text-gray-400 dark:text-neutral-500 uppercase tracking-widest mb-3 ml-1 font-bold"
         style={{ fontFamily: "Outfit_700Bold" }}
       >
         Objetivo Físico
@@ -87,14 +90,14 @@ export const StepActivity = ({ data, setData }: Props) => {
                       elevation: 3,
                     }
                   : {
-                      backgroundColor: "#f9fafb",
-                      borderColor: "#f3f4f6",
+                      backgroundColor: isDark ? "#0a0a0a" : "#f9fafb",
+                      borderColor: isDark ? "#262626" : "#f3f4f6",
                     }
               }
             >
               <Text
                 className={`text-xs text-center capitalize ${
-                  isSelected ? "text-white" : "text-gray-500"
+                  isSelected ? "text-white" : "text-gray-500 dark:text-neutral-400"
                 }`}
                 style={{
                   fontFamily: isSelected
@@ -111,51 +114,54 @@ export const StepActivity = ({ data, setData }: Props) => {
 
       {/* Nivel de Actividad */}
       <Text
-        className="text-xs text-gray-400 uppercase tracking-widest mb-3 ml-1 font-bold"
+        className="text-xs text-gray-400 dark:text-neutral-500 uppercase tracking-widest mb-3 ml-1 font-bold"
         style={{ fontFamily: "Outfit_700Bold" }}
       >
         Nivel de Actividad
       </Text>
       <View className="space-y-4">
-        {levels.map((level) => (
-          <TouchableOpacity
-            key={level.id}
-            onPress={() => {
-              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-              setData({ ...data, nivel_actividad: level.id });
-            }}
-            activeOpacity={0.8}
-            className={`flex-row items-center rounded-[32px] border-2 p-6 shadow-sm ${
-              data.nivel_actividad === level.id
-                ? "border-orange-500 bg-orange-50/50 shadow-orange-500/10"
-                : "border-gray-50 bg-white shadow-black/5"
-            }`}
-          >
-            <View className="flex-1">
-              <Text
-                className={`text-xl ${
-                  data.nivel_actividad === level.id
-                    ? "text-orange-600"
-                    : "text-gray-900"
-                }`}
-                style={{ fontFamily: "Outfit_700Bold" }}
-              >
-                {level.label}
-              </Text>
-              <Text
-                className="text-sm text-gray-400 mt-1"
-                style={{ fontFamily: "Outfit_400Regular" }}
-              >
-                {level.desc}
-              </Text>
-            </View>
-            {data.nivel_actividad === level.id && (
-              <View className="bg-orange-500 rounded-full p-1">
-                <Ionicons name="checkmark" size={18} color="white" />
+        {levels.map((level) => {
+          const isSelected = data.nivel_actividad === level.id;
+          return (
+            <TouchableOpacity
+              key={level.id}
+              onPress={() => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                setData({ ...data, nivel_actividad: level.id });
+              }}
+              activeOpacity={0.8}
+              className={`flex-row items-center rounded-[32px] border-2 p-6 shadow-sm ${
+                isSelected
+                  ? "border-orange-500 bg-orange-50/50 dark:bg-orange-950/20 shadow-orange-500/10"
+                  : "border-gray-50 dark:border-neutral-900 bg-white dark:bg-neutral-950 shadow-black/5"
+              }`}
+            >
+              <View className="flex-1">
+                <Text
+                  className={`text-xl ${
+                    isSelected
+                      ? "text-orange-600 dark:text-orange-500"
+                      : "text-gray-900 dark:text-white"
+                  }`}
+                  style={{ fontFamily: "Outfit_700Bold" }}
+                >
+                  {level.label}
+                </Text>
+                <Text
+                  className="text-sm text-gray-400 dark:text-neutral-400 mt-1"
+                  style={{ fontFamily: "Outfit_400Regular" }}
+                >
+                  {level.desc}
+                </Text>
               </View>
-            )}
-          </TouchableOpacity>
-        ))}
+              {isSelected && (
+                <View className="bg-orange-500 rounded-full p-1">
+                  <Ionicons name="checkmark" size={18} color="white" />
+                </View>
+              )}
+            </TouchableOpacity>
+          );
+        })}
       </View>
     </Animated.View>
   );

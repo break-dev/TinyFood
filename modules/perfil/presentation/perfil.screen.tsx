@@ -38,6 +38,8 @@ import { SheetAlimentacion } from "./components/sheets/sheet-alimentacion";
 import { SheetSalud } from "./components/sheets/sheet-salud";
 import { ModalEstandar } from "@/common/presentation/components/modal-estandar";
 
+import { useAppTheme } from "@/common/logic/use-app-theme";
+
 type SheetType = "fisica" | "actividad" | "alimentacion" | "salud";
 
 const activityLabels: Record<number, string> = {
@@ -50,6 +52,7 @@ const activityLabels: Record<number, string> = {
 
 export const PerfilScreen = () => {
   const insets = useSafeAreaInsets();
+  const { isDark } = useAppTheme();
   const { usuario, token, setUser } = useAuthState();
   const { handleLogout: logoutFn } = useLogout();
   const { formData, setFormData, handleSave, isLoading, resetForm } =
@@ -118,18 +121,18 @@ export const PerfilScreen = () => {
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: "white", paddingTop: insets.top }}>
+    <View style={{ flex: 1, backgroundColor: isDark ? "#0a0a0a" : "white", paddingTop: insets.top }}>
       {/* ── Custom Header Bar ── */}
-      <View className="flex-row items-center justify-between px-6 py-6 border-b border-gray-50">
+      <View className="flex-row items-center justify-between px-6 py-6 border-b border-gray-50 dark:border-neutral-900">
         <Text
-          className="text-2xl text-gray-900"
+          className="text-2xl text-gray-900 dark:text-white"
           style={{ fontFamily: "Outfit_900Black" }}
         >
           Mi Perfil
         </Text>
         <TouchableOpacity
           onPress={handleLogout}
-          className="h-12 w-12 items-center justify-center rounded-2xl bg-red-50 border border-red-100"
+          className="h-12 w-12 items-center justify-center rounded-2xl bg-red-50 dark:bg-red-950/20 border border-red-100 dark:border-red-900/30"
         >
           <LogOut size={22} color="#ef4444" strokeWidth={2.5} />
         </TouchableOpacity>
@@ -151,7 +154,7 @@ export const PerfilScreen = () => {
               activeOpacity={0.9}
               onPress={handlePickImage}
               disabled={isUploadingPhoto}
-              className="w-32 h-32 rounded-[48px] overflow-hidden border-4 border-orange-500/10 shadow-2xl items-center justify-center bg-gray-50"
+              className="w-32 h-32 rounded-[48px] overflow-hidden border-4 border-orange-500/10 shadow-2xl items-center justify-center bg-gray-50 dark:bg-neutral-850"
             >
               {isUploadingPhoto ? (
                 <ActivityIndicator size="large" color="#f97316" />
@@ -179,26 +182,26 @@ export const PerfilScreen = () => {
 
           <View className="flex-row items-center">
             <Text
-              className="text-3xl text-gray-900"
+              className="text-3xl text-gray-900 dark:text-white"
               style={{ fontFamily: "Outfit_900Black" }}
             >
               {usuario?.nombre}
             </Text>
             <TouchableOpacity
               onPress={() => openSheet("fisica")}
-              className="ml-3 bg-orange-100 p-2 rounded-xl"
+              className="ml-3 bg-orange-100 dark:bg-orange-950/30 p-2 rounded-xl"
             >
               <User size={16} color="#f97316" strokeWidth={3} />
             </TouchableOpacity>
           </View>
           <Text
-            className="text-gray-400 text-sm mt-1 capitalize"
+            className="text-gray-400 dark:text-neutral-400 text-sm mt-1 capitalize"
             style={{ fontFamily: "Outfit_400Regular" }}
           >
             {usuario?.genero || "Género no especificado"}
           </Text>
           <Text
-            className="text-gray-400 text-[11px] mt-2"
+            className="text-gray-400 dark:text-neutral-500 text-[11px] mt-2"
             style={{ fontFamily: "Outfit_400Regular" }}
           >
             Toca una sección para editar tu perfil
@@ -215,17 +218,17 @@ export const PerfilScreen = () => {
           <TouchableOpacity
             activeOpacity={0.8}
             onPress={() => openSheet("fisica")}
-            className="flex-1 bg-blue-50 rounded-[32px] p-6 border border-blue-100 shadow-sm"
+            className="flex-1 bg-blue-50 dark:bg-blue-950/15 rounded-[32px] p-6 border border-blue-100 dark:border-blue-900/30 shadow-sm"
           >
             <Dumbbell size={24} color="#3b82f6" strokeWidth={2.5} />
             <Text
-              className="text-3xl text-gray-900 mt-4"
+              className="text-3xl text-gray-900 dark:text-white mt-4"
               style={{ fontFamily: "Outfit_900Black" }}
             >
               {usuario?.peso ?? "--"}
             </Text>
             <Text
-              className="text-blue-500 text-xs uppercase tracking-widest font-black"
+              className="text-blue-500 dark:text-blue-400 text-xs uppercase tracking-widest font-black"
               style={{ fontFamily: "Outfit_900Black" }}
             >
               kg · Peso
@@ -235,17 +238,17 @@ export const PerfilScreen = () => {
           <TouchableOpacity
             activeOpacity={0.8}
             onPress={() => openSheet("fisica")}
-            className="flex-1 bg-emerald-50 rounded-[32px] p-6 border border-emerald-100 shadow-sm"
+            className="flex-1 bg-emerald-50 dark:bg-emerald-950/15 rounded-[32px] p-6 border border-emerald-100 dark:border-emerald-900/30 shadow-sm"
           >
             <Maximize size={24} color="#10b981" strokeWidth={2.5} />
             <Text
-              className="text-3xl text-gray-900 mt-4"
+              className="text-3xl text-gray-900 dark:text-white mt-4"
               style={{ fontFamily: "Outfit_900Black" }}
             >
               {usuario?.talla ?? "--"}
             </Text>
             <Text
-              className="text-emerald-500 text-xs uppercase tracking-widest font-black"
+              className="text-emerald-500 dark:text-emerald-400 text-xs uppercase tracking-widest font-black"
               style={{ fontFamily: "Outfit_900Black" }}
             >
               cm · Talla
@@ -340,7 +343,11 @@ export const PerfilScreen = () => {
             disabled={isLoading}
             activeOpacity={0.9}
             className={`h-20 flex-row items-center justify-center rounded-[32px] shadow-2xl ${
-              isLoading ? "bg-gray-200" : "bg-orange-500 shadow-orange-500/40"
+              isLoading
+                ? isDark
+                  ? "bg-neutral-800"
+                  : "bg-gray-200"
+                : "bg-orange-500 shadow-orange-500/40"
             }`}
           >
             {isLoading ? (

@@ -4,6 +4,8 @@ import { Ionicons } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
 import { ObjetivoFisico } from "@/common/utils/enums/objetivo-fisico";
 
+import { useAppTheme } from "@/common/logic/use-app-theme";
+
 interface Props {
   data: any;
   setData: (data: any) => void;
@@ -23,96 +25,102 @@ const goals = [
   { id: ObjetivoFisico.GanarPeso, label: "Ganar Peso", desc: "Aumentar masa" },
 ];
 
-export const SheetActividad = ({ data, setData }: Props) => (
-  <View>
-    <Text
-      className="text-3xl text-gray-900 tracking-tighter mb-1"
-      style={{ fontFamily: "Outfit_900Black" }}
-    >
-      Objetivo & Actividad
-    </Text>
-    <Text
-      className="text-gray-400 text-sm mb-6"
-      style={{ fontFamily: "Outfit_400Regular" }}
-    >
-      Configura tu meta física y tu ritmo diario
-    </Text>
+export const SheetActividad = ({ data, setData }: Props) => {
+  const { isDark } = useAppTheme();
+  return (
+    <View>
+      <Text
+        className="text-3xl text-gray-900 dark:text-white tracking-tighter mb-1"
+        style={{ fontFamily: "Outfit_900Black" }}
+      >
+        Objetivo & Actividad
+      </Text>
+      <Text
+        className="text-gray-400 dark:text-neutral-400 text-sm mb-6"
+        style={{ fontFamily: "Outfit_400Regular" }}
+      >
+        Configura tu meta física y tu ritmo diario
+      </Text>
 
-    {/* Sección de Objetivo */}
-    <Text
-      className="text-xs text-gray-400 uppercase tracking-widest mb-3 ml-1"
-      style={{ fontFamily: "Outfit_900Black" }}
-    >
-      Mi Objetivo Físico
-    </Text>
-    <View className="flex-row gap-2 mb-6">
-      {goals.map((g) => {
-        const isSelected = data.objetivo_fisico === g.id;
+      {/* Sección de Objetivo */}
+      <Text
+        className="text-xs text-gray-400 dark:text-neutral-500 uppercase tracking-widest mb-3 ml-1"
+        style={{ fontFamily: "Outfit_900Black" }}
+      >
+        Mi Objetivo Físico
+      </Text>
+      <View className="flex-row gap-2 mb-6">
+        {goals.map((g) => {
+          const isSelected = data.objetivo_fisico === g.id;
+          return (
+            <TouchableOpacity
+              key={g.id}
+              activeOpacity={0.8}
+              onPress={() => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                setData({ ...data, objetivo_fisico: g.id });
+              }}
+              className={`flex-1 py-4 px-1 rounded-[20px] items-center justify-center border ${
+                isSelected
+                  ? "bg-orange-500 border-orange-500"
+                  : "bg-gray-50 dark:bg-neutral-950 border-gray-100 dark:border-neutral-900"
+              }`}
+            >
+              <Text
+                className={`text-xs text-center capitalize ${
+                  isSelected ? "text-white" : "text-gray-500 dark:text-neutral-400"
+                }`}
+                style={{
+                  fontFamily: isSelected ? "Outfit_700Bold" : "Outfit_400Regular",
+                }}
+              >
+                {g.label}
+              </Text>
+            </TouchableOpacity>
+          );
+        })}
+      </View>
+
+      {/* Sección de Actividad */}
+      <Text
+        className="text-xs text-gray-400 dark:text-neutral-500 uppercase tracking-widest mb-3 ml-1"
+        style={{ fontFamily: "Outfit_900Black" }}
+      >
+        Nivel de Actividad
+      </Text>
+      {levels.map((level) => {
+        const isSelected = data.nivel_actividad === level.id;
         return (
           <TouchableOpacity
-            key={g.id}
-            activeOpacity={0.8}
+            key={level.id}
             onPress={() => {
               Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-              setData({ ...data, objetivo_fisico: g.id });
+              setData({ ...data, nivel_actividad: level.id });
             }}
-            className={`flex-1 py-4 px-1 rounded-[20px] items-center justify-center border ${
+            className={`mb-3 flex-row items-center rounded-2xl border-2 p-4 ${
               isSelected
-                ? "bg-orange-500 border-orange-500"
-                : "bg-gray-50 border-gray-100"
+                ? "border-orange-500 bg-orange-50 dark:bg-orange-950/20"
+                : "border-gray-100 dark:border-neutral-900 bg-white dark:bg-neutral-950"
             }`}
           >
-            <Text
-              className={`text-xs text-center capitalize ${
-                isSelected ? "text-white" : "text-gray-500"
-              }`}
-              style={{
-                fontFamily: isSelected ? "Outfit_700Bold" : "Outfit_400Regular",
-              }}
-            >
-              {g.label}
-            </Text>
+            <View className="flex-1">
+              <Text
+                className={`text-base font-bold ${
+                  isSelected
+                    ? "text-orange-600 dark:text-orange-500"
+                    : "text-gray-900 dark:text-white"
+                }`}
+              >
+                {level.label}
+              </Text>
+              <Text className="text-gray-500 dark:text-neutral-400 text-sm">{level.desc}</Text>
+            </View>
+            {isSelected && (
+              <Ionicons name="checkmark-circle" size={24} color="#f97316" />
+            )}
           </TouchableOpacity>
         );
       })}
     </View>
-
-    {/* Sección de Actividad */}
-    <Text
-      className="text-xs text-gray-400 uppercase tracking-widest mb-3 ml-1"
-      style={{ fontFamily: "Outfit_900Black" }}
-    >
-      Nivel de Actividad
-    </Text>
-    {levels.map((level) => (
-      <TouchableOpacity
-        key={level.id}
-        onPress={() => {
-          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-          setData({ ...data, nivel_actividad: level.id });
-        }}
-        className={`mb-3 flex-row items-center rounded-2xl border-2 p-4 ${
-          data.nivel_actividad === level.id
-            ? "border-orange-500 bg-orange-50"
-            : "border-gray-100 bg-white"
-        }`}
-      >
-        <View className="flex-1">
-          <Text
-            className={`text-base font-bold ${
-              data.nivel_actividad === level.id
-                ? "text-orange-600"
-                : "text-gray-900"
-            }`}
-          >
-            {level.label}
-          </Text>
-          <Text className="text-gray-500 text-sm">{level.desc}</Text>
-        </View>
-        {data.nivel_actividad === level.id && (
-          <Ionicons name="checkmark-circle" size={24} color="#f97316" />
-        )}
-      </TouchableOpacity>
-    ))}
-  </View>
-);
+  );
+};

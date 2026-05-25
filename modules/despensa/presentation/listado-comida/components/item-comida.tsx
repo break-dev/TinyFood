@@ -20,7 +20,7 @@ export const ItemComida = ({ item, index, onDelete, onEdit }: Props) => {
         from={{ opacity: 0, translateX: -20 }}
         animate={{ opacity: 1, translateX: 0 }}
         transition={{ type: "timing", duration: 400, delay: index * 50 }}
-        className="mb-4 bg-white p-5 rounded-[32px] shadow-sm border border-gray-100 flex-row items-center"
+        className="mb-4 bg-white dark:bg-neutral-900 p-5 rounded-[32px] shadow-sm border border-gray-100 dark:border-neutral-800 flex-row items-center"
       >
         <View
           className={`h-16 w-16 rounded-[24px] items-center justify-center ${estado_vencimiento.color}10`}
@@ -43,7 +43,7 @@ export const ItemComida = ({ item, index, onDelete, onEdit }: Props) => {
         <View className="flex-1 ml-4">
           <View className="flex-row items-center justify-between">
             <Text
-              className="text-gray-900 text-lg flex-1"
+              className="text-gray-900 dark:text-white text-lg flex-1"
               style={{ fontFamily: "Outfit_700Bold" }}
               numberOfLines={1}
             >
@@ -62,17 +62,17 @@ export const ItemComida = ({ item, index, onDelete, onEdit }: Props) => {
           </View>
 
           <Text
-            className="text-gray-400 text-sm mt-0.5"
+            className="text-gray-400 dark:text-neutral-500 text-sm mt-0.5"
             style={{ fontFamily: "Outfit_700Bold" }}
           >
             {item.cantidad}
           </Text>
 
           {item.fecha_vencimiento && (
-            <View className="flex-row items-center mt-3 bg-gray-50 self-start px-3 py-1.5 rounded-xl border border-gray-100">
+            <View className="flex-row items-center mt-3 bg-gray-50 dark:bg-neutral-950 self-start px-3 py-1.5 rounded-xl border border-gray-100 dark:border-neutral-900">
               <Calendar size={12} color="#9ca3af" strokeWidth={2.5} />
               <Text
-                className="text-[10px] text-gray-500 ml-1.5"
+                className="text-[10px] text-gray-500 dark:text-neutral-400 ml-1.5"
                 style={{ fontFamily: "Outfit_700Bold" }}
               >
                 {new Date(item.fecha_vencimiento).toLocaleDateString("es-ES", {
@@ -86,7 +86,7 @@ export const ItemComida = ({ item, index, onDelete, onEdit }: Props) => {
 
         <TouchableOpacity
           onPress={() => onDelete(item.id)}
-          className="h-12 w-12 items-center justify-center rounded-2xl bg-red-50 ml-2"
+          className="h-12 w-12 items-center justify-center rounded-2xl bg-red-50 dark:bg-red-950/20 border border-red-100/10 dark:border-red-900/30 ml-2"
         >
           <Trash2 size={20} color="#ef4444" strokeWidth={2} />
         </TouchableOpacity>

@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import { BottomSheetModal, BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import { ModalSheet } from "@/common/presentation/components/modal-sheet";
+import { useAppTheme } from "@/common/logic/use-app-theme";
 import {
   X,
   Plus,
@@ -40,7 +41,7 @@ interface Props {
 }
 
 // ── Header ────────────────────────────────────────────────────────────────────
-
+ 
 const Header = memo(
   ({
     comidaParaEditar,
@@ -48,36 +49,39 @@ const Header = memo(
   }: {
     comidaParaEditar?: RES_Comida | null;
     onDismiss: () => void;
-  }) => (
-    <View className="flex-row items-center justify-between mb-6">
-      <View>
-        <Text
-          className="text-3xl text-gray-900 tracking-tighter"
-          style={{ fontFamily: "Outfit_900Black" }}
+  }) => {
+    const { isDark, iconColor } = useAppTheme();
+    return (
+      <View className="flex-row items-center justify-between mb-6">
+        <View>
+          <Text
+            className="text-3xl text-gray-900 dark:text-white tracking-tighter"
+            style={{ fontFamily: "Outfit_900Black" }}
+          >
+            {comidaParaEditar ? "Editar Item" : "Nuevo Item"}
+          </Text>
+          <Text
+            className="text-gray-400 dark:text-neutral-400 text-sm"
+            style={{ fontFamily: "Outfit_400Regular" }}
+          >
+            {comidaParaEditar
+              ? "Ajusta los detalles de tu alimento"
+              : "Agrégalo a tu inventario inteligente"}
+          </Text>
+        </View>
+        <TouchableOpacity
+          onPress={onDismiss}
+          className="bg-gray-100 dark:bg-neutral-800 h-10 w-10 items-center justify-center rounded-full"
         >
-          {comidaParaEditar ? "Editar Item" : "Nuevo Item"}
-        </Text>
-        <Text
-          className="text-gray-400 text-sm"
-          style={{ fontFamily: "Outfit_400Regular" }}
-        >
-          {comidaParaEditar
-            ? "Ajusta los detalles de tu alimento"
-            : "Agrégalo a tu inventario inteligente"}
-        </Text>
+          <X size={20} color={iconColor} strokeWidth={2.5} />
+        </TouchableOpacity>
       </View>
-      <TouchableOpacity
-        onPress={onDismiss}
-        className="bg-gray-100 h-10 w-10 items-center justify-center rounded-full"
-      >
-        <X size={20} color="#1F2937" strokeWidth={2.5} />
-      </TouchableOpacity>
-    </View>
-  ),
+    );
+  }
 );
-
+ 
 // ── Botón IA ──────────────────────────────────────────────────────────────────
-
+ 
 const BotonIA = memo(
   ({
     analizando,
@@ -99,109 +103,112 @@ const BotonIA = memo(
     onCamara: () => void;
     onGaleria: () => void;
     soloLectura: boolean;
-  }) => (
-    <MotiView
-      from={{ opacity: 0, translateY: -6 }}
-      animate={{ opacity: 1, translateY: 0 }}
-      transition={{ type: "timing", duration: 350 }}
-      className="mb-5"
-    >
-      {/* Botón principal */}
-      <TouchableOpacity
-        onPress={onToggle}
-        disabled={soloLectura}
-        activeOpacity={0.75}
-        className="bg-gray-50 flex-row items-center px-5 py-4 rounded-[24px] border border-gray-100"
+  }) => {
+    const { isDark, iconColor, subIconColor } = useAppTheme();
+    return (
+      <MotiView
+        from={{ opacity: 0, translateY: -6 }}
+        animate={{ opacity: 1, translateY: 0 }}
+        transition={{ type: "timing", duration: 350 }}
+        className="mb-5"
       >
-        {analizando ? (
-          <>
-            <ActivityIndicator size="small" color="#f97316" />
-            <Text
-              className="flex-1 ml-4 text-base text-orange-500"
-              style={{ fontFamily: "Outfit_700Bold" }}
-            >
-              Analizando imagen...
-            </Text>
-          </>
-        ) : (
-          <>
-            <View className="h-9 w-9 items-center justify-center rounded-2xl bg-orange-50">
-              <Sparkles size={18} color="#f97316" strokeWidth={2} />
-            </View>
-            <View className="flex-1 ml-4">
+        {/* Botón principal */}
+        <TouchableOpacity
+          onPress={onToggle}
+          disabled={soloLectura}
+          activeOpacity={0.75}
+          className="bg-gray-50 dark:bg-neutral-950 flex-row items-center px-5 py-4 rounded-[24px] border border-gray-100 dark:border-neutral-900"
+        >
+          {analizando ? (
+            <>
+              <ActivityIndicator size="small" color="#f97316" />
               <Text
-                className="text-base text-gray-800"
+                className="flex-1 ml-4 text-base text-orange-500"
                 style={{ fontFamily: "Outfit_700Bold" }}
               >
-                {imagenAnalizada ? "Cambiar foto" : "Identificar con foto"}
+                Analizando imagen...
               </Text>
-              {imagenAnalizada ? (
+            </>
+          ) : (
+            <>
+              <View className="h-9 w-9 items-center justify-center rounded-2xl bg-orange-50 dark:bg-orange-950/20">
+                <Sparkles size={18} color="#f97316" strokeWidth={2} />
+              </View>
+              <View className="flex-1 ml-4">
                 <Text
-                  className="text-xs text-orange-400"
-                  style={{ fontFamily: "Outfit_400Regular" }}
+                  className="text-base text-gray-800 dark:text-neutral-100"
+                  style={{ fontFamily: "Outfit_700Bold" }}
                 >
-                  {imagenAnalizada.categoria} · confianza{" "}
-                  {imagenAnalizada.confianza} · vence en{" "}
-                  {imagenAnalizada.dias_duracion_estimados}d
+                  {imagenAnalizada ? "Cambiar foto" : "Identificar con foto"}
                 </Text>
-              ) : (
-                <Text
-                  className="text-xs text-gray-400"
-                  style={{ fontFamily: "Outfit_400Regular" }}
-                >
-                  La IA rellena los campos automáticamente
-                </Text>
-              )}
-            </View>
-            <View className="bg-white p-1 rounded-lg border border-gray-100">
-              <ChevronRight size={16} color="#9ca3af" strokeWidth={2.5} />
-            </View>
-          </>
+                {imagenAnalizada ? (
+                  <Text
+                    className="text-xs text-orange-400 dark:text-orange-300"
+                    style={{ fontFamily: "Outfit_400Regular" }}
+                  >
+                    {imagenAnalizada.categoria} · confianza{" "}
+                    {imagenAnalizada.confianza} · vence en{" "}
+                    {imagenAnalizada.dias_duracion_estimados}d
+                  </Text>
+                ) : (
+                  <Text
+                    className="text-xs text-gray-400 dark:text-neutral-500"
+                    style={{ fontFamily: "Outfit_400Regular" }}
+                  >
+                    La IA rellena los campos automáticamente
+                  </Text>
+                )}
+              </View>
+              <View className="bg-white dark:bg-neutral-900 p-1 rounded-lg border border-gray-100 dark:border-neutral-800">
+                <ChevronRight size={16} color={subIconColor} strokeWidth={2.5} />
+              </View>
+            </>
+          )}
+        </TouchableOpacity>
+ 
+        {/* Opciones desplegables: Cámara / Galería */}
+        {mostrarOpciones && !soloLectura && (
+          <MotiView
+            from={{ opacity: 0, translateY: -8 }}
+            animate={{ opacity: 1, translateY: 0 }}
+            transition={{ type: "spring", damping: 18, stiffness: 200 }}
+            className="flex-row gap-3 mt-2"
+          >
+            <TouchableOpacity
+              onPress={onCamara}
+              activeOpacity={0.8}
+              className="flex-1 flex-row items-center justify-center gap-2 py-3.5 rounded-[20px] bg-gray-100 dark:bg-neutral-850"
+            >
+              <Camera size={18} color={iconColor} strokeWidth={2} />
+              <Text
+                className="text-gray-700 dark:text-neutral-200 text-sm"
+                style={{ fontFamily: "Outfit_700Bold" }}
+              >
+                Cámara
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={onGaleria}
+              activeOpacity={0.8}
+              className="flex-1 flex-row items-center justify-center gap-2 py-3.5 rounded-[20px] bg-gray-100 dark:bg-neutral-850"
+            >
+              <ImageIcon size={18} color={iconColor} strokeWidth={2} />
+              <Text
+                className="text-gray-700 dark:text-neutral-200 text-sm"
+                style={{ fontFamily: "Outfit_700Bold" }}
+              >
+                Galería
+              </Text>
+            </TouchableOpacity>
+          </MotiView>
         )}
-      </TouchableOpacity>
-
-      {/* Opciones desplegables: Cámara / Galería */}
-      {mostrarOpciones && !soloLectura && (
-        <MotiView
-          from={{ opacity: 0, translateY: -8 }}
-          animate={{ opacity: 1, translateY: 0 }}
-          transition={{ type: "spring", damping: 18, stiffness: 200 }}
-          className="flex-row gap-3 mt-2"
-        >
-          <TouchableOpacity
-            onPress={onCamara}
-            activeOpacity={0.8}
-            className="flex-1 flex-row items-center justify-center gap-2 py-3.5 rounded-[20px] bg-gray-100"
-          >
-            <Camera size={18} color="#374151" strokeWidth={2} />
-            <Text
-              className="text-gray-700 text-sm"
-              style={{ fontFamily: "Outfit_700Bold" }}
-            >
-              Cámara
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={onGaleria}
-            activeOpacity={0.8}
-            className="flex-1 flex-row items-center justify-center gap-2 py-3.5 rounded-[20px] bg-gray-100"
-          >
-            <ImageIcon size={18} color="#374151" strokeWidth={2} />
-            <Text
-              className="text-gray-700 text-sm"
-              style={{ fontFamily: "Outfit_700Bold" }}
-            >
-              Galería
-            </Text>
-          </TouchableOpacity>
-        </MotiView>
-      )}
-    </MotiView>
-  ),
+      </MotiView>
+    );
+  }
 );
-
+ 
 // ── Footer ────────────────────────────────────────────────────────────────────
-
+ 
 const Footer = memo(
   ({
     isSubmitting,
@@ -211,62 +218,66 @@ const Footer = memo(
     isSubmitting: boolean;
     comidaParaEditar?: RES_Comida | null;
     onSave: () => void;
-  }) => (
-    <>
-      <View
-        pointerEvents="none"
-        style={{
-          position: "absolute",
-          bottom: -250,
-          right: 60,
-          width: 300,
-          height: 300,
-        }}
-      >
-        <Image
-          source={require("@/assets/images/onboarding/tiny-cocinando.png")}
-          style={{ width: "100%", height: "100%", opacity: 0.6 }}
-          resizeMode="contain"
-        />
-      </View>
-
-      <MotiView
-        from={{ opacity: 0, translateY: 20 }}
-        animate={{ opacity: 1, translateY: 0 }}
-        transition={{ type: "timing", duration: 500 }}
-        style={{ paddingTop: 12, paddingBottom: 10 }}
-      >
-        <TouchableOpacity
-          onPress={onSave}
-          disabled={isSubmitting}
-          activeOpacity={0.9}
-          className={`py-5 items-center justify-center rounded-[32px] shadow-2xl ${
-            isSubmitting ? "bg-gray-200" : "bg-orange-500 shadow-orange-500/40"
-          }`}
+  }) => {
+    const { isDark } = useAppTheme();
+    return (
+      <>
+        <View
+          pointerEvents="none"
+          style={{
+            position: "absolute",
+            bottom: -250,
+            right: 60,
+            width: 300,
+            height: 300,
+          }}
         >
-          <View className="flex-row items-center">
-            <Text
-              className="text-white text-xl mr-2"
-              style={{ fontFamily: "Outfit_900Black" }}
-            >
-              {isSubmitting
-                ? "Procesando..."
-                : comidaParaEditar
-                  ? "Guardar Cambios"
-                  : "Guardar en Despensa"}
-            </Text>
-            {!isSubmitting && <Plus size={24} color="white" strokeWidth={3} />}
-          </View>
-        </TouchableOpacity>
-      </MotiView>
-    </>
-  ),
+          <Image
+            source={require("@/assets/images/onboarding/tiny-cocinando.png")}
+            style={{ width: "100%", height: "100%", opacity: isDark ? 0.3 : 0.6 }}
+            resizeMode="contain"
+          />
+        </View>
+ 
+        <MotiView
+          from={{ opacity: 0, translateY: 20 }}
+          animate={{ opacity: 1, translateY: 0 }}
+          transition={{ type: "timing", duration: 500 }}
+          style={{ paddingTop: 12, paddingBottom: 10 }}
+        >
+          <TouchableOpacity
+            onPress={onSave}
+            disabled={isSubmitting}
+            activeOpacity={0.9}
+            className={`py-5 items-center justify-center rounded-[32px] shadow-2xl ${
+              isSubmitting ? "bg-gray-800" : "bg-orange-500 shadow-orange-500/40"
+            }`}
+          >
+            <View className="flex-row items-center">
+              <Text
+                className="text-white text-xl mr-2"
+                style={{ fontFamily: "Outfit_900Black" }}
+              >
+                {isSubmitting
+                  ? "Procesando..."
+                  : comidaParaEditar
+                    ? "Guardar Cambios"
+                    : "Guardar en Despensa"}
+              </Text>
+              {!isSubmitting && <Plus size={24} color="white" strokeWidth={3} />}
+            </View>
+          </TouchableOpacity>
+        </MotiView>
+      </>
+    );
+  }
 );
 
 // ── Componente principal ──────────────────────────────────────────────────────
-
+ 
 export const RegistroComida = React.forwardRef<BottomSheetModal, Props>(
   ({ onRegister, onUpdate, comidaParaEditar, onDismiss }, ref) => {
+    const { isDark, iconColor, subIconColor } = useAppTheme();
     const {
       fechaVencimiento,
       setFechaVencimiento,
@@ -294,14 +305,14 @@ export const RegistroComida = React.forwardRef<BottomSheetModal, Props>(
       onUpdate,
       comidaParaEditar,
     });
-
+ 
     const soloLectura = isSubmitting || analizando;
-
+ 
     return (
       <ModalSheet ref={ref} scrollable={false} onDismiss={onDismiss}>
         <View style={{ flex: 1, paddingHorizontal: 8, paddingTop: 0, paddingBottom: 0 }}>
           <Header comidaParaEditar={comidaParaEditar} onDismiss={handleDismiss} />
-
+ 
           <BottomSheetScrollView
             showsVerticalScrollIndicator={false}
             style={{ flex: 1 }}
@@ -323,22 +334,22 @@ export const RegistroComida = React.forwardRef<BottomSheetModal, Props>(
                 onGaleria={handleAnalizarGaleria}
               />
             )}
-
+ 
             {/* ── Nombre ───────────────────────────────────────────────── */}
             <View>
               <Text
-                className="text-[10px] text-gray-400 uppercase tracking-widest mb-1.5 ml-1"
+                className="text-[10px] text-gray-400 dark:text-neutral-500 uppercase tracking-widest mb-1.5 ml-1"
                 style={{ fontFamily: "Outfit_700Bold" }}
               >
                 ¿Qué alimento es?
               </Text>
-              <View className="bg-gray-50 flex-row items-center px-5 rounded-[24px] border border-gray-100">
-                <UtensilsCrossed size={20} color="#9ca3af" strokeWidth={2} />
+              <View className="bg-gray-50 dark:bg-neutral-950 flex-row items-center px-5 rounded-[24px] border border-gray-100 dark:border-neutral-900">
+                <UtensilsCrossed size={20} color={subIconColor} strokeWidth={2} />
                 <TextInput
                   ref={nombreInputRef}
                   autoFocus={!comidaParaEditar}
                   placeholder="Ej. Arándanos frescos"
-                  placeholderTextColor="#9ca3af"
+                  placeholderTextColor={isDark ? "#52525b" : "#9ca3af"}
                   defaultValue={comidaParaEditar?.nombre || ""}
                   onChangeText={handleNombreChange}
                   autoCorrect={false}
@@ -351,7 +362,7 @@ export const RegistroComida = React.forwardRef<BottomSheetModal, Props>(
                   style={{
                     fontFamily: "Outfit_400Regular",
                     fontSize: 16,
-                    color: "#111827",
+                    color: isDark ? "#ffffff" : "#111827",
                     fontWeight: "normal",
                     paddingHorizontal: 20,
                     paddingVertical: 18,
@@ -359,21 +370,21 @@ export const RegistroComida = React.forwardRef<BottomSheetModal, Props>(
                 />
               </View>
             </View>
-
+ 
             {/* ── Cantidad ─────────────────────────────────────────────── */}
             <View>
               <Text
-                className="text-[10px] text-gray-400 uppercase tracking-widest mb-1.5 ml-1"
+                className="text-[10px] text-gray-400 dark:text-neutral-500 uppercase tracking-widest mb-1.5 ml-1"
                 style={{ fontFamily: "Outfit_700Bold" }}
               >
                 Cantidad
               </Text>
-              <View className="bg-gray-50 flex-row items-center px-5 rounded-[24px] border border-gray-100">
-                <Hash size={20} color="#9ca3af" strokeWidth={2} />
+              <View className="bg-gray-50 dark:bg-neutral-950 flex-row items-center px-5 rounded-[24px] border border-gray-100 dark:border-neutral-900">
+                <Hash size={20} color={subIconColor} strokeWidth={2} />
                 <TextInput
                   ref={cantidadInputRef}
                   placeholder="Ej. 500g o 1 pack"
-                  placeholderTextColor="#9ca3af"
+                  placeholderTextColor={isDark ? "#52525b" : "#9ca3af"}
                   defaultValue={comidaParaEditar?.cantidad || ""}
                   onChangeText={handleCantidadChange}
                   autoCorrect={false}
@@ -386,7 +397,7 @@ export const RegistroComida = React.forwardRef<BottomSheetModal, Props>(
                   style={{
                     fontFamily: "Outfit_400Regular",
                     fontSize: 16,
-                    color: "#111827",
+                    color: isDark ? "#ffffff" : "#111827",
                     fontWeight: "normal",
                     paddingHorizontal: 20,
                     paddingVertical: 18,
@@ -394,11 +405,11 @@ export const RegistroComida = React.forwardRef<BottomSheetModal, Props>(
                 />
               </View>
             </View>
-
+ 
             {/* ── Fecha de vencimiento ──────────────────────────────────── */}
             <View>
               <Text
-                className="text-[10px] text-gray-400 uppercase tracking-widest mb-1.5 ml-1"
+                className="text-[10px] text-gray-400 dark:text-neutral-500 uppercase tracking-widest mb-1.5 ml-1"
                 style={{ fontFamily: "Outfit_700Bold" }}
               >
                 Vencimiento Estimado
@@ -407,11 +418,11 @@ export const RegistroComida = React.forwardRef<BottomSheetModal, Props>(
                 onPress={() => setShowDatePicker(true)}
                 activeOpacity={0.7}
                 disabled={soloLectura}
-                className="bg-gray-50 flex-row items-center px-5 py-5 rounded-[24px] border border-gray-100"
+                className="bg-gray-50 dark:bg-neutral-950 flex-row items-center px-5 py-5 rounded-[24px] border border-gray-100 dark:border-neutral-900"
               >
-                <CalendarIcon size={20} color="#9ca3af" strokeWidth={2} />
+                <CalendarIcon size={20} color={subIconColor} strokeWidth={2} />
                 <Text
-                  className={`flex-1 ml-4 text-base ${fechaVencimiento ? "text-gray-900" : "text-gray-400"}`}
+                  className={`flex-1 ml-4 text-base ${fechaVencimiento ? (isDark ? "text-white" : "text-gray-900") : (isDark ? "text-neutral-500" : "text-gray-400")}`}
                   style={{ fontFamily: "Outfit_700Bold" }}
                 >
                   {fechaVencimiento
@@ -420,11 +431,11 @@ export const RegistroComida = React.forwardRef<BottomSheetModal, Props>(
                       })
                     : "Seleccionar fecha"}
                 </Text>
-                <View className="bg-white p-1 rounded-lg border border-gray-100">
-                  <ChevronRight size={16} color="#9ca3af" strokeWidth={2.5} />
+                <View className="bg-white dark:bg-neutral-900 p-1 rounded-lg border border-gray-100 dark:border-neutral-800">
+                  <ChevronRight size={16} color={subIconColor} strokeWidth={2.5} />
                 </View>
               </TouchableOpacity>
-
+ 
               <Modal
                 visible={showDatePicker}
                 transparent={true}
@@ -445,7 +456,7 @@ export const RegistroComida = React.forwardRef<BottomSheetModal, Props>(
                     <ModernCalendar
                       value={
                         fechaVencimiento
-                          ? fechaVencimiento.toISOString().split("T")[0]
+                           ? fechaVencimiento.toISOString().split("T")[0]
                           : ""
                       }
                       onChange={(dateString) => {
@@ -457,23 +468,23 @@ export const RegistroComida = React.forwardRef<BottomSheetModal, Props>(
                 </View>
               </Modal>
             </View>
-
+ 
             {/* ── Descripción ───────────────────────────────────────────── */}
             <View>
               <Text
-                className="text-[10px] text-gray-400 uppercase tracking-widest mb-1.5 ml-1"
+                className="text-[10px] text-gray-400 dark:text-neutral-500 uppercase tracking-widest mb-1.5 ml-1"
                 style={{ fontFamily: "Outfit_700Bold" }}
               >
                 Notas Adicionales
               </Text>
-              <View className="bg-gray-50 flex-row px-5 pt-4 pb-2 rounded-[24px] border border-gray-100 items-start">
+              <View className="bg-gray-50 dark:bg-neutral-950 flex-row px-5 pt-4 pb-2 rounded-[24px] border border-gray-100 dark:border-neutral-900 items-start">
                 <View className="mt-2 mr-3">
-                  <FileText size={20} color="#9ca3af" strokeWidth={2} />
+                  <FileText size={20} color={subIconColor} strokeWidth={2} />
                 </View>
                 <TextInput
                   ref={descripcionInputRef}
                   placeholder="Alguna nota o instrucción especial..."
-                  placeholderTextColor="#9ca3af"
+                  placeholderTextColor={isDark ? "#52525b" : "#9ca3af"}
                   defaultValue={comidaParaEditar?.descripcion || ""}
                   onChangeText={handleDescripcionChange}
                   multiline
@@ -488,7 +499,7 @@ export const RegistroComida = React.forwardRef<BottomSheetModal, Props>(
                   style={{
                     fontFamily: "Outfit_400Regular",
                     fontSize: 16,
-                    color: "#111827",
+                    color: isDark ? "#ffffff" : "#111827",
                     fontWeight: "normal",
                     textAlignVertical: "top",
                     minHeight: 80,
@@ -497,7 +508,7 @@ export const RegistroComida = React.forwardRef<BottomSheetModal, Props>(
               </View>
             </View>
           </BottomSheetScrollView>
-
+ 
           <Footer
             isSubmitting={isSubmitting}
             comidaParaEditar={comidaParaEditar}

@@ -4,6 +4,7 @@ import Animated, { FadeInRight, FadeOutLeft } from "react-native-reanimated";
 import { Ionicons } from "@expo/vector-icons";
 import { ALERGIAS_SUGERIDAS } from "@/common/utils/variables/alergias";
 import { DIETAS_SUGERIDAS } from "@/common/utils/variables/dietas";
+import { useAppTheme } from "@/common/logic/use-app-theme";
 
 interface Props {
   data: any;
@@ -13,6 +14,7 @@ interface Props {
 export const StepFood = ({ data, setData }: Props) => {
   const [customAlergia, setCustomAlergia] = useState("");
   const [customDieta, setCustomDieta] = useState("");
+  const { isDark } = useAppTheme();
 
   // Manejar Alergias / Alimentos Prohibidos
   const toggleAlergia = (item: string) => {
@@ -79,13 +81,13 @@ export const StepFood = ({ data, setData }: Props) => {
       {/* Header: Title */}
       <View className="mb-10">
         <Text
-          className="mb-3 text-4xl text-gray-900 tracking-tighter"
+          className="mb-3 text-4xl text-gray-900 dark:text-white tracking-tighter"
           style={{ fontFamily: "Outfit_900Black" }}
         >
           Alimentos
         </Text>
         <Text
-          className="text-lg text-gray-500 leading-6"
+          className="text-lg text-gray-500 dark:text-neutral-400 leading-6"
           style={{ fontFamily: "Outfit_400Regular" }}
         >
           Cuéntanos qué no puedes comer y qué dieta prefieres seguir para
@@ -96,7 +98,7 @@ export const StepFood = ({ data, setData }: Props) => {
       {/* SECCIÓN 1: ALERGIAS */}
       <View className="mb-10">
         <Text
-          className="mb-4 ml-1 text-xs font-bold uppercase tracking-widest text-gray-400"
+          className="mb-4 ml-1 text-xs font-bold uppercase tracking-widest text-gray-400 dark:text-neutral-500"
           style={{ fontFamily: "Outfit_700Bold" }}
         >
           Alergias / Prohibidos
@@ -114,12 +116,12 @@ export const StepFood = ({ data, setData }: Props) => {
                 className={`rounded-2xl px-5 py-3 border shadow-sm ${
                   isSelected
                     ? "border-orange-500 bg-orange-500 shadow-orange-500/20"
-                    : "border-gray-50 bg-white shadow-black/5"
+                    : "border-gray-50 dark:border-neutral-900 bg-white dark:bg-neutral-950 shadow-black/5"
                 }`}
               >
                 <Text
                   className={`text-sm ${
-                    isSelected ? "text-white" : "text-gray-600"
+                    isSelected ? "text-white" : "text-gray-600 dark:text-neutral-300"
                   }`}
                   style={{
                     fontFamily: isSelected
@@ -135,17 +137,17 @@ export const StepFood = ({ data, setData }: Props) => {
         </View>
 
         {/* Input Libre Alergias */}
-        <View className="flex-row items-center rounded-3xl border border-gray-100 bg-gray-50 px-5 py-2 mb-4 shadow-sm">
+        <View className="flex-row items-center rounded-3xl border border-gray-100 dark:border-neutral-900 bg-gray-50 dark:bg-neutral-950 px-5 py-2 mb-4 shadow-sm">
           <TextInput
             className="flex-1 py-3"
             style={{
               fontFamily: "Outfit_400Regular",
               fontSize: 16,
-              color: "#0f172a",
+              color: isDark ? "#ffffff" : "#0f172a",
               fontWeight: "normal",
             }}
             placeholder="Otro (Ej: Fresas)"
-            placeholderTextColor="#cbd5e1"
+            placeholderTextColor={isDark ? "#525252" : "#cbd5e1"}
             value={customAlergia}
             onChangeText={setCustomAlergia}
             onSubmitEditing={addCustomAlergia}
@@ -163,10 +165,10 @@ export const StepFood = ({ data, setData }: Props) => {
               <TouchableOpacity
                 key={item}
                 onPress={() => toggleAlergia(item)}
-                className="rounded-xl px-4 py-2 bg-orange-100/50 border border-orange-200 flex-row items-center"
+                className="rounded-xl px-4 py-2 bg-orange-100/50 dark:bg-orange-950/20 border border-orange-200 dark:border-orange-900/30 flex-row items-center"
               >
                 <Text
-                  className="text-orange-700 mr-2"
+                  className="text-orange-700 dark:text-orange-400 mr-2"
                   style={{ fontFamily: "Outfit_700Bold" }}
                 >
                   {item}
@@ -180,7 +182,7 @@ export const StepFood = ({ data, setData }: Props) => {
       {/* SECCIÓN 2: DIETAS */}
       <View className="mb-10">
         <Text
-          className="mb-4 ml-1 text-xs font-bold uppercase tracking-widest text-gray-400"
+          className="mb-4 ml-1 text-xs font-bold uppercase tracking-widest text-gray-400 dark:text-neutral-500"
           style={{ fontFamily: "Outfit_700Bold" }}
         >
           Preferencias o Dietas
@@ -198,12 +200,12 @@ export const StepFood = ({ data, setData }: Props) => {
                 className={`rounded-2xl px-5 py-3 border shadow-sm ${
                   isSelected
                     ? "border-emerald-500 bg-emerald-500 shadow-emerald-500/20"
-                    : "border-gray-50 bg-white shadow-black/5"
+                    : "border-gray-50 dark:border-neutral-900 bg-white dark:bg-neutral-950 shadow-black/5"
                 }`}
               >
                 <Text
                   className={`text-sm ${
-                    isSelected ? "text-white" : "text-gray-600"
+                    isSelected ? "text-white" : "text-gray-600 dark:text-neutral-300"
                   }`}
                   style={{
                     fontFamily: isSelected
@@ -219,17 +221,17 @@ export const StepFood = ({ data, setData }: Props) => {
         </View>
 
         {/* Input Libre Dietas */}
-        <View className="flex-row items-center rounded-3xl border border-gray-100 bg-gray-50 px-5 py-2 mb-4 shadow-sm">
+        <View className="flex-row items-center rounded-3xl border border-gray-100 dark:border-neutral-900 bg-gray-50 dark:bg-neutral-950 px-5 py-2 mb-4 shadow-sm">
           <TextInput
             className="flex-1 py-3"
             style={{
               fontFamily: "Outfit_400Regular",
               fontSize: 16,
-              color: "#0f172a",
+              color: isDark ? "#ffffff" : "#0f172a",
               fontWeight: "normal",
             }}
             placeholder="Otra (Ej: Dieta Mediterránea)"
-            placeholderTextColor="#cbd5e1"
+            placeholderTextColor={isDark ? "#525252" : "#cbd5e1"}
             value={customDieta}
             onChangeText={setCustomDieta}
             onSubmitEditing={addCustomDieta}
@@ -247,10 +249,10 @@ export const StepFood = ({ data, setData }: Props) => {
               <TouchableOpacity
                 key={item}
                 onPress={() => toggleDieta(item)}
-                className="rounded-xl px-4 py-2 bg-emerald-100/50 border border-emerald-200 flex-row items-center"
+                className="rounded-xl px-4 py-2 bg-emerald-100/50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-900/30 flex-row items-center"
               >
                 <Text
-                  className="text-emerald-700 mr-2"
+                  className="text-emerald-700 dark:text-emerald-400 mr-2"
                   style={{ fontFamily: "Outfit_700Bold" }}
                 >
                   {item}

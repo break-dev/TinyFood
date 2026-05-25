@@ -6,6 +6,7 @@ import {
   BottomSheetScrollView,
   BottomSheetBackdrop,
 } from "@gorhom/bottom-sheet";
+import { useAppTheme } from "../../logic/use-app-theme";
 
 interface ModalSheetProps {
   children: React.ReactNode;
@@ -27,6 +28,7 @@ export const ModalSheet = forwardRef<BottomSheetModal, ModalSheetProps>(
     ref,
   ) => {
     const bottomSheetRef = useRef<BottomSheetModal>(null);
+    const { isDark } = useAppTheme();
 
     // Exponer ref personalizado con dismiss/close demorado para sincronizar con el teclado
     useImperativeHandle(ref, () => ({
@@ -105,11 +107,14 @@ export const ModalSheet = forwardRef<BottomSheetModal, ModalSheetProps>(
         enableBlurKeyboardOnGesture={true}
         backdropComponent={renderBackdrop}
         handleIndicatorStyle={{
-          backgroundColor: "#D1D5DB",
+          backgroundColor: isDark ? "#4f4f52" : "#D1D5DB",
           width: 48,
           height: 5,
         }}
-        backgroundStyle={{ borderRadius: 40 }}
+        backgroundStyle={{
+          borderRadius: 40,
+          backgroundColor: isDark ? "#171717" : "#ffffff",
+        }}
         onDismiss={onDismiss}
       >
         <BottomSheetView style={{ flex: 1 }}>

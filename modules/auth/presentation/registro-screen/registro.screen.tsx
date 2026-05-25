@@ -16,6 +16,7 @@ import { StepFood } from "./components/step-food";
 import { StepMedical } from "./components/step-medical";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useLogout } from "@/common/logic/use-logout";
+import { useAppTheme } from "@/common/logic/use-app-theme";
 
 export const RegistroScreen = () => {
   const { handleLogout: cancelFn, isLoading: isLoggingOut } = useLogout();
@@ -31,21 +32,22 @@ export const RegistroScreen = () => {
   } = useRegistrar();
 
   const insets = useSafeAreaInsets();
+  const { isDark } = useAppTheme();
 
   return (
-    <View className="flex-1 bg-white">
+    <View className={`flex-1 ${isDark ? "bg-neutral-950" : "bg-white"}`}>
       {/* Círculos decorativos */}
       <View
-        style={{ backgroundColor: "#C8E6C9" }}
-        className="absolute -right-16 top-32 h-72 w-72 rounded-full opacity-50"
+        style={{ backgroundColor: isDark ? "#064e3b" : "#C8E6C9" }}
+        className="absolute -right-16 top-32 h-72 w-72 rounded-full opacity-30"
       />
       <View
-        style={{ backgroundColor: "#E8F5E9" }}
-        className="absolute -left-10 bottom-20 h-36 w-36 rounded-full opacity-70"
+        style={{ backgroundColor: isDark ? "#022c22" : "#E8F5E9" }}
+        className="absolute -left-10 bottom-20 h-36 w-36 rounded-full opacity-40"
       />
       <View
-        style={{ backgroundColor: "#C8E6C9" }}
-        className="absolute right-10 bottom-1/3 h-20 w-20 rounded-full opacity-40"
+        style={{ backgroundColor: isDark ? "#064e3b" : "#C8E6C9" }}
+        className="absolute right-10 bottom-1/3 h-20 w-20 rounded-full opacity-20"
       />
 
       <KeyboardAvoidingView
@@ -63,7 +65,7 @@ export const RegistroScreen = () => {
                 onPress={prevStep}
                 className="h-10 w-10 items-center justify-center"
               >
-                <Ionicons name="chevron-back" size={24} color="#374151" />
+                <Ionicons name="chevron-back" size={24} color={isDark ? "#ffffff" : "#374151"} />
               </TouchableOpacity>
             ) : (
               <TouchableOpacity
@@ -76,7 +78,7 @@ export const RegistroScreen = () => {
                   <ActivityIndicator size="small" color="#9ca3af" />
                 ) : (
                   <Text
-                    className="text-gray-500 text-sm"
+                    className="text-gray-500 dark:text-neutral-400 text-sm"
                     style={{ fontFamily: "Outfit_700Bold" }}
                   >
                     Cancelar
@@ -90,7 +92,7 @@ export const RegistroScreen = () => {
                 <View
                   key={s}
                   className={`h-2 w-10 rounded-full ${
-                    s <= step ? "bg-orange-500" : "bg-gray-100"
+                    s <= step ? "bg-orange-500" : (isDark ? "bg-neutral-800" : "bg-gray-100")
                   }`}
                 />
               ))}
@@ -106,7 +108,7 @@ export const RegistroScreen = () => {
                 <ActivityIndicator size="small" color="#f97316" />
               ) : (
                 <Text
-                  className="text-orange-500 text-sm"
+                  className="text-orange-500 dark:text-orange-400 text-sm"
                   style={{ fontFamily: "Outfit_700Bold" }}
                 >
                   Omitir
@@ -135,7 +137,7 @@ export const RegistroScreen = () => {
               onPress={nextStep}
               disabled={loading}
               activeOpacity={0.9}
-              className="flex-row items-center justify-center rounded-[32px] bg-gray-900 py-6 shadow-2xl shadow-black/20"
+              className="flex-row items-center justify-center rounded-[32px] bg-gray-900 dark:bg-orange-500 py-6 shadow-2xl shadow-black/20 dark:shadow-orange-500/10"
             >
               {loading ? (
                 <ActivityIndicator color="white" />

@@ -5,6 +5,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { MotiView } from "moti";
 import { Genero } from "@/common/utils/enums/genero";
 import { ModernCalendar } from "@/common/presentation/components/modern-calendar";
+import { useAppTheme } from "@/common/logic/use-app-theme";
 
 interface Props {
   data: any;
@@ -13,6 +14,7 @@ interface Props {
 
 export const SheetFisica = ({ data, setData }: Props) => {
   const [mostrarPicker, setMostrarPicker] = useState(false);
+  const { isDark } = useAppTheme();
 
   return (
     <View className="gap-6">
@@ -21,13 +23,13 @@ export const SheetFisica = ({ data, setData }: Props) => {
         animate={{ opacity: 1, translateY: 0 }}
       >
         <Text
-          className="text-3xl text-gray-900 tracking-tighter mb-1"
+          className="text-3xl text-gray-900 dark:text-white tracking-tighter mb-1"
           style={{ fontFamily: "Outfit_900Black" }}
         >
           Tus Datos
         </Text>
         <Text
-          className="text-gray-400 text-sm mb-6"
+          className="text-gray-400 dark:text-neutral-400 text-sm mb-6"
           style={{ fontFamily: "Outfit_400Regular" }}
         >
           Ajusta tu información para mejores cálculos nutricionales
@@ -40,23 +42,23 @@ export const SheetFisica = ({ data, setData }: Props) => {
         transition={{ delay: 50 }}
       >
         <Text
-          className="text-xs text-gray-400 uppercase tracking-widest mb-3 ml-1"
+          className="text-xs text-gray-400 dark:text-neutral-500 uppercase tracking-widest mb-3 ml-1"
           style={{ fontFamily: "Outfit_900Black" }}
         >
           ¿Cómo te llamas?
         </Text>
-        <View className="flex-row items-center rounded-[24px] bg-gray-50 px-5 border border-gray-100">
-          <User size={20} color="#9ca3af" strokeWidth={2} />
+        <View className="flex-row items-center rounded-[24px] bg-gray-50 dark:bg-neutral-950 px-5 border border-gray-100 dark:border-neutral-900">
+          <User size={20} color={isDark ? "#737373" : "#9ca3af"} strokeWidth={2} />
           <TextInput
             className="ml-4 flex-1 py-5"
             style={{
               fontFamily: "Outfit_400Regular",
               fontSize: 17,
-              color: "#111827",
+              color: isDark ? "#ffffff" : "#111827",
               fontWeight: "normal",
             }}
             placeholder="Tu nombre completo"
-            placeholderTextColor="#9ca3af"
+            placeholderTextColor={isDark ? "#525252" : "#9ca3af"}
             defaultValue={data.nombre}
             onChangeText={(t) => {
               data.nombre = t;
@@ -71,24 +73,24 @@ export const SheetFisica = ({ data, setData }: Props) => {
         transition={{ delay: 100 }}
       >
         <Text
-          className="text-xs text-gray-400 uppercase tracking-widest mb-3 ml-1"
+          className="text-xs text-gray-400 dark:text-neutral-500 uppercase tracking-widest mb-3 ml-1"
           style={{ fontFamily: "Outfit_900Black" }}
         >
           Peso Actual (kg)
         </Text>
-        <View className="flex-row items-center rounded-[24px] bg-gray-50 px-5 border border-gray-100">
-          <Dumbbell size={20} color="#9ca3af" strokeWidth={2} />
+        <View className="flex-row items-center rounded-[24px] bg-gray-50 dark:bg-neutral-950 px-5 border border-gray-100 dark:border-neutral-900">
+          <Dumbbell size={20} color={isDark ? "#737373" : "#9ca3af"} strokeWidth={2} />
           <TextInput
             className="ml-4 flex-1 py-5"
             style={{
               fontFamily: "Outfit_400Regular",
               fontSize: 17,
-              color: "#111827",
+              color: isDark ? "#ffffff" : "#111827",
               fontWeight: "normal",
             }}
             keyboardType="numeric"
             placeholder="Ej: 70"
-            placeholderTextColor="#9ca3af"
+            placeholderTextColor={isDark ? "#525252" : "#9ca3af"}
             defaultValue={data.peso}
             onChangeText={(t) => {
               data.peso = t;
@@ -103,24 +105,24 @@ export const SheetFisica = ({ data, setData }: Props) => {
         transition={{ delay: 200 }}
       >
         <Text
-          className="text-xs text-gray-400 uppercase tracking-widest mb-3 ml-1"
+          className="text-xs text-gray-400 dark:text-neutral-500 uppercase tracking-widest mb-3 ml-1"
           style={{ fontFamily: "Outfit_900Black" }}
         >
           Talla Actual (cm)
         </Text>
-        <View className="flex-row items-center rounded-[24px] bg-gray-50 px-5 border border-gray-100">
-          <Maximize size={20} color="#9ca3af" strokeWidth={2} />
+        <View className="flex-row items-center rounded-[24px] bg-gray-50 dark:bg-neutral-950 px-5 border border-gray-100 dark:border-neutral-900">
+          <Maximize size={20} color={isDark ? "#737373" : "#9ca3af"} strokeWidth={2} />
           <TextInput
             className="ml-4 flex-1 py-5"
             style={{
               fontFamily: "Outfit_400Regular",
               fontSize: 17,
-              color: "#111827",
+              color: isDark ? "#ffffff" : "#111827",
               fontWeight: "normal",
             }}
             keyboardType="numeric"
             placeholder="Ej: 175"
-            placeholderTextColor="#9ca3af"
+            placeholderTextColor={isDark ? "#525252" : "#9ca3af"}
             defaultValue={data.talla}
             onChangeText={(t) => {
               data.talla = t;
@@ -136,23 +138,23 @@ export const SheetFisica = ({ data, setData }: Props) => {
         transition={{ delay: 220 }}
       >
         <Text
-          className="text-xs text-gray-400 uppercase tracking-widest mb-3 ml-1"
+          className="text-xs text-gray-400 dark:text-neutral-500 uppercase tracking-widest mb-3 ml-1"
           style={{ fontFamily: "Outfit_900Black" }}
         >
           Fecha de Nacimiento
         </Text>
         <TouchableOpacity
           onPress={() => setMostrarPicker(true)}
-          className="flex-row items-center rounded-[24px] bg-gray-50 px-5 py-5 border border-gray-100"
+          className="flex-row items-center rounded-[24px] bg-gray-50 dark:bg-neutral-950 px-5 py-5 border border-gray-100 dark:border-neutral-900"
         >
-          <Ionicons name="calendar-outline" size={20} color="#9ca3af" />
+          <Ionicons name="calendar-outline" size={20} color={isDark ? "#737373" : "#9ca3af"} />
           <Text
-            className="ml-4 flex-1 text-[17px] text-gray-900"
+            className="ml-4 flex-1 text-[17px] text-gray-900 dark:text-neutral-100"
             style={{ fontFamily: "Outfit_400Regular" }}
           >
             {data.fecha_nacimiento || "Seleccionar fecha"}
           </Text>
-          <Ionicons name="chevron-forward" size={18} color="#9ca3af" />
+          <Ionicons name="chevron-forward" size={18} color={isDark ? "#737373" : "#9ca3af"} />
         </TouchableOpacity>
       </MotiView>
 
@@ -163,7 +165,7 @@ export const SheetFisica = ({ data, setData }: Props) => {
         transition={{ delay: 250 }}
       >
         <Text
-          className="text-xs text-gray-400 uppercase tracking-widest mb-3 ml-1"
+          className="text-xs text-gray-400 dark:text-neutral-500 uppercase tracking-widest mb-3 ml-1"
           style={{ fontFamily: "Outfit_900Black" }}
         >
           Género
@@ -179,12 +181,12 @@ export const SheetFisica = ({ data, setData }: Props) => {
                 className={`flex-1 py-4 rounded-[20px] items-center justify-center border ${
                   isSelected
                     ? "bg-orange-500 border-orange-500"
-                    : "bg-gray-50 border-gray-100"
+                    : "bg-gray-50 dark:bg-neutral-950 border-gray-100 dark:border-neutral-900"
                 }`}
               >
                 <Text
                   className={`capitalize text-sm ${
-                    isSelected ? "text-white" : "text-gray-500"
+                    isSelected ? "text-white" : "text-gray-500 dark:text-neutral-400"
                   }`}
                   style={{
                     fontFamily: isSelected
