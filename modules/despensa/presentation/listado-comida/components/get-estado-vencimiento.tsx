@@ -13,6 +13,7 @@ export interface IEstadoVencimientoUI {
 
 export const getEstadoVencimiento = (
   fechaVencimiento?: string,
+  diasAviso: number = 3,
 ): IEstadoVencimientoUI => {
   if (!fechaVencimiento)
     return { color: "bg-blue-500", label: "Sin fecha", Icon: HelpCircle };
@@ -23,7 +24,7 @@ export const getEstadoVencimiento = (
 
   if (diffDays < 0)
     return { color: "bg-red-500", label: "Vencido", Icon: AlertTriangle };
-  if (diffDays <= 3)
+  if (diffDays <= diasAviso)
     return {
       color: "bg-orange-500",
       label: `Vence en ${diffDays}d`,

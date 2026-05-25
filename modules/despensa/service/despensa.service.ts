@@ -34,8 +34,8 @@ export class DespensaService {
   ): Promise<ApiResponse<RES_AnalizarImagen>> {
     return SocketService.emit("despensa:analizar_imagen", data);
   }
-  static async tipDiario(): Promise<ApiResponse<RES_TipDiario>> {
-    return SocketService.emit("despensa:tip_diario", {});
+  static async tipDiario(diasCaducidad?: number): Promise<ApiResponse<RES_TipDiario>> {
+    return SocketService.emit("despensa:tip_diario", { dias_caducidad: diasCaducidad });
   }
 
   static async recomendarRecetas(

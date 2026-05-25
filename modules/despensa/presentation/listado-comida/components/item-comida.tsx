@@ -4,6 +4,7 @@ import { Trash2, Calendar } from "lucide-react-native";
 import { MotiView } from "moti";
 import { RES_Comida } from "../../../service/despensa.responses";
 import { getEstadoVencimiento } from "./get-estado-vencimiento";
+import { useConfigStore } from "@/modules/configuracion/store/config.store";
 
 interface Props {
   item: RES_Comida;
@@ -13,7 +14,8 @@ interface Props {
 }
 
 export const ItemComida = ({ item, index, onDelete, onEdit }: Props) => {
-  const estado_vencimiento = getEstadoVencimiento(item.fecha_vencimiento);
+  const avisoDias = useConfigStore((state) => state.avisoDiasCaducidad);
+  const estado_vencimiento = getEstadoVencimiento(item.fecha_vencimiento, avisoDias);
   return (
     <TouchableOpacity activeOpacity={0.7} onPress={() => onEdit(item)}>
       <MotiView

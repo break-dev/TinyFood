@@ -48,11 +48,15 @@ export const ModernCalendar = ({ value, onChange }: Props) => {
   };
 
   return (
-    <View className="bg-white dark:bg-neutral-900 rounded-[40px] border border-gray-100 dark:border-neutral-800 shadow-2xl overflow-hidden">
+    <View
+      style={{ backgroundColor: isDark ? "#171717" : "#ffffff" }}
+      className="rounded-[40px] border border-gray-100 dark:border-neutral-800 shadow-2xl overflow-hidden"
+    >
       <View className="p-4 border-b border-gray-50 dark:border-neutral-800 flex-row gap-2">
         <TouchableOpacity
           onPress={toggleMonthPicker}
-          className="flex-row items-center bg-gray-50 dark:bg-neutral-850 px-4 py-2 rounded-2xl border border-gray-100 dark:border-neutral-800"
+          style={{ backgroundColor: isDark ? "#262626" : "#f9fafb" }}
+          className="flex-row items-center px-4 py-2 rounded-2xl border border-gray-100 dark:border-neutral-800"
         >
           <Text
             className="text-gray-900 dark:text-neutral-100 mr-2"
@@ -66,10 +70,11 @@ export const ModernCalendar = ({ value, onChange }: Props) => {
             <ChevronDown size={16} color="#9ca3af" />
           )}
         </TouchableOpacity>
- 
+
         <TouchableOpacity
           onPress={toggleYearPicker}
-          className="flex-row items-center bg-gray-50 dark:bg-neutral-850 px-4 py-2 rounded-2xl border border-gray-100 dark:border-neutral-800"
+          style={{ backgroundColor: isDark ? "#262626" : "#f9fafb" }}
+          className="flex-row items-center px-4 py-2 rounded-2xl border border-gray-100 dark:border-neutral-800"
         >
           <Text
             className="text-gray-900 dark:text-neutral-100 mr-2"
@@ -83,15 +88,15 @@ export const ModernCalendar = ({ value, onChange }: Props) => {
             <ChevronDown size={16} color="#9ca3af" />
           )}
         </TouchableOpacity>
- 
+
         <AnimatePresence>
           {(showYearPicker || showMonthPicker) && (
             <MotiView
               from={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="absolute top-[80px] left-4 right-4 bg-white dark:bg-neutral-900 z-50 rounded-[32px] shadow-xl border border-gray-100 dark:border-neutral-800 p-2"
-              style={{ height: 280 }}
+              className="absolute top-[80px] left-4 right-4 z-50 rounded-[32px] shadow-xl border border-gray-100 dark:border-neutral-800 p-2"
+              style={{ height: 280, backgroundColor: isDark ? "#171717" : "#ffffff" }}
             >
               <ScrollView
                 showsVerticalScrollIndicator={false}
@@ -105,9 +110,15 @@ export const ModernCalendar = ({ value, onChange }: Props) => {
                           setViewingYear(y);
                           setShowYearPicker(false);
                         }}
-                        className={`mx-2 py-4 mb-2 items-center justify-center rounded-2xl ${
-                          viewingYear === y ? "bg-orange-500" : "bg-gray-50 dark:bg-neutral-800"
-                        }`}
+                        style={{
+                          backgroundColor:
+                            viewingYear === y
+                              ? "#f97316"
+                              : isDark
+                              ? "#262626"
+                              : "#f9fafb",
+                        }}
+                        className="mx-2 py-4 mb-2 items-center justify-center rounded-2xl"
                       >
                         <Text
                           className={
@@ -132,11 +143,15 @@ export const ModernCalendar = ({ value, onChange }: Props) => {
                           setViewingMonth(idx + 1);
                           setShowMonthPicker(false);
                         }}
-                        className={`mx-2 py-4 mb-2 items-center justify-center rounded-2xl ${
-                          viewingMonth === idx + 1
-                            ? "bg-orange-500"
-                            : "bg-gray-50 dark:bg-neutral-800"
-                        }`}
+                        style={{
+                          backgroundColor:
+                            viewingMonth === idx + 1
+                              ? "#f97316"
+                              : isDark
+                              ? "#262626"
+                              : "#f9fafb",
+                        }}
+                        className="mx-2 py-4 mb-2 items-center justify-center rounded-2xl"
                       >
                         <Text
                           className={

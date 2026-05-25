@@ -63,7 +63,7 @@ const getColoresUrgencia = (urgencia: "alta" | "media" | "baja", isDark: boolean
 // ── Componente ────────────────────────────────────────────────────────────────
  
 export const TipDiario = ({ trigger }: { trigger?: number })=> {
-  const { tip, cargando } = useTipDiario();
+  const { tip, cargando } = useTipDiario(trigger);
   const { isDark } = useAppTheme();
   const sheetRef = useRef<BottomSheetModal>(null);
  
