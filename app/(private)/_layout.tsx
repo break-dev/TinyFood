@@ -116,21 +116,13 @@ function CustomTabBar({ state, descriptors, navigation }: any) {
             activeOpacity={0.7}
             className="flex-1 items-center justify-center h-full relative"
           >
-            {/* Top Indicator Line */}
             <MotiView
-              animate={{
-                scaleX: isFocused ? 1 : 0,
-                opacity: isFocused ? 1 : 0,
-              }}
+              animate={{ scaleX: isFocused ? 1 : 0, opacity: isFocused ? 1 : 0 }}
               transition={{ type: "timing", duration: 250 }}
               className="w-8 h-1 bg-orange-500 rounded-full absolute top-0"
             />
-
             <MotiView
-              animate={{
-                scale: isFocused ? 1.05 : 1,
-                translateY: isFocused ? -2 : 0,
-              }}
+              animate={{ scale: isFocused ? 1.05 : 1, translateY: isFocused ? -2 : 0 }}
               transition={{ type: "timing", duration: 200 }}
               className="items-center"
             >
@@ -160,7 +152,6 @@ function CustomTabBar({ state, descriptors, navigation }: any) {
 
 export default function PrivateLayout() {
   const { usuario, isInitialized } = useAuthState();
-  const insets = useSafeAreaInsets();
 
   if (!isInitialized) return null;
 
@@ -181,6 +172,7 @@ export default function PrivateLayout() {
       <Tabs.Screen name="despensa" />
       <Tabs.Screen name="perfil" />
       <Tabs.Screen name="about" options={{ href: null }} />
+      <Tabs.Screen name="recetas" options={{ href: null }} />
     </Tabs>
   );
 }

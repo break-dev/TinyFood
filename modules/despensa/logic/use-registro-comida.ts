@@ -10,6 +10,7 @@ import {
   REQ_RegistrarComida,
 } from "../service/despensa.requests";
 import { RES_Comida } from "../service/despensa.responses";
+import { useAnalizarImagen } from "./use-analizar-imagen";
 
 interface Params {
   ref: RefObject<BottomSheetModal>;
@@ -28,52 +29,96 @@ export function useRegistroComida({
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Refs nativos para evitar el bug de duplicación de caracteres en Android (uncontrolled inputs)
+  const [mostrarOpcionesFoto, setMostrarOpcionesFoto] = useState(false);
+  const [imagenAnalizada, setImagenAnalizada] = useState<{
+    categoria: string;
+    confianza: "alta" | "media" | "baja";
+    dias_duracion_estimados: number;
+  } | null>(null);
+
+  const { analizando, abrirCamara, abrirGaleria } = useAnalizarImagen();
+
   const nombreInputRef = useRef<TextInput>(null);
   const cantidadInputRef = useRef<TextInput>(null);
   const descripcionInputRef = useRef<TextInput>(null);
 
-  // Valores de texto mutables para evitar re-renders en cada pulsación de tecla
   const nombreRef = useRef("");
   const cantidadRef = useRef("");
   const descripcionRef = useRef("");
+  const tagsRef = useRef(""); //ref para guardar tags de la IA
 
-  // Sincroniza el formulario al abrir en modo edición o limpiar al cerrar
   useEffect(() => {
     if (comidaParaEditar) {
       nombreRef.current = comidaParaEditar.nombre;
       cantidadRef.current = comidaParaEditar.cantidad;
       descripcionRef.current = comidaParaEditar.descripcion || "";
+      tagsRef.current = comidaParaEditar.tags || ""; // ← sincronizar tags en edición
       setFechaVencimiento(
         comidaParaEditar.fecha_vencimiento
           ? new Date(comidaParaEditar.fecha_vencimiento)
           : null,
       );
-
-      // Sincronizar texto en los inputs nativos de forma directa
       nombreInputRef.current?.setNativeProps({ text: comidaParaEditar.nombre });
-      cantidadInputRef.current?.setNativeProps({
-        text: comidaParaEditar.cantidad,
-      });
+      cantidadInputRef.current?.setNativeProps({ text: comidaParaEditar.cantidad });
       descripcionInputRef.current?.setNativeProps({
         text: comidaParaEditar.descripcion || "",
       });
     } else {
-      // Modo creación o cierre: limpiar
-      nombreRef.current = "";
-      cantidadRef.current = "";
-      descripcionRef.current = "";
-      setFechaVencimiento(null);
-
-      // Limpiar inputs nativos
-      nombreInputRef.current?.clear();
-      nombreInputRef.current?.setNativeProps({ text: "" });
-      cantidadInputRef.current?.clear();
-      cantidadInputRef.current?.setNativeProps({ text: "" });
-      descripcionInputRef.current?.clear();
-      descripcionInputRef.current?.setNativeProps({ text: "" });
+      limpiarFormulario();
     }
   }, [comidaParaEditar]);
+
+  const limpiarFormulario = useCallback(() => {
+    nombreRef.current = "";
+    cantidadRef.current = "";
+    descripcionRef.current = "";
+    tagsRef.current = ""; // ← limpiar tags
+    setFechaVencimiento(null);
+    setImagenAnalizada(null);
+    setMostrarOpcionesFoto(false);
+    nombreInputRef.current?.clear();
+    nombreInputRef.current?.setNativeProps({ text: "" });
+    cantidadInputRef.current?.clear();
+    cantidadInputRef.current?.setNativeProps({ text: "" });
+    descripcionInputRef.current?.clear();
+    descripcionInputRef.current?.setNativeProps({ text: "" });
+  }, []);
+
+  //rellenar desde resultado de IA
+  const rellenarDesdeIA = useCallback((resultado: any) => {
+    nombreRef.current = resultado.nombre;
+    cantidadRef.current = resultado.cantidad;
+    descripcionRef.current = resultado.descripcion || "";
+    tagsRef.current = resultado.tags || ""; // ← guardar tags
+
+    nombreInputRef.current?.setNativeProps({ text: resultado.nombre });
+    cantidadInputRef.current?.setNativeProps({ text: resultado.cantidad });
+    descripcionInputRef.current?.setNativeProps({
+      text: resultado.descripcion || "",
+    });
+
+    if (resultado.fecha_vencimiento) {
+      setFechaVencimiento(new Date(resultado.fecha_vencimiento));
+    }
+
+    setImagenAnalizada({
+      categoria: resultado.categoria,
+      confianza: resultado.confianza,
+      dias_duracion_estimados: resultado.dias_duracion_estimados,
+    });
+  }, []);
+
+  const handleAnalizarCamara = useCallback(async () => {
+    setMostrarOpcionesFoto(false);
+    const resultado = await abrirCamara();
+    if (resultado) rellenarDesdeIA(resultado);
+  }, [abrirCamara, rellenarDesdeIA]);
+
+  const handleAnalizarGaleria = useCallback(async () => {
+    setMostrarOpcionesFoto(false);
+    const resultado = await abrirGaleria();
+    if (resultado) rellenarDesdeIA(resultado);
+  }, [abrirGaleria, rellenarDesdeIA]);
 
   const handleDismiss = useCallback(() => {
     ref.current?.dismiss();
@@ -83,6 +128,7 @@ export function useRegistroComida({
     const nombreVal = nombreRef.current.trim();
     const cantidadVal = cantidadRef.current.trim();
     const descripcionVal = descripcionRef.current.trim();
+    const tagsVal = tagsRef.current.trim(); // ← leer tags
 
     if (!nombreVal || !cantidadVal) {
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
@@ -105,6 +151,7 @@ export function useRegistroComida({
           cantidad: cantidadVal,
           descripcion: descripcionVal || undefined,
           fecha_vencimiento: fechaVencimiento?.toISOString(),
+          tags: tagsVal || undefined, // ← incluir tags en actualización
         });
         if (success) {
           Toast.show({
@@ -120,6 +167,7 @@ export function useRegistroComida({
           descripcion: descripcionVal || undefined,
           fecha_vencimiento: fechaVencimiento?.toISOString(),
           estado: EstadoComida.PorConsumir,
+          tags: tagsVal || undefined, // ← incluir tags en registro
         });
         if (success) {
           Toast.show({
@@ -131,19 +179,7 @@ export function useRegistroComida({
       }
 
       if (success) {
-        nombreRef.current = "";
-        cantidadRef.current = "";
-        descripcionRef.current = "";
-        setFechaVencimiento(null);
-
-        // Limpiar inputs nativos también al guardar con éxito
-        nombreInputRef.current?.clear();
-        nombreInputRef.current?.setNativeProps({ text: "" });
-        cantidadInputRef.current?.clear();
-        cantidadInputRef.current?.setNativeProps({ text: "" });
-        descripcionInputRef.current?.clear();
-        descripcionInputRef.current?.setNativeProps({ text: "" });
-
+        limpiarFormulario();
         handleDismiss();
       }
     } catch (error) {
@@ -151,7 +187,7 @@ export function useRegistroComida({
     } finally {
       setIsSubmitting(false);
     }
-  }, [onRegister, onUpdate, handleDismiss, comidaParaEditar, fechaVencimiento]);
+  }, [onRegister, onUpdate, handleDismiss, comidaParaEditar, fechaVencimiento, limpiarFormulario]);
 
   const handleNombreChange = useCallback((text: string) => {
     nombreRef.current = text;
@@ -173,13 +209,17 @@ export function useRegistroComida({
     isSubmitting,
     handleDismiss,
     handleSave,
-    // Refs expuestos para los inputs nativos
     nombreInputRef,
     cantidadInputRef,
     descripcionInputRef,
-    // Controladores de cambio de texto
     handleNombreChange,
     handleCantidadChange,
     handleDescripcionChange,
+    analizando,
+    mostrarOpcionesFoto,
+    setMostrarOpcionesFoto,
+    imagenAnalizada,
+    handleAnalizarCamara,
+    handleAnalizarGaleria,
   };
 }
