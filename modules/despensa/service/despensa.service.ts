@@ -1,7 +1,7 @@
 import { SocketService } from "@/common/service/socket.service";
 import { ApiResponse } from "@/common/service/common.responses";
 import { EstadoComida } from "@/common/utils/enums/estado-comida.enum";
-import { RES_Comida } from "./despensa.responses";
+import { RES_Comida, RES_TipDiario, RES_Recetas } from "./despensa.responses";
 import {
   REQ_ActualizarComida,
   REQ_RegistrarComida,
@@ -33,5 +33,14 @@ export class DespensaService {
     data: REQ_AnalizarImagen,
   ): Promise<ApiResponse<RES_AnalizarImagen>> {
     return SocketService.emit("despensa:analizar_imagen", data);
+  }
+  static async tipDiario(): Promise<ApiResponse<RES_TipDiario>> {
+    return SocketService.emit("despensa:tip_diario", {});
+  }
+
+  static async recomendarRecetas(
+    cantidad: number = 3,
+  ): Promise<ApiResponse<RES_Recetas>> {
+    return SocketService.emit("despensa:recomendar_recetas", { cantidad });
   }
 }

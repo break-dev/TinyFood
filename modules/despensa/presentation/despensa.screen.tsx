@@ -1,4 +1,4 @@
-import React, { useRef, useCallback, useMemo } from "react";
+import React, { useRef, useState } from "react";
 import {
   View,
   Text,
@@ -15,18 +15,21 @@ import {
   RefreshCcw,
   Plus,
   AlertCircle,
+  ChefHat,
 } from "lucide-react-native";
 import { MotiView } from "moti";
 import { useDespensa } from "../logic/_use-despensa";
 import { ListadoComida } from "./listado-comida/listado-comida";
 import { RegistroComida } from "./registro-comida/registro-comida";
+import { TipDiario } from "./components/tip-diario";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { RES_Comida } from "../service/despensa.responses";
 import { ModalEstandar } from "@/common/presentation/components/modal-estandar";
+import { router } from "expo-router";
 
 export const DespensaScreen = () => {
   const insets = useSafeAreaInsets();
-  const { isLoading: isLoggingOut, handleLogout: logoutFn } = useLogout();
+  const { handleLogout: logoutFn } = useLogout();
   const { usuario } = useAuthState();
   const {
     comidas,
@@ -45,9 +48,8 @@ export const DespensaScreen = () => {
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
   const [showLogoutModal, setShowLogoutModal] = React.useState(false);
 
-  const handleLogout = () => {
-    setShowLogoutModal(true);
-  };
+  // Trigger para recargar el tip después de cambios en la despensa
+  const [tipTrigger, setTipTrigger] = useState(Date.now());
 
   const openModal = () => {
     setComidaParaEditar(null);
@@ -59,6 +61,19 @@ export const DespensaScreen = () => {
     bottomSheetModalRef.current?.present();
   };
 
+  // Elimina y recarga el tip con el contexto actualizado
+  const handleEliminar = async (id: number) => {
+    await eliminarComida(id);
+    setTipTrigger(Date.now());
+  };
+
+  // Registra y recarga el tip (puede haber nuevos alimentos próximos a vencer)
+  const handleRegistrar = async (data: any) => {
+    const success = await registrarComida(data);
+    if (success) setTipTrigger(Date.now());
+    return success;
+  };
+
   return (
     <View
       style={{ flex: 1, backgroundColor: "#f9fafb", paddingTop: insets.top }}
@@ -66,36 +81,41 @@ export const DespensaScreen = () => {
       <StatusBar barStyle="dark-content" />
 
       {/* Header */}
-      <View className="flex-row items-center justify-between px-6 py-6">
-        <View>
-          <Text
-            className="text-gray-400 font-medium"
-            style={{ fontFamily: "Outfit_400Regular" }}
+      <View className="px-6 py-6">
+        <View className="flex-row items-center justify-between mb-4">
+          <View>
+            <Text
+              className="text-gray-400 font-medium"
+              style={{ fontFamily: "Outfit_400Regular" }}
+            >
+              Hola de nuevo,
+            </Text>
+            <Text
+              className="text-3xl text-gray-900"
+              style={{ fontFamily: "Outfit_900Black" }}
+            >
+              {usuario?.nombre?.split(" ")[0] || "Explorador"}
+            </Text>
+          </View>
+          <TouchableOpacity
+            onPress={() => setShowLogoutModal(true)}
+            className="h-12 w-12 items-center justify-center rounded-2xl bg-white shadow-sm border border-gray-100"
           >
-            Hola de nuevo,
-          </Text>
-          <Text
-            className="text-3xl text-gray-900"
-            style={{ fontFamily: "Outfit_900Black" }}
-          >
-            {usuario?.nombre?.split(" ")[0] || "Explorador"}
-          </Text>
+            <LogOut size={22} color="#ef4444" strokeWidth={2.5} />
+          </TouchableOpacity>
         </View>
-        <TouchableOpacity
-          onPress={handleLogout}
-          className="h-12 w-12 items-center justify-center rounded-2xl bg-white shadow-sm border border-gray-100"
-        >
-          <LogOut size={22} color="#ef4444" strokeWidth={2.5} />
-        </TouchableOpacity>
+
+        {/* Tip del día pill — justo debajo del saludo */}
+        <TipDiario trigger={tipTrigger} />
       </View>
 
       <View className="flex-1 px-6">
-        {/* Stats Summary */}
+        {/* Stats */}
         <MotiView
           from={{ opacity: 0, translateY: 20 }}
           animate={{ opacity: 1, translateY: 0 }}
           transition={{ type: "timing", duration: 600, delay: 200 }}
-          className="flex-row gap-4 mb-8"
+          className="flex-row gap-4 mb-6"
         >
           <View className="flex-1 rounded-[32px] bg-white p-6 shadow-sm border border-gray-50">
             <View className="h-12 w-12 items-center justify-center rounded-2xl bg-blue-50">
@@ -134,7 +154,7 @@ export const DespensaScreen = () => {
           </View>
         </MotiView>
 
-        {/* List Label */}
+        {/* Label + acceso a recetas */}
         <View className="flex-row items-center justify-between mb-4 px-1">
           <Text
             className="text-2xl text-gray-900"
@@ -142,12 +162,26 @@ export const DespensaScreen = () => {
           >
             Tu Inventario
           </Text>
-          <TouchableOpacity onPress={() => onRefresh()} className="p-2">
-            <RefreshCcw size={18} color="#9ca3af" strokeWidth={2.5} />
-          </TouchableOpacity>
+          <View className="flex-row items-center gap-2">
+            <TouchableOpacity
+              onPress={() => router.push("/recetas")}
+              className="flex-row items-center gap-1.5 px-3 py-2 rounded-2xl bg-orange-50 border border-orange-100"
+            >
+              <ChefHat size={15} color="#f97316" strokeWidth={2.5} />
+              <Text
+                className="text-orange-500 text-xs"
+                style={{ fontFamily: "Outfit_700Bold" }}
+              >
+                Recetas
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => onRefresh()} className="p-2">
+              <RefreshCcw size={18} color="#9ca3af" strokeWidth={2.5} />
+            </TouchableOpacity>
+          </View>
         </View>
 
-        {/* Content */}
+        {/* Listado */}
         {isLoading && !isRefreshing ? (
           <View className="flex-1 items-center justify-center">
             <ActivityIndicator size="large" color="#f97316" />
@@ -157,13 +191,13 @@ export const DespensaScreen = () => {
             comidas={comidas}
             isRefreshing={isRefreshing}
             onRefresh={onRefresh}
-            onDelete={eliminarComida}
+            onDelete={handleEliminar}
             onEdit={handleEdit}
           />
         )}
       </View>
 
-      {/* Botón flotante para añadir comida */}
+      {/* FAB */}
       <View className="absolute bottom-12 right-6">
         <TouchableOpacity
           onPress={openModal}
@@ -174,16 +208,14 @@ export const DespensaScreen = () => {
         </TouchableOpacity>
       </View>
 
-      {/* Registry Modal */}
       <RegistroComida
         ref={bottomSheetModalRef}
-        onRegister={registrarComida}
+        onRegister={handleRegistrar}
         onUpdate={actualizarComida}
         comidaParaEditar={comidaParaEditar}
         onDismiss={() => setComidaParaEditar(null)}
       />
 
-      {/* Logout Confirmation Modal */}
       <ModalEstandar
         visible={showLogoutModal}
         onClose={() => setShowLogoutModal(false)}

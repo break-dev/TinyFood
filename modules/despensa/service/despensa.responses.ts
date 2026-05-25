@@ -23,3 +23,30 @@ export interface RES_Comida {
   created_at: string;
   estado: EstadoComida;
 }
+export interface RES_TipDiario {
+  titulo: string;
+  consejo: string;
+  urgencia: 'alta' | 'media' | 'baja';
+  emoji: string;
+  hay_tip: boolean;
+  alimentos_proximos?: number;
+}
+ 
+export interface RES_Receta {
+  nombre: string;
+  descripcion: string;
+  tiempo_minutos: number;
+  dificultad: 'fácil' | 'media' | 'difícil';
+  porciones: number;
+  ingredientes_usados: string[];
+  ingredientes_extra: string[];
+  pasos: string[];
+  calorias_aprox: number;
+  emoji: string;
+}
+ 
+export interface RES_Recetas {
+  recetas: RES_Receta[];
+  total: number;
+  ingredientes_usados: number;
+}
