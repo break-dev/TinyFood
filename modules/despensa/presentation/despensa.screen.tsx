@@ -9,12 +9,14 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useLogout } from "@/common/logic/use-logout";
 import { useAuthState } from "@/common/logic/use-auth-state";
+import { router } from "expo-router";
 import {
   Package,
   LogOut,
   RefreshCcw,
   Plus,
   AlertCircle,
+  Info,
 } from "lucide-react-native";
 import { MotiView } from "moti";
 import { useDespensa } from "../logic/_use-despensa";
@@ -66,7 +68,23 @@ export const DespensaScreen = () => {
       <StatusBar barStyle="dark-content" />
 
       {/* Header */}
-      <View className="flex-row items-center justify-between px-6 py-6">
+      <View className="px-6 pt-6 pb-2">
+        <View className="flex-row justify-between items-center mb-3">
+          <TouchableOpacity
+            activeOpacity={0.8}
+            onPress={() => router.push("/about")}
+            className="h-10 w-10 items-center justify-center rounded-[14px] bg-white border border-gray-100 shadow-sm"
+          >
+            <Info size={18} color="#f97316" strokeWidth={2.5} />
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={handleLogout}
+            className="h-10 w-10 items-center justify-center rounded-[14px] bg-red-50 border border-red-100"
+          >
+            <LogOut size={16} color="#ef4444" strokeWidth={2.5} />
+          </TouchableOpacity>
+        </View>
+
         <View>
           <Text
             className="text-gray-400 font-medium"
@@ -81,12 +99,6 @@ export const DespensaScreen = () => {
             {usuario?.nombre?.split(" ")[0] || "Explorador"}
           </Text>
         </View>
-        <TouchableOpacity
-          onPress={handleLogout}
-          className="h-12 w-12 items-center justify-center rounded-2xl bg-white shadow-sm border border-gray-100"
-        >
-          <LogOut size={22} color="#ef4444" strokeWidth={2.5} />
-        </TouchableOpacity>
       </View>
 
       <View className="flex-1 px-6">

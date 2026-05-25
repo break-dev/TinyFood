@@ -16,8 +16,12 @@ import {
 import Toast from "react-native-toast-message";
 import "../global.css";
 
+import { useAppTheme } from "../common/logic/use-app-theme";
+
 export default function RootLayout() {
   const { isInitialized } = useRootLogic();
+  useAppTheme(); // Activa el listener global y la sincronización de temas
+
   const [fontsLoaded] = useFonts({
     Outfit_400Regular,
     Outfit_700Bold,

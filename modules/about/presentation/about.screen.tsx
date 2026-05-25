@@ -4,6 +4,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { MotiView, MotiScrollView } from "moti";
 import { Info, ChevronRight, Heart as HeartIcon } from "lucide-react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { useAppTheme } from "@/common/logic/use-app-theme";
 
 const TEAM = [
   {
@@ -60,24 +61,27 @@ const SOCIAL = [
 
 export const AboutScreen = () => {
   const insets = useSafeAreaInsets();
+  const { isDark, themeBg, themeText, themeCardBg, themeBorder } = useAppTheme();
   const openLink = (url: string) => Linking.openURL(url);
 
   return (
-    <View style={{ flex: 1, backgroundColor: "white", paddingTop: insets.top }}>
+    <View className={`flex-1 ${themeBg}`} style={{ paddingTop: insets.top }}>
       <MotiScrollView
         showsVerticalScrollIndicator={false}
-        className="flex-1 p-6"
+        className={`flex-1 p-6 ${themeBg}`}
       >
         <View className="items-center mb-10 mt-4">
           <MotiView
             from={{ scale: 0.5, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
-            className="bg-orange-50 p-6 rounded-[32px] mb-6 shadow-sm border border-orange-100"
+            className={`p-6 rounded-[32px] mb-6 shadow-sm border ${
+              isDark ? "bg-orange-950/20 border-orange-900/30" : "bg-orange-50 border-orange-100"
+            }`}
           >
             <Info size={48} color="#f97316" strokeWidth={1.5} />
           </MotiView>
           <Text
-            className="text-4xl text-gray-900 tracking-tighter"
+            className={`text-4xl tracking-tighter ${themeText}`}
             style={{ fontFamily: "Outfit_900Black" }}
           >
             Sobre TinyFood
@@ -96,10 +100,12 @@ export const AboutScreen = () => {
           from={{ opacity: 0, translateY: 20 }}
           animate={{ opacity: 1, translateY: 0 }}
           transition={{ delay: 200 }}
-          className="bg-gray-50 p-8 rounded-[40px] mb-10 border border-gray-100"
+          className={`p-8 rounded-[40px] mb-10 border ${
+            isDark ? "bg-neutral-900 border-neutral-800" : "bg-gray-50 border-gray-100"
+          }`}
         >
           <Text
-            className="text-gray-600 leading-7 text-xl text-center"
+            className={`leading-7 text-xl text-center ${isDark ? "text-neutral-300" : "text-gray-600"}`}
             style={{ fontFamily: "Outfit_400Regular" }}
           >
             TinyFood es una iniciativa diseñada para reducir el desperdicio de
@@ -110,7 +116,7 @@ export const AboutScreen = () => {
 
         {/* Equipo */}
         <Text
-          className="text-[10px] text-gray-400 uppercase tracking-[4px] mb-6 ml-1"
+          className="text-[10px] text-gray-400 dark:text-neutral-500 uppercase tracking-[4px] mb-6 ml-1"
           style={{ fontFamily: "Outfit_900Black" }}
         >
           EQUIPO DE DESARROLLO
@@ -123,7 +129,9 @@ export const AboutScreen = () => {
               from={{ opacity: 0, translateX: -20 }}
               animate={{ opacity: 1, translateX: 0 }}
               transition={{ delay: 400 + i * 100 }}
-              className="flex-row items-center bg-white border border-gray-100 p-4 rounded-[32px] shadow-sm"
+              className={`flex-row items-center border p-4 rounded-[32px] shadow-sm ${
+                isDark ? "bg-neutral-900 border-neutral-800" : "bg-white border-gray-100"
+              }`}
             >
               <View
                 style={{ backgroundColor: member.color }}
@@ -141,13 +149,13 @@ export const AboutScreen = () => {
               </View>
               <View className="flex-1">
                 <Text
-                  className="text-gray-900 text-lg"
+                  className={`text-lg ${themeText}`}
                   style={{ fontFamily: "Outfit_700Bold" }}
                 >
                   {member.name}
                 </Text>
                 <Text
-                  className="text-gray-400 text-xs uppercase tracking-widest"
+                  className="text-gray-400 dark:text-neutral-500 text-xs uppercase tracking-widest"
                   style={{ fontFamily: "Outfit_400Regular" }}
                 >
                   {member.role}
@@ -165,12 +173,14 @@ export const AboutScreen = () => {
                   <TouchableOpacity
                     key={idx}
                     onPress={() => openLink(social.url)}
-                    className="w-10 h-10 rounded-xl bg-gray-50 items-center justify-center border border-gray-100"
+                    className={`w-10 h-10 rounded-xl items-center justify-center border ${
+                      isDark ? "bg-neutral-950 border-neutral-800" : "bg-gray-50 border-gray-100"
+                    }`}
                   >
                     <Ionicons
                       name={social.iconName}
                       size={16}
-                      color="#6b7280"
+                      color={isDark ? "#a3a3a3" : "#6b7280"}
                     />
                   </TouchableOpacity>
                 ))}
@@ -181,7 +191,7 @@ export const AboutScreen = () => {
 
         {/* Solo IG grupal */}
         <Text
-          className="text-[10px] text-gray-400 uppercase tracking-[4px] mb-6 ml-1"
+          className="text-[10px] text-gray-400 dark:text-neutral-500 uppercase tracking-[4px] mb-6 ml-1"
           style={{ fontFamily: "Outfit_900Black" }}
         >
           SÍGUENOS
@@ -189,11 +199,13 @@ export const AboutScreen = () => {
         <TouchableOpacity
           activeOpacity={0.8}
           onPress={() => openLink(SOCIAL[0].url)}
-          className="flex-row items-center bg-orange-50 border border-orange-100 rounded-[32px] px-6 py-5 mb-12 shadow-sm shadow-orange-500/10"
+          className={`flex-row items-center border rounded-[32px] px-6 py-5 mb-12 shadow-sm ${
+            isDark ? "bg-orange-950/20 border-orange-900/30" : "bg-orange-50 border-orange-100 shadow-orange-500/10"
+          }`}
         >
           <Ionicons name="logo-instagram" size={24} color="#f97316" />
           <Text
-            className="text-lg ml-4 text-orange-900"
+            className={`text-lg ml-4 ${isDark ? "text-orange-300" : "text-orange-900"}`}
             style={{ fontFamily: "Outfit_700Bold" }}
           >
             @the_berlin.crew
@@ -205,14 +217,14 @@ export const AboutScreen = () => {
         <View className="items-center mb-20">
           <View className="flex-row items-center mb-2">
             <Text
-              className="text-gray-300 text-sm"
+              className="text-gray-300 dark:text-neutral-600 text-sm"
               style={{ fontFamily: "Outfit_400Regular" }}
             >
               Hecho con{" "}
             </Text>
             <HeartIcon size={14} color="#ef4444" fill="#ef4444" />
             <Text
-              className="text-gray-300 text-sm"
+              className="text-gray-300 dark:text-neutral-600 text-sm"
               style={{ fontFamily: "Outfit_400Regular" }}
             >
               {" "}

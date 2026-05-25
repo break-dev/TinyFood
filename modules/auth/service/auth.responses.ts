@@ -18,6 +18,7 @@ export interface RES_Auth {
   alimentos_prohibidos?: string[] | null;
   preferencias?: string[] | null;
   objetivo_fisico?: ObjetivoFisico | null;
+  configuracion?: any | null;
   //
   created_at?: Date | string;
 }

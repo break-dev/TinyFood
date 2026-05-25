@@ -8,23 +8,35 @@ import { MotiView } from "moti";
 import React from "react";
 import { useWindowDimensions } from "react-native";
 import Svg, { Path } from "react-native-svg";
+import { useAppTheme } from "../../common/logic/use-app-theme";
 
 function CustomTabBar({ state, descriptors, navigation }: any) {
   const insets = useSafeAreaInsets();
   const { width } = useWindowDimensions();
+  const { isDark, themeCardBg, themeBorder } = useAppTheme();
   const TAB_BAR_WIDTH = width;
-  const TAB_WIDTH = TAB_BAR_WIDTH / state.routes.length;
+  
+  const visibleRoutes = state.routes.filter((route: any) =>
+    ["configuracion", "despensa", "perfil"].includes(route.name)
+  );
+  
+  const TAB_WIDTH = TAB_BAR_WIDTH / visibleRoutes.length;
 
   return (
     <View
-      className="flex-row bg-white border-t border-gray-100 shadow-2xl items-center justify-around"
+      className={`flex-row border-t items-center justify-around ${themeCardBg} ${themeBorder}`}
       style={{
         height: 64 + insets.bottom,
         paddingBottom: insets.bottom,
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: -4 },
+        shadowOpacity: isDark ? 0.3 : 0.05,
+        shadowRadius: 8,
+        elevation: 8,
       }}
     >
-      {state.routes.map((route: any, index: number) => {
-        const isFocused = state.index === index;
+      {visibleRoutes.map((route: any) => {
+        const isFocused = state.routes[state.index]?.key === route.key;
         const isCenter = route.name === "despensa";
 
         const onPress = () => {
@@ -41,10 +53,10 @@ function CustomTabBar({ state, descriptors, navigation }: any) {
 
         const getIcon = () => {
           const name = route.name;
-          if (name === "about")
+          if (name === "configuracion")
             return isFocused
-              ? "information-circle"
-              : "information-circle-outline";
+              ? "settings"
+              : "settings-outline";
           if (name === "despensa") return "home";
           if (name === "perfil") return isFocused ? "person" : "person-outline";
           return "help";
@@ -69,7 +81,7 @@ function CustomTabBar({ state, descriptors, navigation }: any) {
                   damping: 15,
                   mass: 0.8,
                 }}
-                className="w-16 h-16 rounded-full items-center justify-center bg-orange-500 border-4 border-white shadow-xl shadow-orange-500/40"
+                className={`w-16 h-16 rounded-full items-center justify-center bg-orange-500 border-4 ${isDark ? "border-neutral-900" : "border-white"}`}
                 style={{
                   shadowColor: "#f97316",
                   shadowOffset: { width: 0, height: 4 },
@@ -86,7 +98,7 @@ function CustomTabBar({ state, descriptors, navigation }: any) {
                   fontFamily: isFocused
                     ? "Outfit_700Bold"
                     : "Outfit_400Regular",
-                  color: isFocused ? "#f97316" : "#9ca3af",
+                  color: isFocused ? "#f97316" : (isDark ? "#a3a3a3" : "#9ca3af"),
                   position: "absolute",
                   bottom: 6,
                 }}
@@ -125,7 +137,7 @@ function CustomTabBar({ state, descriptors, navigation }: any) {
               <Ionicons
                 name={getIcon() as any}
                 size={24}
-                color={isFocused ? "#f97316" : "#9ca3af"}
+                color={isFocused ? "#f97316" : (isDark ? "#a3a3a3" : "#9ca3af")}
               />
               <Text
                 className="mt-1 text-[10px]"
@@ -133,10 +145,10 @@ function CustomTabBar({ state, descriptors, navigation }: any) {
                   fontFamily: isFocused
                     ? "Outfit_700Bold"
                     : "Outfit_400Regular",
-                  color: isFocused ? "#f97316" : "#9ca3af",
+                  color: isFocused ? "#f97316" : (isDark ? "#a3a3a3" : "#9ca3af"),
                 }}
               >
-                {route.name === "about" ? "Acerca De" : "Mi Perfil"}
+                {route.name === "configuracion" ? "Ajustes" : "Mi Perfil"}
               </Text>
             </MotiView>
           </TouchableOpacity>
@@ -165,9 +177,10 @@ export default function PrivateLayout() {
         animation: "shift",
       }}
     >
-      <Tabs.Screen name="about" />
+      <Tabs.Screen name="configuracion" />
       <Tabs.Screen name="despensa" />
       <Tabs.Screen name="perfil" />
+      <Tabs.Screen name="about" options={{ href: null }} />
     </Tabs>
   );
 }
