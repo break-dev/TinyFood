@@ -12,7 +12,7 @@ export interface IEstadoVencimientoUI {
 }
 
 export const getEstadoVencimiento = (
-  fechaVencimiento?: string,
+  fechaVencimiento?: string | Date | null,
   diasAviso: number = 3,
 ): IEstadoVencimientoUI => {
   if (!fechaVencimiento)

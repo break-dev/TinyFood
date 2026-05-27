@@ -26,11 +26,11 @@ import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { ModalSheet } from "@/common/presentation/components/modal-sheet";
 import { Easing } from "react-native-reanimated";
 import * as Haptics from "expo-haptics";
-import * as ImagePicker from "expo-image-picker";
 import { useAuthState } from "@/common/logic/use-auth-state";
 import { useLogout } from "@/common/logic/use-logout";
 import { useUpdatePerfil } from "../logic/use-update-perfil";
 import { PerfilService } from "../service/perfil.service";
+import { useImagePicker } from "@/common/logic/use-image-picker";
 import { ProfileCard } from "./components/profile-card";
 import { SheetFisica } from "./components/sheets/sheet-fisica";
 import { SheetActividad } from "./components/sheets/sheet-actividad";
@@ -62,6 +62,7 @@ export const PerfilScreen = () => {
   const [activeSheet, setActiveSheet] = useState<SheetType | null>(null);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
+  const { pickFromGallery } = useImagePicker();
 
   const handleLogout = () => {
     setShowLogoutModal(true);
@@ -86,23 +87,11 @@ export const PerfilScreen = () => {
   const handlePickImage = async () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     try {
-      const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        allowsEditing: true,
-        aspect: [1, 1],
-        quality: 0.8,
-        base64: true,
-      });
-
-      if (!result.canceled && result.assets && result.assets[0]) {
-        const asset = result.assets[0];
-        if (!asset.base64) {
-          throw new Error("No se devolvieron datos en base64 de la imagen");
-        }
-
+      const result = await pickFromGallery();
+      if (result) {
         setIsUploadingPhoto(true);
         const res = await PerfilService.actualizarPerfil({
-          foto_b64: asset.base64,
+          foto_b64: result.dataUrl,
         });
 
         if (res.success && res.data) {
@@ -121,8 +110,14 @@ export const PerfilScreen = () => {
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: isDark ? "#0a0a0a" : "white", paddingTop: insets.top }}>
-      {/* ── Custom Header Bar ── */}
+    <View
+      style={{
+        flex: 1,
+        backgroundColor: isDark ? "#0a0a0a" : "white",
+        paddingTop: insets.top,
+      }}
+    >
+      {/* Custom Header Bar */}
       <View className="flex-row items-center justify-between px-6 py-6 border-b border-gray-50 dark:border-neutral-900">
         <Text
           className="text-2xl text-gray-900 dark:text-white"
@@ -142,7 +137,7 @@ export const PerfilScreen = () => {
         showsVerticalScrollIndicator={false}
         className="flex-1 px-6 py-4"
       >
-        {/* ── Header Info ── */}
+        {/* Header Info */}
         <MotiView
           from={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -208,7 +203,7 @@ export const PerfilScreen = () => {
           </Text>
         </MotiView>
 
-        {/* ── Grid peso / talla ── */}
+        {/* Grid peso / talla */}
         <MotiView
           from={{ opacity: 0, translateY: 20 }}
           animate={{ opacity: 1, translateY: 0 }}
@@ -256,7 +251,7 @@ export const PerfilScreen = () => {
           </TouchableOpacity>
         </MotiView>
 
-        {/* ── Cards ── */}
+        {/* Cards */}
         <View className="space-y-4">
           <ProfileCard
             Icon={Target}
@@ -311,7 +306,7 @@ export const PerfilScreen = () => {
         <View className="h-20" />
       </MotiScrollView>
 
-      {/* ── Bottom Sheet ── */}
+      {/* Bottom Sheet */}
       <ModalSheet
         ref={bottomSheetRef}
         snapPoints={["94%"]}

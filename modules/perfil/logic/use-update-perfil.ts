@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useAuthState } from "@/common/logic/use-auth-state";
 import { PerfilService } from "../service/perfil.service";
 import * as Haptics from "expo-haptics";
+import { getDataUrlFromB64 } from "@/common/utils/functions/get-data-url-from-b64";
 import { RES_Auth } from "@/modules/auth/service/auth.responses";
 import { Genero } from "@/common/utils/enums/genero";
 import { ObjetivoFisico } from "@/common/utils/enums/objetivo-fisico";
@@ -77,7 +78,7 @@ export function useUpdatePerfil() {
         formData.url_foto === null
           ? null
           : formData.url_foto && !formData.url_foto.startsWith("http")
-            ? formData.url_foto
+            ? await getDataUrlFromB64(formData.url_foto)
             : undefined;
 
       const res = await PerfilService.actualizarPerfil({

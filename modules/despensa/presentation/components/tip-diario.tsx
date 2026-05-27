@@ -1,10 +1,5 @@
 import React, { useRef, useCallback } from "react";
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  Pressable,
-} from "react-native";
+import { View, Text, TouchableOpacity, Pressable } from "react-native";
 import { BottomSheetModal, BottomSheetView } from "@gorhom/bottom-sheet";
 import { ModalSheet } from "@/common/presentation/components/modal-sheet";
 import { MotiView } from "moti";
@@ -12,10 +7,13 @@ import { Lightbulb, X, Sparkles } from "lucide-react-native";
 import * as Haptics from "expo-haptics";
 import { useTipDiario } from "../../logic/use-tip-diario";
 import { useAppTheme } from "@/common/logic/use-app-theme";
- 
-// ── Colores por urgencia ──────────────────────────────────────────────────────
- 
-const getColoresUrgencia = (urgencia: "alta" | "media" | "baja", isDark: boolean) => {
+
+// Colores por urgencia
+
+const getColoresUrgencia = (
+  urgencia: "alta" | "media" | "baja",
+  isDark: boolean,
+) => {
   const map = {
     alta: {
       pill: {
@@ -59,32 +57,32 @@ const getColoresUrgencia = (urgencia: "alta" | "media" | "baja", isDark: boolean
   };
   return map[urgencia] || map.baja;
 };
- 
-// ── Componente ────────────────────────────────────────────────────────────────
- 
-export const TipDiario = ({ trigger }: { trigger?: number })=> {
+
+// Componente
+
+export const TipDiario = ({ trigger }: { trigger?: number }) => {
   const { tip, cargando } = useTipDiario(trigger);
   const { isDark } = useAppTheme();
   const sheetRef = useRef<BottomSheetModal>(null);
- 
+
   const abrirTip = useCallback(async () => {
     await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     sheetRef.current?.present();
   }, []);
- 
+
   const cerrarTip = useCallback(async () => {
     await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     sheetRef.current?.dismiss();
   }, []);
- 
+
   // No renderizar nada si no hay tip o está cargando
   if (cargando || !tip) return null;
- 
+
   const colores = getColoresUrgencia(tip.urgencia, isDark);
- 
+
   return (
     <>
-      {/* ── Botón pill ─────────────────────────────────────────────────────── */}
+      {/* Botón pill*/}
       <MotiView
         from={{ opacity: 0, scale: 0.9, translateY: -4 }}
         animate={{ opacity: 1, scale: 1, translateY: 0 }}
@@ -143,13 +141,25 @@ export const TipDiario = ({ trigger }: { trigger?: number })=> {
           </Text>
         </TouchableOpacity>
       </MotiView>
- 
-      {/* ── Modal tip ──────────────────────────────────────────────────────── */}
+
+      {/* Modal tip*/}
       <ModalSheet ref={sheetRef} scrollable={false}>
-        <View style={{ flex: 1, paddingHorizontal: 24, paddingTop: 8, paddingBottom: 24 }}>
- 
+        <View
+          style={{
+            flex: 1,
+            paddingHorizontal: 24,
+            paddingTop: 8,
+            paddingBottom: 24,
+          }}
+        >
           {/* Cerrar */}
-          <View style={{ flexDirection: "row", justifyContent: "flex-end", marginBottom: 8 }}>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "flex-end",
+              marginBottom: 8,
+            }}
+          >
             <TouchableOpacity
               onPress={cerrarTip}
               style={{
@@ -161,10 +171,14 @@ export const TipDiario = ({ trigger }: { trigger?: number })=> {
                 justifyContent: "center",
               }}
             >
-              <X size={18} color={isDark ? "#d1d5db" : "#6b7280"} strokeWidth={2.5} />
+              <X
+                size={18}
+                color={isDark ? "#d1d5db" : "#6b7280"}
+                strokeWidth={2.5}
+              />
             </TouchableOpacity>
           </View>
- 
+
           {/* Contenido del tip */}
           <MotiView
             from={{ opacity: 0, translateY: 16 }}
@@ -186,7 +200,7 @@ export const TipDiario = ({ trigger }: { trigger?: number })=> {
             >
               <Text style={{ fontSize: 44 }}>{tip.emoji}</Text>
             </View>
- 
+
             {/* Badge */}
             <View
               style={{
@@ -200,7 +214,11 @@ export const TipDiario = ({ trigger }: { trigger?: number })=> {
                 marginBottom: 16,
               }}
             >
-              <Sparkles size={12} color={colores.modal.titulo} strokeWidth={2} />
+              <Sparkles
+                size={12}
+                color={colores.modal.titulo}
+                strokeWidth={2}
+              />
               <Text
                 style={{
                   fontFamily: "Outfit_700Bold",
@@ -213,7 +231,7 @@ export const TipDiario = ({ trigger }: { trigger?: number })=> {
                 Tu tip personalizado
               </Text>
             </View>
- 
+
             {/* Título */}
             <Text
               style={{
@@ -228,7 +246,7 @@ export const TipDiario = ({ trigger }: { trigger?: number })=> {
             >
               {tip.titulo}
             </Text>
- 
+
             {/* Consejo */}
             <Text
               style={{
@@ -243,7 +261,7 @@ export const TipDiario = ({ trigger }: { trigger?: number })=> {
             >
               {tip.consejo}
             </Text>
- 
+
             {/* Botón entendido */}
             <TouchableOpacity
               onPress={cerrarTip}

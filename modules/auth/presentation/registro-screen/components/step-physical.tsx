@@ -12,10 +12,10 @@ import { Ionicons } from "@expo/vector-icons";
 import { MotiView } from "moti";
 import { ModernCalendar } from "@/common/presentation/components/modern-calendar";
 import { useAppTheme } from "@/common/logic/use-app-theme";
+import { useImagePicker } from "@/common/logic/use-image-picker";
 
 import * as Haptics from "expo-haptics";
 import { Genero } from "@/common/utils/enums/genero";
-import * as ImagePicker from "expo-image-picker";
 import { Camera, User } from "lucide-react-native";
 
 interface Props {
@@ -26,6 +26,7 @@ interface Props {
 export const StepPhysical = ({ data, setData }: Props) => {
   const [showPicker, setShowPicker] = useState(false);
   const { isDark } = useAppTheme();
+  const { pickFromGallery } = useImagePicker();
 
   // Función para convertir de Date a string DD/MM/YYYY
   const formatDate = (date: Date) => {
@@ -37,27 +38,9 @@ export const StepPhysical = ({ data, setData }: Props) => {
 
   const handlePickImage = async () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    try {
-      const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        allowsEditing: true,
-        aspect: [1, 1],
-        quality: 0.8,
-        base64: true,
-      });
-
-      if (!result.canceled && result.assets && result.assets[0]) {
-        const asset = result.assets[0];
-        if (asset.base64) {
-          setData({
-            ...data,
-            localUri: asset.uri,
-            foto_b64: asset.base64,
-          });
-        }
-      }
-    } catch (error) {
-      console.error("[StepPhysical] Error al seleccionar imagen:", error);
+    const picked = await pickFromGallery();
+    if (picked) {
+      setData({ ...data, localUri: picked.uri, foto_b64: picked.dataUrl });
     }
   };
 
@@ -140,7 +123,11 @@ export const StepPhysical = ({ data, setData }: Props) => {
           </Text>
         </View>
         <View className="flex-row items-center rounded-3xl border border-gray-100 dark:border-neutral-900 bg-gray-50 dark:bg-neutral-950 px-5 py-2 shadow-sm">
-          <Ionicons name="person-outline" size={20} color={isDark ? "#737373" : "#9ca3af"} />
+          <Ionicons
+            name="person-outline"
+            size={20}
+            color={isDark ? "#737373" : "#9ca3af"}
+          />
           <TextInput
             className="ml-3 flex-1"
             style={{
@@ -170,7 +157,11 @@ export const StepPhysical = ({ data, setData }: Props) => {
             Peso (kg)
           </Text>
           <View className="flex-row items-center rounded-3xl border border-gray-100 dark:border-neutral-900 bg-gray-50 dark:bg-neutral-950 px-5 py-2 shadow-sm">
-            <Ionicons name="fitness-outline" size={20} color={isDark ? "#737373" : "#9ca3af"} />
+            <Ionicons
+              name="fitness-outline"
+              size={20}
+              color={isDark ? "#737373" : "#9ca3af"}
+            />
             <TextInput
               className="ml-3 flex-1"
               style={{
@@ -199,7 +190,11 @@ export const StepPhysical = ({ data, setData }: Props) => {
             Talla (cm)
           </Text>
           <View className="flex-row items-center rounded-3xl border border-gray-100 dark:border-neutral-900 bg-gray-50 dark:bg-neutral-950 px-5 py-2 shadow-sm">
-            <Ionicons name="resize-outline" size={20} color={isDark ? "#737373" : "#9ca3af"} />
+            <Ionicons
+              name="resize-outline"
+              size={20}
+              color={isDark ? "#737373" : "#9ca3af"}
+            />
             <TextInput
               className="ml-3 flex-1"
               style={{
@@ -234,11 +229,17 @@ export const StepPhysical = ({ data, setData }: Props) => {
           activeOpacity={0.8}
           className="flex-row items-center rounded-3xl border border-gray-100 dark:border-neutral-900 bg-gray-50 dark:bg-neutral-950 px-6 py-5 shadow-sm"
         >
-          <Ionicons name="calendar-outline" size={22} color={isDark ? "#737373" : "#9ca3af"} />
+          <Ionicons
+            name="calendar-outline"
+            size={22}
+            color={isDark ? "#737373" : "#9ca3af"}
+          />
           <Text
             className={`ml-4 flex-1 ${
               data.fecha_nacimiento
-                ? isDark ? "text-neutral-100" : "text-gray-900"
+                ? isDark
+                  ? "text-neutral-100"
+                  : "text-gray-900"
                 : "text-gray-300 dark:text-neutral-600"
             }`}
             style={{
@@ -251,7 +252,11 @@ export const StepPhysical = ({ data, setData }: Props) => {
               : "DD / MM / YYYY"}
           </Text>
           <View className="rounded-xl bg-white dark:bg-neutral-900 p-2 shadow-sm border border-gray-50 dark:border-neutral-800">
-            <Ionicons name="chevron-forward" size={18} color={isDark ? "#737373" : "#9ca3af"} />
+            <Ionicons
+              name="chevron-forward"
+              size={18}
+              color={isDark ? "#737373" : "#9ca3af"}
+            />
           </View>
         </TouchableOpacity>
 
@@ -323,7 +328,9 @@ export const StepPhysical = ({ data, setData }: Props) => {
               >
                 <Text
                   className={`text-base ${
-                    isSelected ? "text-white" : "text-gray-500 dark:text-neutral-400"
+                    isSelected
+                      ? "text-white"
+                      : "text-gray-500 dark:text-neutral-400"
                   }`}
                   style={{
                     fontFamily: isSelected

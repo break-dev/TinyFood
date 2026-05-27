@@ -7,11 +7,14 @@ import * as Haptics from "expo-haptics";
 export function useRegistroDespensa(
   setComidas: Dispatch<SetStateAction<RES_Comida[]>>,
 ) {
-  const registrarComida = async (data: REQ_RegistrarComida) => {
+  const registrarComida = async (
+    data: REQ_RegistrarComida | REQ_RegistrarComida[],
+  ) => {
     try {
-      const res = await DespensaService.registrarComida(data);
+      const payload = Array.isArray(data) ? data : [data];
+      const res = await DespensaService.registrarComida(payload);
       if (res && res.success && res.data) {
-        setComidas((prev) => [res.data!, ...prev]);
+        setComidas((prev) => [...res.data!, ...prev]);
         Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
         return true;
       }
