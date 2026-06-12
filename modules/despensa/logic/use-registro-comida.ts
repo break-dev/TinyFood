@@ -22,6 +22,19 @@ interface Params {
   comidaParaEditar?: RES_Comida | null;
 }
 
+function toLocalISOString(date: Date): string {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}T00:00:00.000Z`;
+}
+
+function parseLocalDate(dateInput: Date | string): Date {
+  const dateStr = typeof dateInput === 'string' ? dateInput : dateInput.toISOString();
+  const [year, month, day] = dateStr.split("T")[0].split("-").map(Number);
+  return new Date(year, month - 1, day);
+}
+
 export interface AlimentoForm {
   nombre: string;
   cantidad: string;
@@ -99,7 +112,7 @@ export function useRegistroComida({
         descripcion: comidaParaEditar.descripcion || "",
         tags: comidaParaEditar.tags || [],
         fecha_vencimiento: comidaParaEditar.fecha_vencimiento
-          ? new Date(comidaParaEditar.fecha_vencimiento).toISOString()
+          ? toLocalISOString(parseLocalDate(comidaParaEditar.fecha_vencimiento))
           : undefined,
       };
 
@@ -115,7 +128,7 @@ export function useRegistroComida({
         : "";
       setFechaVencimiento(
         comidaParaEditar.fecha_vencimiento
-          ? new Date(comidaParaEditar.fecha_vencimiento)
+          ? parseLocalDate(comidaParaEditar.fecha_vencimiento)
           : null,
       );
       nombreInputRef.current?.setNativeProps({ text: comidaParaEditar.nombre });
@@ -139,7 +152,7 @@ export function useRegistroComida({
         nombre: nombreRef.current,
         cantidad: cantidadRef.current,
         descripcion: descripcionRef.current,
-        fecha_vencimiento: fechaVencimiento?.toISOString() || undefined,
+        fecha_vencimiento: fechaVencimiento ? toLocalISOString(fechaVencimiento) : undefined,
         tags: tagsRef.current
           ? tagsRef.current
               .split(",")
@@ -168,7 +181,7 @@ export function useRegistroComida({
       // 4. Sincronizar fecha
       setFechaVencimiento(
         targetFood.fecha_vencimiento
-          ? new Date(targetFood.fecha_vencimiento)
+          ? parseLocalDate(targetFood.fecha_vencimiento)
           : null,
       );
 
@@ -184,7 +197,7 @@ export function useRegistroComida({
       nombre: nombreRef.current,
       cantidad: cantidadRef.current,
       descripcion: descripcionRef.current,
-      fecha_vencimiento: fechaVencimiento?.toISOString() || undefined,
+      fecha_vencimiento: fechaVencimiento ? toLocalISOString(fechaVencimiento) : undefined,
       tags: tagsRef.current
         ? tagsRef.current
             .split(",")
@@ -232,7 +245,7 @@ export function useRegistroComida({
           nombre: nombreRef.current,
           cantidad: cantidadRef.current,
           descripcion: descripcionRef.current,
-          fecha_vencimiento: fechaVencimiento?.toISOString() || undefined,
+          fecha_vencimiento: fechaVencimiento ? toLocalISOString(fechaVencimiento) : undefined,
           tags: tagsRef.current
             ? tagsRef.current
                 .split(",")
@@ -267,7 +280,7 @@ export function useRegistroComida({
 
       setFechaVencimiento(
         targetFood.fecha_vencimiento
-          ? new Date(targetFood.fecha_vencimiento)
+          ? parseLocalDate(targetFood.fecha_vencimiento)
           : null,
       );
 
@@ -307,7 +320,7 @@ export function useRegistroComida({
     descripcionInputRef.current?.setNativeProps({ text: first.descripcion });
 
     setFechaVencimiento(
-      first.fecha_vencimiento ? new Date(first.fecha_vencimiento) : null,
+      first.fecha_vencimiento ? parseLocalDate(first.fecha_vencimiento) : null,
     );
 
     setImagenAnalizada({
@@ -342,7 +355,7 @@ export function useRegistroComida({
       nombre: nombreRef.current,
       cantidad: cantidadRef.current,
       descripcion: descripcionRef.current,
-      fecha_vencimiento: fechaVencimiento?.toISOString() || undefined,
+      fecha_vencimiento: fechaVencimiento ? toLocalISOString(fechaVencimiento) : undefined,
       tags: tagsRef.current
         ? tagsRef.current
             .split(",")

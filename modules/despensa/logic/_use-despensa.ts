@@ -4,6 +4,7 @@ import { useListarDespensa } from "./use-listar-despensa";
 import { useRegistroDespensa } from "./use-registro-despensa";
 import { useActualizarDespensa } from "./use-actualizar-despensa";
 import { useEliminarDespensa } from "./use-eliminar-despensa";
+import { useConsumirDespensa } from "./use-consumir-despensa";
 
 export function useDespensa() {
   const [comidas, setComidas] = useState<RES_Comida[]>([]);
@@ -14,6 +15,7 @@ export function useDespensa() {
   const { registrarComida } = useRegistroDespensa(setComidas);
   const { actualizarComida } = useActualizarDespensa(setComidas);
   const { eliminarComida } = useEliminarDespensa(setComidas);
+  const { consumirComida } = useConsumirDespensa(setComidas);
 
   // Lógica derivada (Computed State)
   const proximosVencimientos = useMemo(() => {
@@ -39,6 +41,7 @@ export function useDespensa() {
     registrarComida,
     actualizarComida,
     eliminarComida,
+    consumirComida,
     fetchComidas,
   };
 }

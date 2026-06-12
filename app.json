@@ -44,7 +44,45 @@
       "expo-secure-store",
       "expo-web-browser",
       "@react-native-google-signin/google-signin",
-      "@react-native-community/datetimepicker"
+      "@react-native-community/datetimepicker",
+      [
+        "react-native-android-widget",
+        {
+          "widgets": [
+            {
+              "name": "WidgetAgua",
+              "label": "TinyFood Agua",
+              "minWidth": "150dp",
+              "minHeight": "150dp",
+              "description": "Rastrea tu meta de agua diaria.",
+              "updatePeriodMillis": 900000
+            },
+            {
+              "name": "WidgetVencimiento",
+              "label": "TinyFood Despensa",
+              "minWidth": "150dp",
+              "minHeight": "150dp",
+              "description": "Vencimientos en tu despensa.",
+              "updatePeriodMillis": 900000
+            },
+            {
+              "name": "WidgetRecetas",
+              "label": "TinyFood Recetas",
+              "minWidth": "150dp",
+              "minHeight": "150dp",
+              "description": "Recetas saludables de TinyFood."
+            },
+            {
+              "name": "WidgetEjercicio",
+              "label": "TinyFood Ejercicio",
+              "minWidth": "150dp",
+              "minHeight": "150dp",
+              "description": "Tu motivación diaria de ejercicio."
+            }
+          ]
+        }
+      ],
+      "expo-font"
     ],
     "experiments": {
       "typedRoutes": true,

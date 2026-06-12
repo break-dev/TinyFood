@@ -7,6 +7,7 @@ import {
 } from "react";
 import { DespensaService } from "../service/despensa.service";
 import { RES_Comida } from "../service/despensa.responses";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export function useListarDespensa(
   setComidas: Dispatch<SetStateAction<RES_Comida[]>>,
@@ -21,6 +22,9 @@ export function useListarDespensa(
         const res = await DespensaService.listarComida();
         if (res && res.success && res.data) {
           setComidas(res.data);
+
+          // Cachear comidas en AsyncStorage para que los widgets las lean
+          await AsyncStorage.setItem('tinyfood_cached_foods', JSON.stringify(res.data));
         } else if (!res) {
           console.error(
             "[useListarDespensa] Servidor no respondió (Respuesta nula)",

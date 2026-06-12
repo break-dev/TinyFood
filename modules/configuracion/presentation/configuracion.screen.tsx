@@ -7,6 +7,7 @@ import { useAppTheme } from "@/common/logic/use-app-theme";
 import { SeccionPreferencias } from "./components/seccion-preferencias";
 import { SeccionSistema } from "./components/seccion-sistema";
 import { SeccionApariencia } from "./components/seccion-apariencia";
+import { SeccionSalud } from "./components/seccion-salud";
 
 export const ConfiguracionScreen = () => {
   const insets = useSafeAreaInsets();
@@ -35,10 +36,13 @@ export const ConfiguracionScreen = () => {
         {/* Sección 1: Inteligencia Artificial (Remoto) */}
         <SeccionPreferencias {...configIA} />
 
-        {/* Sección 2: Sistema (Local) */}
+        {/* Sección 2: Salud y Widgets (Local) */}
+        <SeccionSalud />
+
+        {/* Sección 3: Sistema (Local) */}
         <SeccionSistema />
 
-        {/* Sección 3: Apariencia */}
+        {/* Sección 4: Apariencia */}
         <SeccionApariencia />
 
         <View className="h-10" />

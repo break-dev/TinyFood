@@ -11,9 +11,10 @@ interface Props {
   index: number;
   onDelete: (id: number) => void;
   onEdit: (comida: RES_Comida) => void;
+  onConsumir: (comida: RES_Comida) => void;
 }
 
-export const ItemComida = ({ item, index, onDelete, onEdit }: Props) => {
+export const ItemComida = ({ item, index, onDelete, onEdit, onConsumir }: Props) => {
   const avisoDias = useConfigStore((state) => state.avisoDiasCaducidad);
   const estado_vencimiento = getEstadoVencimiento(item.fecha_vencimiento, avisoDias);
   return (
@@ -77,14 +78,30 @@ export const ItemComida = ({ item, index, onDelete, onEdit }: Props) => {
                 className="text-[10px] text-gray-500 dark:text-neutral-400 ml-1.5"
                 style={{ fontFamily: "Outfit_700Bold" }}
               >
-                {new Date(item.fecha_vencimiento).toLocaleDateString("es-ES", {
-                  day: "numeric",
-                  month: "short",
-                })}
+                {(() => {
+                  const dateStr = typeof item.fecha_vencimiento === "string" ? item.fecha_vencimiento : item.fecha_vencimiento.toISOString();
+                  const match = dateStr.match(/^(\d{4})-(\d{2})-(\d{2})/);
+                  if (!match) return "";
+                  const year = parseInt(match[1], 10);
+                  const month = parseInt(match[2], 10) - 1;
+                  const day = parseInt(match[3], 10);
+                  const localDate = new Date(year, month, day);
+                  return localDate.toLocaleDateString("es-ES", {
+                    day: "numeric",
+                    month: "short",
+                  });
+                })()}
               </Text>
             </View>
           )}
         </View>
+
+        <TouchableOpacity
+          onPress={() => onConsumir(item)}
+          className="h-12 w-12 items-center justify-center rounded-2xl bg-orange-50 dark:bg-orange-950/20 border border-orange-100/10 dark:border-orange-900/30 ml-2"
+        >
+          <Text className="text-2xl">🍽️</Text>
+        </TouchableOpacity>
 
         <TouchableOpacity
           onPress={() => onDelete(item.id)}

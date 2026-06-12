@@ -323,7 +323,8 @@ export const RegistroComida = React.forwardRef<BottomSheetModal, Props>(
                           : ""
                       }
                       onChange={(dateString) => {
-                        setFechaVencimiento(new Date(dateString));
+                        const [year, month, day] = dateString.split("-").map(Number);
+                        setFechaVencimiento(new Date(year, month - 1, day));
                         setShowDatePicker(false);
                       }}
                     />

@@ -17,8 +17,21 @@ export const getEstadoVencimiento = (
 ): IEstadoVencimientoUI => {
   if (!fechaVencimiento)
     return { color: "bg-blue-500", label: "Sin fecha", Icon: HelpCircle };
+  
+  const dateStr = typeof fechaVencimiento === "string" ? fechaVencimiento : fechaVencimiento.toISOString();
+  const match = dateStr.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (!match)
+    return { color: "bg-blue-500", label: "Sin fecha", Icon: HelpCircle };
+    
+  const year = parseInt(match[1], 10);
+  const month = parseInt(match[2], 10) - 1;
+  const day = parseInt(match[3], 10);
+  
+  const vencimiento = new Date(year, month, day);
   const hoy = new Date();
-  const vencimiento = new Date(fechaVencimiento);
+  vencimiento.setHours(0, 0, 0, 0);
+  hoy.setHours(0, 0, 0, 0);
+  
   const diffTime = vencimiento.getTime() - hoy.getTime();
   const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 

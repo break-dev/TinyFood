@@ -11,6 +11,7 @@ interface Props {
   onRefresh: () => void;
   onDelete: (id: number) => void;
   onEdit: (comida: RES_Comida) => void;
+  onConsumir: (comida: RES_Comida) => void;
 }
 
 export const ListadoComida = ({
@@ -19,6 +20,7 @@ export const ListadoComida = ({
   onRefresh,
   onDelete,
   onEdit,
+  onConsumir,
 }: Props) => {
   if (comidas.length === 0 && !isRefreshing) {
     return <FallbackListadoVacio />;
@@ -34,6 +36,7 @@ export const ListadoComida = ({
           index={index}
           onDelete={onDelete}
           onEdit={onEdit}
+          onConsumir={onConsumir}
         />
       )}
       showsVerticalScrollIndicator={false}
