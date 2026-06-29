@@ -4,12 +4,12 @@ import {
   Text as Text,
   TouchableOpacity,
   ActivityIndicator,
+  Image,
 } from "react-native";
 import {
   Scan,
   Timer,
   Utensils,
-  Apple,
   ChevronRight,
 } from "lucide-react-native";
 import { MotiView } from "moti";
@@ -69,8 +69,11 @@ export const AuthScreen = () => {
           className="mb-8 items-center"
         >
           <View className="h-40 w-40 items-center justify-center rounded-[48px] bg-orange-500 shadow-2xl shadow-orange-500/50 overflow-hidden">
-            {/* Mascot peek replacement or better visual */}
-            <Apple size={80} color="white" strokeWidth={1.5} />
+            <Image
+              source={require("@/assets/images/auth/papita-logo.png")}
+              className="w-full h-full scale-110"
+              resizeMode="contain"
+            />
           </View>
         </MotiView>
 
