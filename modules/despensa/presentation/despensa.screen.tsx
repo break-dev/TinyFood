@@ -18,6 +18,7 @@ import {
   AlertCircle,
   Info,
   ChefHat,
+  TrendingUp,
 } from "lucide-react-native";
 import { MotiView } from "moti";
 import { useDespensa } from "../logic/_use-despensa";
@@ -28,6 +29,7 @@ import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { RES_Comida } from "../service/despensa.responses";
 import { ModalEstandar } from "@/common/presentation/components/modal-estandar";
 import { ModalConsumir } from "./components/modal-consumir";
+import { ModalDashboard } from "./components/modal-dashboard";
 import { useAppTheme } from "@/common/logic/use-app-theme";
 import { getEstadoVencimiento } from "./listado-comida/components/get-estado-vencimiento";
 import { useConfigStore } from "@/modules/configuracion/store/config.store";
@@ -57,6 +59,7 @@ export const DespensaScreen = () => {
     React.useState<RES_Comida | null>(null);
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
   const modalConsumirRef = useRef<BottomSheetModal>(null);
+  const modalDashboardRef = useRef<BottomSheetModal>(null);
   const [showLogoutModal, setShowLogoutModal] = React.useState(false);
 
   // Filtros
@@ -148,15 +151,26 @@ export const DespensaScreen = () => {
       {/* Header */}
       <View className="px-6 pt-6 pb-2">
         <View className="flex-row justify-between items-center mb-3">
-          <TouchableOpacity
-            activeOpacity={0.8}
-            onPress={() => router.push("/about")}
-            className={`h-10 w-10 items-center justify-center rounded-[14px] border shadow-sm ${
-              isDark ? "bg-neutral-900 border-neutral-800" : "bg-white border-gray-100"
-            }`}
-          >
-            <Info size={18} color="#f97316" strokeWidth={2.5} />
-          </TouchableOpacity>
+          <View className="flex-row items-center gap-2">
+            <TouchableOpacity
+              activeOpacity={0.8}
+              onPress={() => router.push("/about")}
+              className={`h-10 w-10 items-center justify-center rounded-[14px] border shadow-sm ${
+                isDark ? "bg-neutral-900 border-neutral-800" : "bg-white border-gray-100"
+              }`}
+            >
+              <Info size={18} color="#f97316" strokeWidth={2.5} />
+            </TouchableOpacity>
+            <TouchableOpacity
+              activeOpacity={0.8}
+              onPress={() => modalDashboardRef.current?.present()}
+              className={`h-10 w-10 items-center justify-center rounded-[14px] border shadow-sm ${
+                isDark ? "bg-neutral-900 border-neutral-800" : "bg-white border-gray-100"
+              }`}
+            >
+              <TrendingUp size={18} color="#f97316" strokeWidth={2.5} />
+            </TouchableOpacity>
+          </View>
           <TouchableOpacity
             onPress={() => setShowLogoutModal(true)}
             className="h-10 w-10 items-center justify-center rounded-[14px] bg-red-50 dark:bg-red-950/20 border border-red-100 dark:border-red-900/30"
@@ -348,6 +362,12 @@ export const DespensaScreen = () => {
         comida={comidaParaConsumir}
         onConfirm={handleConfirmConsumir}
         onDismiss={() => setComidaParaConsumir(null)}
+      />
+
+      <ModalDashboard
+        ref={modalDashboardRef}
+        comidas={comidas}
+        onDismiss={() => {}}
       />
 
       <ModalEstandar

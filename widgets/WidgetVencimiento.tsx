@@ -47,6 +47,7 @@ export function WidgetVencimiento({ expiringItemName, daysToExpire, avisoDiasCad
 
   return (
     <FlexWidget
+      clickAction="OPEN_DESPENSA" // Abre la despensa al tocar cualquier parte del widget
       style={{
         height: 'match_parent',
         width: 'match_parent',

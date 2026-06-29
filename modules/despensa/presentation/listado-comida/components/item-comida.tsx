@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Text as Text, TouchableOpacity } from "react-native";
-import { Trash2, Calendar } from "lucide-react-native";
+import { Trash2, Calendar, Utensils } from "lucide-react-native";
 import { MotiView } from "moti";
 import { RES_Comida } from "../../../service/despensa.responses";
 import { getEstadoVencimiento } from "./get-estado-vencimiento";
@@ -100,7 +100,7 @@ export const ItemComida = ({ item, index, onDelete, onEdit, onConsumir }: Props)
           onPress={() => onConsumir(item)}
           className="h-12 w-12 items-center justify-center rounded-2xl bg-orange-50 dark:bg-orange-950/20 border border-orange-100/10 dark:border-orange-900/30 ml-2"
         >
-          <Text className="text-2xl">🍽️</Text>
+          <Utensils size={20} color="#f97316" strokeWidth={2} />
         </TouchableOpacity>
 
         <TouchableOpacity

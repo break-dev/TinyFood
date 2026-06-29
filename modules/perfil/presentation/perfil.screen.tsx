@@ -20,6 +20,7 @@ import {
   RefreshCw,
   Camera,
   Target,
+  Scale,
 } from "lucide-react-native";
 import { MotiView, MotiScrollView } from "moti";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
@@ -109,6 +110,37 @@ export const PerfilScreen = () => {
     }
   };
 
+  const imcData = React.useMemo(() => {
+    const p = typeof usuario?.peso === "number" ? usuario.peso : parseFloat(String(usuario?.peso || "0"));
+    const t = typeof usuario?.talla === "number" ? usuario.talla : parseFloat(String(usuario?.talla || "0"));
+
+    if (!p || !t || p <= 0 || t <= 0) return null;
+
+    const tallaM = t / 100;
+    const imc = p / (tallaM * tallaM);
+    const imcFixed = imc.toFixed(1);
+
+    let categoria = "Peso Saludable";
+    let colorClass = "text-emerald-600 dark:text-emerald-400";
+    let bgClass = "bg-emerald-50 dark:bg-emerald-950/20 border-emerald-100 dark:border-emerald-900/40";
+
+    if (imc < 18.5) {
+      categoria = "Bajo peso";
+      colorClass = "text-blue-600 dark:text-blue-400";
+      bgClass = "bg-blue-50 dark:bg-blue-950/20 border-blue-100 dark:border-blue-900/40";
+    } else if (imc >= 25 && imc < 30) {
+      categoria = "Sobrepeso";
+      colorClass = "text-orange-600 dark:text-orange-400";
+      bgClass = "bg-orange-50 dark:bg-orange-950/20 border-orange-100 dark:border-orange-900/40";
+    } else if (imc >= 30) {
+      categoria = "Obesidad";
+      colorClass = "text-red-600 dark:text-red-400";
+      bgClass = "bg-red-50 dark:bg-red-950/20 border-red-100 dark:border-red-900/40";
+    }
+
+    return { imc: imcFixed, categoria, colorClass, bgClass };
+  }, [usuario?.peso, usuario?.talla]);
+
   return (
     <View
       style={{
@@ -175,16 +207,17 @@ export const PerfilScreen = () => {
             )}
           </View>
 
-          <View className="flex-row items-center">
+          <View className="flex-row items-center justify-center px-4 max-w-full flex-wrap">
             <Text
-              className="text-3xl text-gray-900 dark:text-white"
+              className="text-2xl text-gray-900 dark:text-white text-center flex-shrink"
               style={{ fontFamily: "Outfit_900Black" }}
+              numberOfLines={2}
             >
               {usuario?.nombre}
             </Text>
             <TouchableOpacity
               onPress={() => openSheet("fisica")}
-              className="ml-3 bg-orange-100 dark:bg-orange-950/30 p-2 rounded-xl"
+              className="ml-2 bg-orange-100 dark:bg-orange-950/30 p-2 rounded-xl self-center"
             >
               <User size={16} color="#f97316" strokeWidth={3} />
             </TouchableOpacity>
@@ -208,7 +241,7 @@ export const PerfilScreen = () => {
           from={{ opacity: 0, translateY: 20 }}
           animate={{ opacity: 1, translateY: 0 }}
           transition={{ delay: 200 }}
-          className="flex-row gap-4 mb-6"
+          className="flex-row gap-4 mb-4"
         >
           <TouchableOpacity
             activeOpacity={0.8}
@@ -248,6 +281,44 @@ export const PerfilScreen = () => {
             >
               cm · Talla
             </Text>
+          </TouchableOpacity>
+        </MotiView>
+
+        {/* Tarjeta IMC Dinámica */}
+        <MotiView
+          from={{ opacity: 0, translateY: 20 }}
+          animate={{ opacity: 1, translateY: 0 }}
+          transition={{ delay: 300 }}
+          className="mb-6"
+        >
+          <TouchableOpacity
+            activeOpacity={0.8}
+            onPress={() => openSheet("fisica")}
+            className={`rounded-[32px] p-5 border shadow-sm flex-row items-center justify-between ${
+              imcData ? imcData.bgClass : "bg-gray-50 dark:bg-neutral-900 border-gray-100 dark:border-neutral-800"
+            }`}
+          >
+            <View className="flex-row items-center gap-3.5 flex-1">
+              <View className={`h-12 w-12 rounded-2xl items-center justify-center ${
+                imcData ? "bg-white/60 dark:bg-black/20" : "bg-gray-200/60 dark:bg-neutral-800"
+              }`}>
+                <Scale size={24} color={imcData ? "#f97316" : "#9ca3af"} strokeWidth={2.5} />
+              </View>
+              <View className="flex-1">
+                <Text
+                  className="text-xs uppercase tracking-widest text-gray-400 dark:text-neutral-500 font-bold"
+                  style={{ fontFamily: "Outfit_700Bold" }}
+                >
+                  Índice de Masa Corporal
+                </Text>
+                <Text
+                  className={`text-xl font-black mt-0.5 ${imcData ? imcData.colorClass : "text-gray-900 dark:text-white"}`}
+                  style={{ fontFamily: "Outfit_900Black" }}
+                >
+                  {imcData ? `${imcData.imc} · ${imcData.categoria}` : "IMC: -- (Ingresa peso y talla)"}
+                </Text>
+              </View>
+            </View>
           </TouchableOpacity>
         </MotiView>
 

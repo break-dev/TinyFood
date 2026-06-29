@@ -37,6 +37,7 @@ export function WidgetRecetas({ phraseIndex = 0 }: Props) {
 
   return (
     <FlexWidget
+      clickAction="OPEN_RECIPES" // Abre el flujo de recetas por IA al tocar cualquier parte del widget
       style={{
         height: 'match_parent',
         width: 'match_parent',
