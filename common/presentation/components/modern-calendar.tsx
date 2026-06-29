@@ -27,7 +27,20 @@ export const ModernCalendar = ({ value, onChange }: Props) => {
   const [showYearPicker, setShowYearPicker] = useState(false);
   const [showMonthPicker, setShowMonthPicker] = useState(false);
 
-  const initialDate = value ? new Date(value) : new Date();
+  const getLocalDate = (dateStr: string) => {
+    if (!dateStr) return new Date();
+    const cleanStr = dateStr.split("T")[0];
+    const parts = cleanStr.split("-");
+    if (parts.length === 3) {
+      const year = parseInt(parts[0], 10);
+      const month = parseInt(parts[1], 10) - 1;
+      const day = parseInt(parts[2], 10);
+      return new Date(year, month, day);
+    }
+    return new Date(dateStr);
+  };
+
+  const initialDate = value ? getLocalDate(value) : new Date();
   const [viewingYear, setViewingYear] = useState(initialDate.getFullYear());
   const [viewingMonth, setViewingMonth] = useState(initialDate.getMonth() + 1);
 

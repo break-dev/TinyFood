@@ -28,12 +28,22 @@ export const StepPhysical = ({ data, setData }: Props) => {
   const { isDark } = useAppTheme();
   const { pickFromGallery } = useImagePicker();
 
-  // Función para convertir de Date a string DD/MM/YYYY
-  const formatDate = (date: Date) => {
-    const day = String(date.getDate()).padStart(2, "0");
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const year = date.getFullYear();
-    return `${day}/${month}/${year}`;
+  // Función para convertir fecha ("YYYY-MM-DD" o Date) a string DD / MM / YYYY sin desfase UTC
+  const formatDate = (dateInput: string | Date) => {
+    if (!dateInput) return "";
+    if (typeof dateInput === "string") {
+      const cleanStr = dateInput.split("T")[0];
+      const parts = cleanStr.split("-");
+      if (parts.length === 3) {
+        const [year, month, day] = parts;
+        return `${day.padStart(2, "0")} / ${month.padStart(2, "0")} / ${year}`;
+      }
+    }
+    const d = new Date(dateInput);
+    const day = String(d.getDate()).padStart(2, "0");
+    const month = String(d.getMonth() + 1).padStart(2, "0");
+    const year = d.getFullYear();
+    return `${day} / ${month} / ${year}`;
   };
 
   const handlePickImage = async () => {
@@ -248,7 +258,7 @@ export const StepPhysical = ({ data, setData }: Props) => {
             }}
           >
             {data.fecha_nacimiento
-              ? formatDate(new Date(data.fecha_nacimiento))
+              ? formatDate(data.fecha_nacimiento)
               : "DD / MM / YYYY"}
           </Text>
           <View className="rounded-xl bg-white dark:bg-neutral-900 p-2 shadow-sm border border-gray-50 dark:border-neutral-800">
